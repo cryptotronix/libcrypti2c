@@ -26,7 +26,7 @@ lib_LTLIBRARIES = libcrypti2c-@CRYPTI2C_API_VERSION@.la
 ## rules which invoke the C++ compiler to produce a libtool object file (.lo)
 ## from each source file.  Note that it is not necessary to list header files
 ## which are already listed elsewhere in a _HEADERS variable assignment.
-libcrypti2c_@CRYPTI2C_API_VERSION@_la_SOURCES = crypti2c/something.c \
+libcrypti2c_@CRYPTI2C_API_VERSION@_la_SOURCES =
 						crypti2c/util.c \
 						crypti2c/log.c \
 						crypti2c/crc.c \

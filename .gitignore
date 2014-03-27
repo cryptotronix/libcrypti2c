@@ -1,0 +1,51 @@
+# Object files
+*.o
+*.ko
+
+# Libraries
+*.lib
+*.a
+
+# Shared objects (inc. Windows DLLs)
+*.dll
+*.so
+*.so.*
+*.dylib
+
+# Executables
+*.exe
+*.out
+*.app
+/configure
+/config.h.in
+/aclocal.m4
+/Makefile.in
+/depcomp
+/install-sh
+/missing
+/Makefile
+/config.h
+/config.log
+/config.status
+
+
+autom4te.cache/
+src/.deps/
+/src/.dirstamp
+/stamp-h1
+/config.h.in~
+/TAGS
+/compile
+.deps/
+
+*.dirstamp
+/libtool
+/ltmain.sh
+/ylwrap
+/config.guess
+/config.sub
+m4/
+*.lo
+.libs/
+*.la
+/crypti2c-1.0.pc
