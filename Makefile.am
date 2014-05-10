@@ -10,6 +10,9 @@ AUTOMAKE_OPTIONS = subdir-objects
 ## to provide a way for the user to supply additional arguments.
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
+## Add Guile libs
+libcrypti2c_@CRYPTI2C_API_VERSION@_la_CPPFLAGS = $(GUILE_CFLAGS)
+libcrypti2c_@CRYPTI2C_API_VERSION@_la_LIBADD = $(GUILE_LIBS)
 ## Define a libtool archive target "libcrypti2c-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTI2C_API_VERSION@ substituted into the generated Makefile at configure
 ## time.
@@ -30,7 +33,8 @@ libcrypti2c_@CRYPTI2C_API_VERSION@_la_SOURCES =	crypti2c/util.c \
 						crypti2c/log.c \
 						crypti2c/crc.c \
 						crypti2c/command_adaptation.c \
-						crypti2c/i2c.c
+						crypti2c/i2c.c \
+						crypti2c/guile_ext.c
 
 ## Instruct libtool to include ABI version information in the generated shared
 ## library file (.so).  The library ABI version is defined in configure.ac, so
@@ -48,7 +52,8 @@ nobase_crypti2c_include_HEADERS = crypti2c.h \
 				  crypti2c/log.h \
                                   crypti2c/crc.h \
                                   crypti2c/command_adaptation.h \
-			          crypti2c/i2c.h
+			          crypti2c/i2c.h \
+			          crypti2c/guile_ext.h
 
 ## The generated configuration header is installed in its own subdirectory of
 ## $(libdir).  The reason for this is that the configuration information put

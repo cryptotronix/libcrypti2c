@@ -114,6 +114,22 @@ int sleep_device(int fd)
 
 }
 
+bool i2c_idle(int fd)
+{
+
+  bool result = false;
+
+  uint8_t idle [] = {0x02};
+
+  if (1 == write(fd, idle, sizeof(idle)))
+    {
+      result = true;
+    }
+
+  return result;
+
+}
+
 ssize_t i2c_write(int fd, unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);

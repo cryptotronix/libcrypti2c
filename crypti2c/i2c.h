@@ -43,5 +43,13 @@ ssize_t i2c_write(int fd, unsigned char *buf, unsigned int len);
 
 ssize_t i2c_read(int fd, unsigned char *buf, unsigned int len);
 
+/**
+ * Idle the device. It will only respond to a wakeup after
+ * this. However, internal volatile memory is preserved. Returns true
+ * if successful.
+ *
+ * @param fd The open file descriptor
+ */
+bool i2c_idle(int fd);
 
 #endif /* I2C_H */
