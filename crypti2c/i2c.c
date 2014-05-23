@@ -1,20 +1,20 @@
-/*
- * Copyright (C) 2013 Cryptotronix, LLC.
+/* -*- mode: c; c-file-style: "gnu" -*-
+ * Copyright (C) 2014 Cryptotronix, LLC.
  *
- * This file is part of Hashlet.
+ * This file is part of libcrypti2c.
  *
- * Hashlet is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * libcrypti2c is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * Hashlet is distributed in the hope that it will be useful,
+ * libcrypti2c is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with Hashlet.  If not, see <http://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -66,6 +66,7 @@ bool wakeup(int fd)
 {
 
   uint32_t wakeup = 0;
+  uint8_t wup[] = {0, 0};
   unsigned char buf[4] = {0};
   bool awake = false;
 
@@ -82,7 +83,7 @@ bool wakeup(int fd)
 
   while (!awake)
     {
-      if (write(fd,&wakeup,sizeof(wakeup)) > 1)
+      if (write(fd,&wup,sizeof(wup)) > 1)
         {
 
           CTX_LOG(DEBUG, "%s", "Device is awake.");
