@@ -76,9 +76,9 @@ ci2c_process_command (int fd, struct Command_ATSHA204 *c,
   assert (NULL != c);
   assert (NULL != rec_buf);
 
-  c_len = serialize_command (c, &serialized);
+  c_len = ci2c_serialize_command (c, &serialized);
 
-  return send_and_receive (fd, serialized, c_len, rec_buf, recv_len,
+  return ci2c_send_and_receive (fd, serialized, c_len, rec_buf, recv_len,
                            &c->exec_time);
 
 }
@@ -107,9 +107,9 @@ ci2c_send_and_receive (int fd,
   NUM_RETRIES times */
   for (x=0; x < NUM_RETRIES && rsp == RSP_AWAKE; x++)
     {
-      print_hex_string ("Sending", send_buf, send_buf_len);
+      ci2c_print_hex_string ("Sending", send_buf, send_buf_len);
 
-      result = i2c_write (fd,send_buf,send_buf_len);
+      result = ci2c_write (fd,send_buf,send_buf_len);
 
       if (result > 1)
         {
@@ -117,9 +117,9 @@ ci2c_send_and_receive (int fd,
             {
               nanosleep (wait_time , &tim_rem);
             }
-          while ((rsp = read_and_validate (fd, recv_buf, recv_buf_len))
+          while ((rsp = ci2c_read_and_validate (fd, recv_buf, recv_buf_len))
                  == RSP_NAK);
-          CTX_LOG (DEBUG, "Command Response: %s", status_to_string (rsp));
+          CI2C_LOG (DEBUG, "Command Response: %s", status_to_string (rsp));
         }
       else
         {
@@ -161,7 +161,7 @@ ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 
   print_command (c);
 
-  CTX_LOG (DEBUG,
+  CI2C_LOG (DEBUG,
            "Total len: %d, count: %d, CRC_LEN: %d, CRC_OFFSET: %d\n",
            total_len, c->count, crc_len, crc_offset);
 
@@ -176,7 +176,7 @@ ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
     memcpy (&data[6], c->data, c->data_len);
 
   crc = (uint16_t *)&data[crc_offset];
-  *crc = calculate_crc16 (&data[1], crc_len);
+  *crc = ci2c_calculate_crc16 (&data[1], crc_len);
 
   *serialized = data;
 
@@ -208,16 +208,16 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
    * two byte crc at the end. */
   tmp = ci2c_malloc_wipe (recv_buf_len);
 
-  read_bytes = i2c_read (fd, tmp, recv_buf_len);
+  read_bytes = ci2c_read (fd, tmp, recv_buf_len);
 
   /* First Case: We've read the buffer and it's a status packet */
 
   if (read_bytes == recv_buf_len && tmp[0] == STATUS_RSP)
   {
-      print_hex_string ("Status RSP", tmp, tmp[0]);
+      ci2c_print_hex_string ("Status RSP", tmp, tmp[0]);
       status = get_status_response (tmp);
-      CTX_LOG (DEBUG, status_to_string (status));
-      CTX_LOG (DEBUG, "Copying %d into buf", tmp[1]);
+      CI2C_LOG (DEBUG, status_to_string (status));
+      CI2C_LOG (DEBUG, "Copying %d into buf", tmp[1]);
       memcpy (buf, &tmp[1], 1);
 
   }
@@ -225,13 +225,13 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
   /* Second case: We received the expected message length */
   else if (read_bytes == recv_buf_len && tmp[0] == recv_buf_len)
     {
-      print_hex_string ("Received RSP", tmp, recv_buf_len);
+      ci2c_print_hex_string ("Received RSP", tmp, recv_buf_len);
 
-      crc_valid = is_crc_16_valid (tmp, tmp[0] - CI2C_CRC_16_LEN, tmp + crc_offset);
+      crc_valid = ci2c_is_crc_16_valid (tmp, tmp[0] - CI2C_CRC_16_LEN, tmp + crc_offset);
 
       if (true == crc_valid)
         {
-          wipe (buf, len);
+          ci2c_wipe (buf, len);
           memcpy (buf, &tmp[1], len);
           status = RSP_SUCCESS;
 
@@ -243,12 +243,12 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
     }
   else
     {
-      CTX_LOG (DEBUG,"Read failed, retrying");
+      CI2C_LOG (DEBUG,"Read failed, retrying");
       status = RSP_NAK;
 
     }
 
-  free_wipe (tmp, recv_buf_len);
+  ci2c_free_wipe (tmp, recv_buf_len);
 
   return status;
 }

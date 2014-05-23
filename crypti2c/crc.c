@@ -112,8 +112,8 @@ ci2c_calculate_crc16(const uint8_t *p, unsigned int length)
   lobyte = (crc & 0xFF);
 
   /* And the bits are swapped */
-  hibyte = reverse_bits_in_byte(hibyte);
-  lobyte = reverse_bits_in_byte(lobyte);
+  hibyte = ci2c_reverse_bits_in_byte(hibyte);
+  lobyte = ci2c_reverse_bits_in_byte(lobyte);
 
   return  lobyte << 8 | hibyte;
 }
@@ -129,11 +129,11 @@ ci2c_is_crc_16_valid(const uint8_t *data, unsigned int data_len,
   assert(NULL != data);
   assert(NULL != crc);
 
-  print_hex_string("crc", crc, 2);
+  ci2c_print_hex_string("crc", crc, 2);
 
-  result = calculate_crc16(data, data_len);
+  result = ci2c_calculate_crc16(data, data_len);
 
-  print_hex_string("Calculated crc", (uint8_t*)&result, 2);
+  ci2c_print_hex_string("Calculated crc", (uint8_t*)&result, 2);
 
   return ((0 == memcmp(&result, crc, sizeof(result))) ? true : false);
 

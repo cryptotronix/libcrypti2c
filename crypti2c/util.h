@@ -41,9 +41,6 @@ struct ci2c_octet_buffer
 const char*
 ci2c_octet_buffer2hex_string (struct ci2c_octet_buffer buf);
 
-void
-ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
-
 /**
  * Wipes the buffer with zeroes.
  *

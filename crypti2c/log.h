@@ -38,4 +38,8 @@ ci2c_set_log_level(enum CI2C_LOG_LEVEL lvl);
 void
 CI2C_LOG(enum CI2C_LOG_LEVEL, const char *format, ...);
 
+void
+ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
+
+
 #endif /* LOG_H */

@@ -209,8 +209,8 @@ ci2c_copy_to_buffer (struct ci2c_octet_buffer buf, unsigned int offset,
 
 
 struct ci2c_octet_buffer
-xor_buffers (const struct ci2c_octet_buffer lhs,
-             const struct ci2c_octet_buffer rhs)
+ci2c_xor_buffers (const struct ci2c_octet_buffer lhs,
+                  const struct ci2c_octet_buffer rhs)
 {
 
   assert (NULL != lhs.ptr && NULL != rhs.ptr);

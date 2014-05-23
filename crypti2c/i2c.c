@@ -89,7 +89,7 @@ ci2c_wakeup(int fd)
       if (write(fd,&wup,sizeof(wup)) > 1)
         {
 
-          CTX_LOG(DEBUG, "%s", "Device is awake.");
+          CI2C_LOG(DEBUG, "%s", "Device is awake.");
           // Using I2C Read
           if (read(fd,buf,sizeof(buf)) <= 0)
             {
@@ -98,7 +98,7 @@ ci2c_wakeup(int fd)
             }
           else
             {
-              assert(is_crc_16_valid(buf, 2, buf+2));
+              assert(ci2c_is_crc_16_valid(buf, 2, buf+2));
               awake = true;
             }
         }
@@ -157,11 +157,11 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len)
 
 int hashlet_setup(const char *bus, unsigned int addr)
 {
-    int fd = i2c_setup(bus);
+    int fd = ci2c_setup(bus);
 
-    i2c_acquire_bus(fd, addr);
+    ci2c_acquire_bus(fd, addr);
 
-    wakeup(fd);
+    ci2c_wakeup(fd);
 
     return fd;
 
@@ -169,7 +169,7 @@ int hashlet_setup(const char *bus, unsigned int addr)
 
 void hashlet_teardown(int fd)
 {
-    sleep_device(fd);
+    ci2c_sleep_device(fd);
 
     close(fd);
 
