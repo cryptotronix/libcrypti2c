@@ -24,7 +24,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-enum LOG_LEVEL
+enum CI2C_LOG_LEVEL
   {
     SEVERE = 0,
     WARNING,
@@ -32,8 +32,10 @@ enum LOG_LEVEL
     DEBUG
   };
 
-void set_log_level(enum LOG_LEVEL lvl);
+void
+ci2c_set_log_level(enum CI2C_LOG_LEVEL lvl);
 
-void CTX_LOG(enum LOG_LEVEL, const char *format, ...);
+void
+CI2C_LOG(enum CI2C_LOG_LEVEL, const char *format, ...);
 
 #endif /* LOG_H */

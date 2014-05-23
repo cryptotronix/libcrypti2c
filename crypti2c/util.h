@@ -25,7 +25,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-struct octet_buffer
+struct ci2c_octet_buffer
 {
     unsigned char *ptr; /* Pointer to buffer */
     unsigned int len;   /* Length of data */
@@ -38,9 +38,11 @@ struct octet_buffer
  *
  * @return A malloc'd character string
  */
-const char* octet_buffer2hex_string (struct octet_buffer buf);
+const char*
+ci2c_octet_buffer2hex_string (struct ci2c_octet_buffer buf);
 
-void print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
+void
+ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
 
 /**
  * Wipes the buffer with zeroes.
@@ -48,7 +50,8 @@ void print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
  * @param buf The buffer to be wiped.
  * @param len The length of the buffer
  */
-void wipe(unsigned char *buf, unsigned int len);
+void
+ci2c_wipe(unsigned char *buf, unsigned int len);
 
 /**
  * Mallocs a buffer of length len and then wipes the buffer with zeroes.
@@ -57,10 +60,12 @@ void wipe(unsigned char *buf, unsigned int len);
  *
  * @return The allocated buffer.  NULL on error.
  */
-uint8_t* malloc_wipe(unsigned int len);
+uint8_t*
+ci2c_malloc_wipe(unsigned int len);
 
 /* Wipes then frees the buffer */
-void free_wipe(unsigned char* buf, unsigned int len);
+void
+ci2c_free_wipe(unsigned char* buf, unsigned int len);
 
 /**
  * Compares two octet buffers
@@ -70,7 +75,9 @@ void free_wipe(unsigned char* buf, unsigned int len);
  *
  * @return True if the contents are the same
  */
-bool memcmp_octet_buffer (struct octet_buffer lhs, struct octet_buffer rhs);
+bool
+ci2c_memcmp_octet_buffer (struct ci2c_octet_buffer lhs,
+                          struct ci2c_octet_buffer rhs);
 
 /**
  * Created a malloc'd octet buffer.
@@ -79,16 +86,19 @@ bool memcmp_octet_buffer (struct octet_buffer lhs, struct octet_buffer rhs);
  *
  * @return A malloc'd and wiped octet buffer.
  */
-struct octet_buffer make_buffer(unsigned int len);
+struct ci2c_octet_buffer
+ci2c_make_buffer(unsigned int len);
 
 /**
  * Frees and clears an octet_buffer
  *
  * @param buf The malloc'ed octet buffer
  */
-void free_octet_buffer(struct octet_buffer buf);
+void
+ci2c_free_octet_buffer(struct ci2c_octet_buffer buf);
 
-uint8_t reverse_bits_in_byte(uint8_t b);
+uint8_t
+ci2c_reverse_bits_in_byte(uint8_t b);
 
 /**
  * Converts an ASCII encoded Hex character string into binary.
@@ -98,7 +108,8 @@ uint8_t reverse_bits_in_byte(uint8_t b);
  *
  * @return The malloc'd binary encoding.  Buf.ptr will be NULL on error
  */
-struct octet_buffer ascii_hex_2_bin (const char* hex, unsigned int max_len);
+struct ci2c_octet_buffer
+ci2c_ascii_hex_2_bin (const char* hex, unsigned int max_len);
 
 /**
  * Returns true if the string is all hex
@@ -108,7 +119,8 @@ struct octet_buffer ascii_hex_2_bin (const char* hex, unsigned int max_len);
  *
  * @return True if the string is all hex
  */
-bool is_all_hex (const char* hex, unsigned int max_len);
+bool
+ci2c_is_all_hex (const char* hex, unsigned int max_len);
 
 /**
  * Copies the src octet buffer into the dst at the given offset.  This
@@ -121,8 +133,10 @@ bool is_all_hex (const char* hex, unsigned int max_len);
  * @return The updated offset (offset + dst.len)
  */
 
-unsigned int copy_buffer (struct octet_buffer dst, unsigned int offset,
-                          const struct octet_buffer src);
+unsigned int
+ci2c_copy_buffer (struct ci2c_octet_buffer dst,
+                  unsigned int offset,
+                  const struct ci2c_octet_buffer src);
 
 /**
  * Copies p of length len into the octet buffer.
@@ -134,8 +148,11 @@ unsigned int copy_buffer (struct octet_buffer dst, unsigned int offset,
  *
  * @return The updated offset (offset + len)
  */
-unsigned int copy_to_buffer (struct octet_buffer buf, unsigned int offset,
-                             const uint8_t *p, unsigned int len);
+unsigned int
+ci2c_copy_to_buffer (struct ci2c_octet_buffer buf,
+                     unsigned int offset,
+                     const uint8_t *p,
+                     unsigned int len);
 
 /**
  * XOR two buffers.  The buffers must not be zero and must be the same size.
@@ -145,6 +162,7 @@ unsigned int copy_to_buffer (struct octet_buffer buf, unsigned int offset,
  *
  * @return A malloc'd buffer that is the XOR of the two.
  */
-struct octet_buffer xor_buffers (const struct octet_buffer lhs,
-                                 const struct octet_buffer rhs);
+struct ci2c_octet_buffer
+ci2c_xor_buffers (const struct ci2c_octet_buffer lhs,
+                  const struct ci2c_octet_buffer rhs);
 #endif /* UTIL_H */

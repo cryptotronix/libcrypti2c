@@ -27,6 +27,7 @@
 #include "log.h"
 
 
+
 const uint16_t crc_tab_8005_normal[256] = {
    0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
    0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
@@ -63,7 +64,8 @@ const uint16_t crc_tab_8005_normal[256] = {
 };
 
 
-uint16_t update_crc16_normal(const uint16_t table[], uint16_t crc, char c )
+uint16_t
+update_crc16_normal(const uint16_t table[], uint16_t crc, char c )
 {
   uint16_t short_c;
 
@@ -73,7 +75,8 @@ uint16_t update_crc16_normal(const uint16_t table[], uint16_t crc, char c )
   return (crc << 8) ^ table[(crc >> 8) ^ short_c];
 }
 
-uint16_t update_crc16_reflected(const uint16_t table[], uint16_t crc, char c )
+uint16_t
+update_crc16_reflected(const uint16_t table[], uint16_t crc, char c )
 {
   uint16_t short_c;
 
@@ -83,12 +86,14 @@ uint16_t update_crc16_reflected(const uint16_t table[], uint16_t crc, char c )
   return (crc >> 8) ^ table[(crc ^ short_c) & 0xff];
 }
 
-uint16_t update_crc16_8005( uint16_t crc, char c )
+uint16_t
+update_crc16_8005( uint16_t crc, char c )
 {
   return update_crc16_reflected(crc_tab_8005_normal,crc,c);
 }
 
-uint16_t calculate_crc16(const uint8_t *p, unsigned int length)
+uint16_t
+ci2c_calculate_crc16(const uint8_t *p, unsigned int length)
 {
   uint16_t crc;
   uint16_t hibyte;
@@ -113,7 +118,8 @@ uint16_t calculate_crc16(const uint8_t *p, unsigned int length)
   return  lobyte << 8 | hibyte;
 }
 
-bool is_crc_16_valid(const uint8_t *data, unsigned int data_len,
+bool
+ci2c_is_crc_16_valid(const uint8_t *data, unsigned int data_len,
                      const uint8_t *crc)
 {
 
@@ -130,7 +136,5 @@ bool is_crc_16_valid(const uint8_t *data, unsigned int data_len,
   print_hex_string("Calculated crc", (uint8_t*)&result, 2);
 
   return ((0 == memcmp(&result, crc, sizeof(result))) ? true : false);
-
-
 
 }

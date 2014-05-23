@@ -25,9 +25,10 @@
 #include <time.h>
 #include <assert.h>
 
-static enum LOG_LEVEL CURRENT_LOG_LEVEL = INFO;
+static enum CI2C_LOG_LEVEL CURRENT_LOG_LEVEL = INFO;
 
-void CTX_LOG(enum LOG_LEVEL lvl, const char *format, ...)
+void
+CI2C_LOG(enum CI2C_LOG_LEVEL lvl, const char *format, ...)
 {
   if (lvl <= CURRENT_LOG_LEVEL)
     {
@@ -39,7 +40,7 @@ void CTX_LOG(enum LOG_LEVEL lvl, const char *format, ...)
     }
 }
 
-void set_log_level(enum LOG_LEVEL lvl)
+void ci2c_set_log_level(enum CI2C_LOG_LEVEL lvl)
 {
   CURRENT_LOG_LEVEL = lvl;
 

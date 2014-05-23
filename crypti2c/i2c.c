@@ -33,7 +33,8 @@
 #include <unistd.h>
 #include "log.h"
 
-int i2c_setup(const char* bus)
+int
+ci2c_setup(const char* bus)
 {
   assert(NULL != bus);
 
@@ -49,7 +50,8 @@ int i2c_setup(const char* bus)
 
 }
 
-void i2c_acquire_bus(int fd, int addr)
+void
+ci2c_acquire_bus(int fd, int addr)
 {
   if (ioctl(fd, I2C_SLAVE, addr) < 0)
     {
@@ -62,7 +64,8 @@ void i2c_acquire_bus(int fd, int addr)
 
 
 
-bool wakeup(int fd)
+bool
+ci2c_wakeup(int fd)
 {
 
   uint32_t wakeup = 0;
@@ -105,7 +108,8 @@ bool wakeup(int fd)
 
 }
 
-int sleep_device(int fd)
+int
+ci2c_sleep_device(int fd)
 {
 
   unsigned char sleep_byte[] = {0x01};
@@ -115,7 +119,8 @@ int sleep_device(int fd)
 
 }
 
-bool i2c_idle(int fd)
+bool
+ci2c_idle(int fd)
 {
 
   bool result = false;
@@ -131,7 +136,8 @@ bool i2c_idle(int fd)
 
 }
 
-ssize_t i2c_write(int fd, unsigned char *buf, unsigned int len)
+ssize_t
+ci2c_write(int fd, unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);
 
@@ -139,7 +145,8 @@ ssize_t i2c_write(int fd, unsigned char *buf, unsigned int len)
 
 }
 
-ssize_t i2c_read(int fd, unsigned char *buf, unsigned int len)
+ssize_t
+ci2c_read(int fd, unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);
 

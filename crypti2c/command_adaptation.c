@@ -29,7 +29,8 @@
 #include "util.h"
 #include "log.h"
 
-const char* status_to_string (enum STATUS_RESPONSE rsp)
+const char*
+status_to_string (enum CI2C_STATUS_RESPONSE rsp)
 {
   const char *rsp_string = NULL;
 
@@ -65,8 +66,9 @@ const char* status_to_string (enum STATUS_RESPONSE rsp)
 }
 
 
-enum STATUS_RESPONSE process_command (int fd, struct Command_ATSHA204 *c,
-                                      uint8_t* rec_buf, unsigned int recv_len)
+enum CI2C_STATUS_RESPONSE
+ci2c_process_command (int fd, struct Command_ATSHA204 *c,
+                      uint8_t* rec_buf, unsigned int recv_len)
 {
   unsigned int c_len = 0;
   uint8_t *serialized;
@@ -81,14 +83,16 @@ enum STATUS_RESPONSE process_command (int fd, struct Command_ATSHA204 *c,
 
 }
 
-enum STATUS_RESPONSE send_and_receive (int fd, uint8_t *send_buf,
-                                       unsigned int send_buf_len,
-                                       uint8_t *recv_buf,
-                                       unsigned int recv_buf_len,
-                                       struct timespec *wait_time)
+enum CI2C_STATUS_RESPONSE
+ci2c_send_and_receive (int fd,
+                       uint8_t *send_buf,
+                       unsigned int send_buf_len,
+                       uint8_t *recv_buf,
+                       unsigned int recv_buf_len,
+                       struct timespec *wait_time)
 {
   struct timespec tim_rem;
-  enum STATUS_RESPONSE rsp = RSP_AWAKE;
+  enum CI2C_STATUS_RESPONSE rsp = RSP_AWAKE;
   const unsigned int NUM_RETRIES = 10;
   unsigned int x = 0;
   ssize_t result = 0;
@@ -129,7 +133,8 @@ enum STATUS_RESPONSE send_and_receive (int fd, uint8_t *send_buf,
   return rsp;
 }
 
-unsigned int serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
+unsigned int
+ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 {
   unsigned int total_len = 0;
   unsigned int crc_len = 0;
@@ -179,13 +184,14 @@ unsigned int serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized
 
 }
 
-enum STATUS_RESPONSE read_and_validate (int fd, uint8_t *buf, unsigned int len)
+enum CI2C_STATUS_RESPONSE
+ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
 {
 
   uint8_t* tmp = NULL;
   const int PAYLOAD_LEN_SIZE = 1;
   const int CRC_SIZE = 2;
-  enum STATUS_RESPONSE status = RSP_COMM_ERROR;
+  enum CI2C_STATUS_RESPONSE status = RSP_COMM_ERROR;
   unsigned int recv_buf_len = 0;
   bool crc_valid;
   unsigned int crc_offset;
@@ -200,7 +206,7 @@ enum STATUS_RESPONSE read_and_validate (int fd, uint8_t *buf, unsigned int len)
 
   /* The buffer that comes back has a length byte at the front and a
    * two byte crc at the end. */
-  tmp = malloc_wipe (recv_buf_len);
+  tmp = ci2c_malloc_wipe (recv_buf_len);
 
   read_bytes = i2c_read (fd, tmp, recv_buf_len);
 
@@ -221,7 +227,7 @@ enum STATUS_RESPONSE read_and_validate (int fd, uint8_t *buf, unsigned int len)
     {
       print_hex_string ("Received RSP", tmp, recv_buf_len);
 
-      crc_valid = is_crc_16_valid (tmp, tmp[0] - CRC_16_LEN, tmp + crc_offset);
+      crc_valid = is_crc_16_valid (tmp, tmp[0] - CI2C_CRC_16_LEN, tmp + crc_offset);
 
       if (true == crc_valid)
         {

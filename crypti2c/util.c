@@ -27,35 +27,37 @@
 #include <ctype.h>
 #include <limits.h>
 
-void wipe(unsigned char *buf, unsigned int len)
+void
+ci2c_wipe(unsigned char *buf, unsigned int len)
 {
 
   assert(NULL != buf);
   memset(buf, 0, len);
 }
 
-uint8_t* malloc_wipe(unsigned int len)
+uint8_t*
+ci2c_malloc_wipe(unsigned int len)
 {
   uint8_t* buf = malloc(len);
 
   assert(NULL != buf);
 
-  wipe(buf, len);
+  ci2c_wipe(buf, len);
 
   return buf;
 
 }
 
-void free_wipe(unsigned char* buf, unsigned int len)
+void
+ci2c_free_wipe(unsigned char* buf, unsigned int len)
 {
-  wipe(buf, len);
+  ci2c_wipe(buf, len);
 
   free(buf);
-
-
 }
 
-uint8_t reverse_bits_in_byte(uint8_t b)
+uint8_t
+ci2c_reverse_bits_in_byte(uint8_t b)
 {
   /* This gem is from
      http://graphics.stanford.edu/~seander/bithacks.html
@@ -64,24 +66,28 @@ uint8_t reverse_bits_in_byte(uint8_t b)
 
 }
 
-struct octet_buffer make_buffer(unsigned int len)
+struct ci2c_octet_buffer
+ci2c_make_buffer(unsigned int len)
 {
-    struct octet_buffer b = {};
+    struct ci2c_octet_buffer b = {};
     b.len = len;
-    b.ptr = malloc_wipe(len);
+    b.ptr = ci2c_malloc_wipe(len);
 
     return b;
 }
 
 
-void free_octet_buffer(struct octet_buffer buf)
+void
+ci2c_free_octet_buffer(struct ci2c_octet_buffer buf)
 {
-    free_wipe(buf.ptr, buf.len);
+    ci2c_free_wipe(buf.ptr, buf.len);
 
 
 }
 
-bool memcmp_octet_buffer (struct octet_buffer lhs, struct octet_buffer rhs)
+bool
+ci2c_memcmp_octet_buffer (struct ci2c_octet_buffer lhs,
+                          struct ci2c_octet_buffer rhs)
 {
   assert (NULL != lhs.ptr); assert (NULL != rhs.ptr);
 
@@ -95,7 +101,8 @@ bool memcmp_octet_buffer (struct octet_buffer lhs, struct octet_buffer rhs)
 
 }
 
-unsigned int c2b (char c)
+unsigned int
+ci2c_c2b (char c)
 {
   unsigned int result = 0;
 
@@ -111,9 +118,12 @@ unsigned int c2b (char c)
   return result;
 
 }
-struct octet_buffer ascii_hex_2_bin (const char* hex, unsigned int max_len)
+
+struct ci2c_octet_buffer
+ci2c_ascii_hex_2_bin (const char* hex,
+                      unsigned int max_len)
 {
-  struct octet_buffer result = {0,0};
+  struct ci2c_octet_buffer result = {0,0};
 
   assert (NULL != hex);
 
@@ -124,7 +134,7 @@ struct octet_buffer ascii_hex_2_bin (const char* hex, unsigned int max_len)
 
   if (len % 2 == 0)
     {
-      result = make_buffer (len / 2);
+      result = ci2c_make_buffer (len / 2);
 
       int x;
 
@@ -133,7 +143,7 @@ struct octet_buffer ascii_hex_2_bin (const char* hex, unsigned int max_len)
         {
           unsigned int a;
 
-          if ((a = c2b (hex[x])) != UINT_MAX)
+          if ((a = ci2c_c2b (hex[x])) != UINT_MAX)
             {
               if (x % 2 == 0)
                 result.ptr[x/2] = (a << 4);
@@ -147,7 +157,7 @@ struct octet_buffer ascii_hex_2_bin (const char* hex, unsigned int max_len)
 
       if (!ishex)
         {
-          free_octet_buffer (result);
+          ci2c_free_octet_buffer (result);
           result.ptr = NULL;
         }
     }
@@ -156,31 +166,34 @@ struct octet_buffer ascii_hex_2_bin (const char* hex, unsigned int max_len)
   return result;
 }
 
-bool is_all_hex (const char* hex, unsigned int max_len)
+bool
+ci2c_is_all_hex (const char* hex, unsigned int max_len)
 {
-  struct octet_buffer bin = ascii_hex_2_bin (hex, max_len);
+  struct ci2c_octet_buffer bin = ci2c_ascii_hex_2_bin (hex, max_len);
   bool ishex = false;
 
   if (NULL != bin.ptr)
     {
       ishex = true;
-      free_octet_buffer (bin);
+      ci2c_free_octet_buffer (bin);
     }
 
   return ishex;
 }
 
-unsigned int copy_buffer (struct octet_buffer dst, unsigned int offset,
-                          const struct octet_buffer src)
+unsigned int
+ci2c_copy_buffer (struct ci2c_octet_buffer dst, unsigned int offset,
+                  const struct ci2c_octet_buffer src)
 {
 
-  return copy_to_buffer (dst, offset, src.ptr, src.len);
+  return ci2c_copy_to_buffer (dst, offset, src.ptr, src.len);
 
 }
 
 
-unsigned int copy_to_buffer (struct octet_buffer buf, unsigned int offset,
-                             const uint8_t *p, unsigned int len)
+unsigned int
+ci2c_copy_to_buffer (struct ci2c_octet_buffer buf, unsigned int offset,
+                     const uint8_t *p, unsigned int len)
 {
 
   assert (NULL != p);
@@ -195,8 +208,9 @@ unsigned int copy_to_buffer (struct octet_buffer buf, unsigned int offset,
 }
 
 
-struct octet_buffer xor_buffers (const struct octet_buffer lhs,
-                                 const struct octet_buffer rhs)
+struct ci2c_octet_buffer
+xor_buffers (const struct ci2c_octet_buffer lhs,
+             const struct ci2c_octet_buffer rhs)
 {
 
   assert (NULL != lhs.ptr && NULL != rhs.ptr);
@@ -204,14 +218,14 @@ struct octet_buffer xor_buffers (const struct octet_buffer lhs,
 
   int x = 0;
 
-  struct octet_buffer buf = make_buffer (rhs.len);
+  struct ci2c_octet_buffer buf = ci2c_make_buffer (rhs.len);
 
   for (x=0; x < rhs.len; x++)
     {
       buf.ptr[x] = lhs.ptr[x] ^ rhs.ptr[x];
     }
 
-  print_hex_string ("XOR", buf.ptr, buf.len);
+  ci2c_print_hex_string ("XOR", buf.ptr, buf.len);
 
   return buf;
 

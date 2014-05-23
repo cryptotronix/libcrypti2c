@@ -1,5 +1,19 @@
-## Libcrypti2c:
-## an example of using Automake and Libtool to build a shared library
+# Copyright (C) 2014 Cryptotronix, LLC.
+
+# This file is part of libcrypti2c.
+
+# libcrypti2c is free software: you can redistribute it and/or modify
+# it under the terms of the GNU Lesser General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# any later version.
+
+# libcrypti2c is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU Lesser General Public License for more details.
+
+# You should have received a copy of the GNU Lesser General Public License
+# along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
 
 ## Place generated object files (.o) into the same directory as their source
 ## files, in order to avoid collisions when non-recursive make is used.
@@ -13,6 +27,7 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 ## Add Guile libs
 libcrypti2c_@CRYPTI2C_API_VERSION@_la_CPPFLAGS = $(GUILE_CFLAGS)
 libcrypti2c_@CRYPTI2C_API_VERSION@_la_LIBADD = $(GUILE_LIBS)
+
 ## Define a libtool archive target "libcrypti2c-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTI2C_API_VERSION@ substituted into the generated Makefile at configure
 ## time.
@@ -47,7 +62,7 @@ libcrypti2c_@CRYPTI2C_API_VERSION@_la_LDFLAGS = -version-info $(CRYPTI2C_SO_VERS
 ## installation directory.  This only works if the directory hierarchy in the
 ## source tree matches the hierarchy at the install location, however.
 crypti2c_includedir = $(includedir)/crypti2c-$(CRYPTI2C_API_VERSION)
-nobase_crypti2c_include_HEADERS = crypti2c.h \
+nobase_crypti2c_include_HEADERS = libcrypti2c.h \
                                   crypti2c/util.h \
 				  crypti2c/log.h \
                                   crypti2c/crc.h \
