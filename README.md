@@ -7,7 +7,7 @@
 ## About
 
 
-`libcrypti2c` is a user space library for interfacing with embedded cryptographic devices on the I2C bus. It is a small collection of utility functions that handling:
+`libcrypti2c` is a library for interfacing with embedded cryptographic devices on the I2C bus. It is a small collection of utility functions that handling:
 
 - memory allocation (wrappers that zero out allocated memory)
 - very basic logging
@@ -25,3 +25,7 @@ Currently the library is design for the following devices:
 # Status
 
 This software is currently in beta.
+
+# Post install
+
+After installing, don't forget to run `ldconfig`.
