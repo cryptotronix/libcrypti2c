@@ -1,6 +1,6 @@
 # Cryptotronix libcrypti2c
 
-[!LGPLv3(https://www.gnu.org/graphics/lgplv3-147x51.png)]
+![LGPLv3](https://www.gnu.org/graphics/lgplv3-147x51.png)
 
 [![Build Status](https://travis-ci.org/cryptotronix/libcrypti2c.png)](https://travis-ci.org/cryptotronix/libcrypti2c)
 
