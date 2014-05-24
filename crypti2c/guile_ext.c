@@ -20,6 +20,8 @@
 #include <libguile.h>
 #include "../libcrypti2c.h"
 
+#warning GUILE EXTENSIONS NOT YET TESTED
+
 SCM send_recv_wrapper (SCM scm_fd, SCM scm_data_to_send, SCM scm_recv_len,
                        SCM wait_time)
 {
@@ -49,12 +51,15 @@ j0_wrapper (SCM x)
 }
 
 void
+acquire_bus_wrapper (SCM fd, SCM addr)
+{
+  ci2c_acquire_bus (scm_from_int (fd), scm_from_uint8 (addr));
+}
+
+void
 init_crypti2c (void *unused)
 {
-    scm_c_define_gsubr ("j0", 1, 0, 0, j0_wrapper);
-    scm_c_export ("j0", NULL);
-
-    //    scm_c_define_gsubr ("i2c-acquire", 2, 0, 0, acquire_bus_wrapper);
+    scm_c_define_gsubr ("i2c-acquire", 2, 0, 0, acquire_bus_wrapper);
     scm_c_export ("i2c-acquire", NULL);
 }
 

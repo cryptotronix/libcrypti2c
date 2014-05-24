@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: @PACKAGE_NAME@
-Description: Example library.
+Description: Library for communicating with I2C cryptographic devices.
 Version: @PACKAGE_VERSION@
 URL: @PACKAGE_URL@
 Libs: -L${libdir} -lcrypti2c-@CRYPTI2C_API_VERSION@

@@ -35,8 +35,8 @@ LT_INIT([disable-static])
 # For information on how to properly maintain the library version information,
 # refer to the libtool manual, section "Updating library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([CRYPTI2C_SO_VERSION], [1:2:0])
-AC_SUBST([CRYPTI2C_API_VERSION], [1.0])
+AC_SUBST([CRYPTI2C_SO_VERSION], [0:0:0])
+AC_SUBST([CRYPTI2C_API_VERSION], [0.1])
 
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.
