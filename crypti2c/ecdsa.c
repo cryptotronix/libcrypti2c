@@ -51,7 +51,7 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
 
   gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
 
-  if (ci2c_is_debug)
+  if (ci2c_is_debug())
     gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1u , 0);
 
   assert (65 == pub_key.len); /* +1 for uncompressed point tag */
