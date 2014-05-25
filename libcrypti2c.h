@@ -28,5 +28,6 @@
 #include "crypti2c/crc.h"
 #include "crypti2c/command_adaptation.h"
 #include "crypti2c/hash.h"
+#include "crypti2c/i2c.h"
 
 #endif // LIBCRYPTI2C_H_

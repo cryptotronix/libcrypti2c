@@ -59,4 +59,23 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len);
 bool
 ci2c_idle(int fd);
 
+/**
+ * Sets up the device for communication.
+ *
+ * @param bus The I2C bus.
+ * @param addr The address of the device
+ *
+ * @return An open file descriptor or -1 on error
+ */
+int
+ci2c_atmel_setup(const char *bus, unsigned int addr);
+
+/**
+ * Sleeps the device and closes the file descriptor.
+ *
+ * @param fd The open file descriptor
+ *
+ */
+void
+ci2c_atmel_teardown(int fd);
 #endif /* I2C_H */

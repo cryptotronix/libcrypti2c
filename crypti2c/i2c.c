@@ -155,7 +155,8 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len)
 
 }
 
-int hashlet_setup(const char *bus, unsigned int addr)
+int
+ci2c_atmel_setup(const char *bus, unsigned int addr)
 {
     int fd = ci2c_setup(bus);
 
@@ -167,7 +168,8 @@ int hashlet_setup(const char *bus, unsigned int addr)
 
 }
 
-void hashlet_teardown(int fd)
+void
+ci2c_atmel_teardown(int fd)
 {
     ci2c_sleep_device(fd);
 
