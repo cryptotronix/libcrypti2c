@@ -50,7 +50,8 @@ libcrypti2c_@CRYPTI2C_API_VERSION@_la_SOURCES =	crypti2c/util.c \
 						crypti2c/command_adaptation.c \
 						crypti2c/i2c.c \
 						crypti2c/guile_ext.c \
-						crypti2c/hash.c
+						crypti2c/hash.c \
+						crypti2c/ecdsa.c
 
 ## Instruct libtool to include ABI version information in the generated shared
 ## library file (.so).  The library ABI version is defined in configure.ac, so
@@ -70,7 +71,8 @@ nobase_crypti2c_include_HEADERS = libcrypti2c.h \
                                   crypti2c/command_adaptation.h \
 			          crypti2c/i2c.h \
 			          crypti2c/guile_ext.h \
-				  crypti2c/hash.h
+				  crypti2c/hash.h \
+				  crypti2c/ecdsa.h
 
 ## The generated configuration header is installed in its own subdirectory of
 ## $(libdir).  The reason for this is that the configuration information put

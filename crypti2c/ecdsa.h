@@ -18,17 +18,18 @@
  *
  */
 
-#ifndef LIBCRYPTI2C_H_
-#define LIBCRYPTI2C_H_
+#ifndef ECDSA_H
+#define ECDSA_H
 
-//This is a main header - it includes everything else.
+#include <stdio.h>
+#include "util.h"
+#include "log.h"
 
-#include "crypti2c/util.h"
-#include "crypti2c/log.h"
-#include "crypti2c/crc.h"
-#include "crypti2c/command_adaptation.h"
-#include "crypti2c/hash.h"
-#include "crypti2c/i2c.h"
-#include "crypti2c/ecdsa.h"
 
-#endif // LIBCRYPTI2C_H_
+bool
+ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
+                        struct ci2c_octet_buffer signature,
+                        struct ci2c_octet_buffer sha256_digest);
+
+
+#endif /* ECDSA_H */
