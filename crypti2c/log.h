@@ -41,5 +41,13 @@ CI2C_LOG(enum CI2C_LOG_LEVEL, const char *format, ...);
 void
 ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
 
+/**
+ * Returns true if debug (most verbose log level) is set.
+ *
+ *
+ * @return True if debug is enabled.
+ */
+bool
+ci2c_is_debug ();
 
 #endif /* LOG_H */

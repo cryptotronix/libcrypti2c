@@ -70,3 +70,9 @@ ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len)
   printf("\n");
 
 }
+
+bool
+ci2c_is_debug ()
+{
+  return (DEBUG == CURRENT_LOG_LEVEL) ? true : false;
+}

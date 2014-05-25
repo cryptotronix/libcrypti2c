@@ -27,6 +27,10 @@
 
 void
 ci2c_print_sexp (gcry_sexp_t to_print) {
+
+  if (!ci2c_is_debug)
+    return;
+
   const int DEBUG_MAX_SIZE = 1024;
   char * debug = malloc (DEBUG_MAX_SIZE);
   memset (debug, DEBUG_MAX_SIZE, 0);
@@ -47,7 +51,8 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
 
   gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
 
-  gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1u , 0);
+  if (ci2c_is_debug)
+    gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1u , 0);
 
   assert (65 == pub_key.len); /* +1 for uncompressed point tag */
   assert (64 == signature.len);
@@ -69,10 +74,7 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
 
   ci2c_print_sexp (g_pub_key);
 
-
   assert (0 == rc);
-  CI2C_LOG (DEBUG, "built pub key");
-
 
   rc = gcry_sexp_build (&g_digest, NULL,
                         "(data (flags raw)\n"
@@ -89,13 +91,15 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
                         32, signature.ptr + 32);
 
   assert (0 == rc);
-  CI2C_LOG (DEBUG, "built signature");
 
   ci2c_print_sexp( g_sig );
 
   rc = gcry_pk_verify (g_sig, g_digest, g_pub_key);
   CI2C_LOG (DEBUG, "verify complete");
-  CI2C_LOG (DEBUG, "gcry_pk_verify failed: %s", gpg_strerror (rc));
+  if (0 != rc)
+    CI2C_LOG (DEBUG, "gcry_pk_verify failed: %s", gpg_strerror (rc));
+  else
+    CI2C_LOG (DEBUG, "gcry_pk_verify success");
 
   gcry_sexp_release (g_sig);
   gcry_sexp_release (g_digest);
