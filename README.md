@@ -1,7 +1,5 @@
 # Cryptotronix libcrypti2c
 
-![LGPLv3](https://www.gnu.org/graphics/lgplv3-147x51.png)
-
 [![Build Status](https://travis-ci.org/cryptotronix/libcrypti2c.png)](https://travis-ci.org/cryptotronix/libcrypti2c)
 
 ## About
@@ -13,19 +11,24 @@
 - very basic logging
 - i2c bus acquisition
 - crc
-- Guile extensions for interactive i2c programming
+- Guile extensions for interactive i2c programming (in progress).
+
+It relies on [libgcrypt](https://www.gnu.org/software/libgcrypt/) for all cryptographic primitives.
 
 # Supported Device
 
-Currently the library is design for the following devices:
+Currently the library is designed for the following devices:
 
-- Atmel ATSHA204
-- Atmel ECC108
+- [Atmel ATSHA204](http://www.atmel.com/devices/atsha204.aspx)
+- [Atmel ECC108](http://www.atmel.com/devices/atecc108.aspx)
 
 # Status
 
-This software is currently in beta.
+This software is currently in ***ALPHA***. Expect numerous changes to the ABI.
 
 # Post install
 
 After installing, don't forget to run `ldconfig`.
+
+
+![LGPLv3](https://www.gnu.org/graphics/lgplv3-147x51.png)
