@@ -225,7 +225,7 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
 
   if (read_bytes == recv_buf_len && tmp[0] == STATUS_RSP)
   {
-      ci2c_print_hex_string ("Status RSP", tmp, tmp[0]);
+      ci2c_print_hex_string ("Status RSP", tmp, STATUS_RSP);
       status = get_status_response (tmp);
       CI2C_LOG (DEBUG, status_to_string (status));
       CI2C_LOG (DEBUG, "Copying %d into buf", tmp[1]);
@@ -238,7 +238,9 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
     {
       ci2c_print_hex_string ("Received RSP", tmp, recv_buf_len);
 
-      crc_valid = ci2c_is_crc_16_valid (tmp, tmp[0] - CI2C_CRC_16_LEN, tmp + crc_offset);
+      crc_valid = ci2c_is_crc_16_valid (tmp,
+                                        recv_buf_len - CI2C_CRC_16_LEN,
+                                        tmp + crc_offset);
 
       if (true == crc_valid)
         {
