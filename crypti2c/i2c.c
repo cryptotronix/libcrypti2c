@@ -91,7 +91,7 @@ ci2c_wakeup(int fd)
 
           CI2C_LOG(DEBUG, "%s", "Device is awake.");
           // Using I2C Read
-          if (read(fd,buf,sizeof(buf)) <= 0)
+          if (read(fd,buf,sizeof(buf)) != 4)
             {
               /* ERROR HANDLING: i2c transaction failed */
               perror("Failed to read from the i2c bus.\n");
