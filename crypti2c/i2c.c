@@ -137,7 +137,7 @@ ci2c_idle(int fd)
 }
 
 ssize_t
-ci2c_write(int fd, unsigned char *buf, unsigned int len)
+ci2c_write(int fd, const unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);
 

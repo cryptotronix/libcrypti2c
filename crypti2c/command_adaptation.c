@@ -78,14 +78,23 @@ ci2c_process_command (int fd, struct Command_ATSHA204 *c,
 
   c_len = ci2c_serialize_command (c, &serialized);
 
-  return ci2c_send_and_receive (fd, serialized, c_len, rec_buf, recv_len,
-                           &c->exec_time);
+  enum CI2C_STATUS_RESPONSE rsp = ci2c_send_and_receive (fd,
+                                                         serialized,
+                                                         c_len,
+                                                         rec_buf,
+                                                         recv_len,
+                                                         &c->exec_time);
+
+  ci2c_free_wipe (serialized, c_len);
+
+  return rsp;
+
 
 }
 
 enum CI2C_STATUS_RESPONSE
 ci2c_send_and_receive (int fd,
-                       uint8_t *send_buf,
+                       const uint8_t *send_buf,
                        unsigned int send_buf_len,
                        uint8_t *recv_buf,
                        unsigned int recv_buf_len,
@@ -109,7 +118,9 @@ ci2c_send_and_receive (int fd,
     {
       ci2c_print_hex_string ("Sending", send_buf, send_buf_len);
 
-      result = ci2c_write (fd,send_buf,send_buf_len);
+      result = ci2c_write (fd,
+                           send_buf,
+                           send_buf_len);
 
       if (result > 1)
         {

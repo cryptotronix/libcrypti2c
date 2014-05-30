@@ -63,7 +63,7 @@ ci2c_process_command (int fd,
 
 enum CI2C_STATUS_RESPONSE
 ci2c_send_and_receive (int fd,
-                       uint8_t *send_buf,
+                       const uint8_t *send_buf,
                        unsigned int send_buf_len,
                        uint8_t *recv_buf,
                        unsigned int recv_buf_len,

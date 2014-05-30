@@ -44,7 +44,7 @@ int
 ci2c_sleep_device (int fd);
 
 ssize_t
-ci2c_write(int fd, unsigned char *buf, unsigned int len);
+ci2c_write(int fd, const unsigned char *buf, unsigned int len);
 
 ssize_t
 ci2c_read(int fd, unsigned char *buf, unsigned int len);
