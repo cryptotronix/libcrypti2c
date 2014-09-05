@@ -21,7 +21,11 @@
 #ifndef CRYPTI2C_GUILE_EXT_H_
 #define CRYPTI2C_GUILE_EXT_H_
 
-//This is a main header - it includes everything else.
-
+/**
+ * The main initialization function for the guile extension.
+ *
+ */
+void
+init_crypti2c (void);
 
 #endif // EXAMPLE_H_

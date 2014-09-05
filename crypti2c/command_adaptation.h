@@ -78,4 +78,14 @@ ci2c_read_and_validate (int fd,
                         uint8_t *buf,
                         unsigned int len);
 
+/**
+ * Returns a string for the enumerated response code. Useful for
+ * debugging and logging functions.
+ *
+ * @param rsp The response code.
+ *
+ * @return A pointer to a static string.
+ */
+const char*
+status_to_string (enum CI2C_STATUS_RESPONSE rsp);
 #endif /* COMMAND_ADAPTATION_H */

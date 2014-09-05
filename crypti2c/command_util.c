@@ -25,7 +25,7 @@
 #include <assert.h>
 
 struct Command_ATSHA204
-make_command ()
+make_command (void)
 {
     struct Command_ATSHA204 c = { .command = 0x03, .count = 0, .opcode = 0,
                                   .param1 = 0,
@@ -236,7 +236,7 @@ slot_to_addr (enum DATA_ZONE zone, uint8_t slot)
     switch (zone)
     {
     case DATA_ZONE:
-        assert (0 <= slot && slot <= 15);
+        assert (slot <= 15);
         break;
 
     case OTP_ZONE:
@@ -244,7 +244,7 @@ slot_to_addr (enum DATA_ZONE zone, uint8_t slot)
         break;
 
     case CONFIG_ZONE:
-        assert (0 <= slot && slot <= 2);
+        assert (slot <= 2);
         break;
 
     default:

@@ -43,6 +43,18 @@ ci2c_build_random_cmd (bool update_seed);
 struct ci2c_octet_buffer
 get_random (int fd, bool update_seed);
 
+
+/**
+ * Builds the command structure for a read4 command.
+ *
+ * @param zone The zone from which to read.
+ * @param addr The desired read address.
+ *
+ * @return The populated command structure.
+ */
+struct Command_ATSHA204
+ci2c_build_read4_cmd (enum DATA_ZONE zone, uint8_t addr);
+
 /**
  * Read four bytes from the device.
  *
@@ -191,14 +203,6 @@ get_otp_zone (int fd);
  */
 bool
 lock (int fd, enum DATA_ZONE zone, uint16_t crc);
-
-/**
- * Print the command structure to the debug log source.
- *
- * @param c The command to be sent.
- */
-void
-print_command (struct Command_ATSHA204 *c);
 
 /**
  * Retrieve the device's serial number

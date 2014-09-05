@@ -48,7 +48,7 @@ struct ci2c_octet_buffer
 get_random (int fd, bool update_seed)
 {
   uint8_t *random = NULL;
-  struct ci2c_octet_buffer buf = {};
+  struct ci2c_octet_buffer buf = {0, 0};
   random = ci2c_malloc_wipe (RANDOM_RSP_LENGTH);
 
   struct Command_ATSHA204 c = ci2c_build_random_cmd (update_seed);
@@ -230,8 +230,10 @@ ci2c_build_write32_cmd (enum DATA_ZONE zone, uint8_t addr,
 }
 
 bool
-ci2c_write32_cmd (int fd, enum DATA_ZONE zone, uint8_t addr,
-                  struct ci2c_octet_buffer buf, struct ci2c_octet_buffer *mac)
+ci2c_write32_cmd (int fd,
+                  uint8_t addr,
+                  struct ci2c_octet_buffer buf,
+                  struct ci2c_octet_buffer *mac)
 {
 
   bool status = false;
@@ -303,18 +305,18 @@ ci2c_is_locked (int fd, enum DATA_ZONE zone)
 bool
 ci2c_is_config_locked (int fd)
 {
-  return is_locked (fd, CONFIG_ZONE);
+  return ci2c_is_locked (fd, CONFIG_ZONE);
 }
 
 bool
 ci2c_is_data_locked (int fd)
 {
-  return is_locked (fd, DATA_ZONE);
+  return ci2c_is_locked (fd, DATA_ZONE);
 }
 
 
 struct ci2c_octet_buffer
-get_config_zone (fd)
+get_config_zone (int fd)
 {
   const unsigned int SIZE_OF_CONFIG_ZONE = 128;
   const unsigned int NUM_OF_WORDS = SIZE_OF_CONFIG_ZONE / 4;
@@ -336,7 +338,7 @@ get_config_zone (fd)
 }
 
 struct ci2c_octet_buffer
-get_otp_zone (fd)
+get_otp_zone (int fd)
 {
     const unsigned int SIZE_OF_OTP_ZONE = 64;
     const unsigned int SIZE_OF_READ = 32;
@@ -380,7 +382,7 @@ lock (int fd, enum DATA_ZONE zone, uint16_t crc)
   uint8_t response;
   bool result = false;
 
-  if (is_locked (fd, zone))
+  if (ci2c_is_locked (fd, zone))
     return true;
 
   memcpy (param2, &crc, sizeof (param2));
@@ -466,7 +468,7 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
   uint8_t nulls[SIZE_OF_WRITE];
   uint8_t part1[SIZE_OF_WRITE];
   uint8_t part2[SIZE_OF_WRITE];
-  struct ci2c_octet_buffer buf ={};
+  struct ci2c_octet_buffer buf = {0,0};
   ci2c_wipe (nulls, SIZE_OF_WRITE);
   ci2c_wipe (part1, SIZE_OF_WRITE);
   ci2c_wipe (part2, SIZE_OF_WRITE);

@@ -162,4 +162,15 @@ ci2c_copy_to_buffer (struct ci2c_octet_buffer buf,
 struct ci2c_octet_buffer
 ci2c_xor_buffers (const struct ci2c_octet_buffer lhs,
                   const struct ci2c_octet_buffer rhs);
+
+/**
+ * Convert a char into a "byte".
+ *
+ * @param c The char to convert
+ *
+ * @return An unsigned int representing the char. Will return UINT_MAX
+ * on error.
+ */
+unsigned int
+ci2c_c2b (char c);
 #endif /* UTIL_H */

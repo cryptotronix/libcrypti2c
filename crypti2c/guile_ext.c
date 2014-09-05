@@ -33,9 +33,10 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include "log.h"
+#include "guile_ext.h"
 
 SCM
-open_device ()
+open_device (void)
 {
 
   int fd;
@@ -69,7 +70,7 @@ open_device ()
 void
 copy_to_bytevector (const uint8_t *src, unsigned int len, SCM bv)
 {
-  int x = 0;
+  unsigned int x = 0;
 
   assert (SCM_BYTEVECTOR_LENGTH (bv) == len);
 
@@ -115,7 +116,7 @@ build_random_cmd_wrapper (SCM bool_obj)
 }
 
 void
-init_crypti2c (void *unused)
+init_crypti2c (void)
 {
     scm_c_define_gsubr ("ci2c-build-random", 1, 0, 0, build_random_cmd_wrapper);
     scm_c_define_gsubr ("ci2c-open-device", 0, 0, 0, open_device);

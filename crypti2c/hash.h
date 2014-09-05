@@ -61,4 +61,19 @@ ci2c_verify_hash_defaults (struct ci2c_octet_buffer challenge,
                            struct ci2c_octet_buffer challenge_rsp,
                            struct ci2c_octet_buffer key,
                            unsigned int key_slot);
+
+/**
+ * Copies the src data to the destination at the offset and returns
+ * an incremented offset.
+ *
+ * @param dst The destination buffer.
+ * @param src The source buffer.
+ * @param src_len The length of the src data
+ * @param offset The offset in the destination, to which one should copy
+ *
+ * @return The updated offset
+ */
+unsigned int
+copy_over (uint8_t *dst, const uint8_t *src, unsigned int src_len,
+           unsigned int offset);
 #endif /* HASH_H */

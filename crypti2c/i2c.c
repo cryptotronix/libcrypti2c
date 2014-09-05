@@ -68,7 +68,6 @@ bool
 ci2c_wakeup(int fd)
 {
 
-  uint32_t wakeup = 0;
   uint8_t wup[] = {0, 0};
   unsigned char buf[4] = {0};
   bool awake = false;

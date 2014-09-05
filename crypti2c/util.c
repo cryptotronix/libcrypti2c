@@ -69,11 +69,11 @@ ci2c_reverse_bits_in_byte(uint8_t b)
 struct ci2c_octet_buffer
 ci2c_make_buffer(unsigned int len)
 {
-    struct ci2c_octet_buffer b = {};
-    b.len = len;
-    b.ptr = ci2c_malloc_wipe(len);
+  struct ci2c_octet_buffer b = {0,0};
+  b.len = len;
+  b.ptr = ci2c_malloc_wipe(len);
 
-    return b;
+  return b;
 }
 
 
@@ -136,7 +136,7 @@ ci2c_ascii_hex_2_bin (const char* hex,
     {
       result = ci2c_make_buffer (len / 2);
 
-      int x;
+      unsigned int x;
 
       bool ishex = true;
       for (x=0; x<len && ishex; x++)
@@ -216,7 +216,7 @@ ci2c_xor_buffers (const struct ci2c_octet_buffer lhs,
   assert (NULL != lhs.ptr && NULL != rhs.ptr);
   assert (0 != rhs.len && lhs.len == rhs.len);
 
-  int x = 0;
+  unsigned int x = 0;
 
   struct ci2c_octet_buffer buf = ci2c_make_buffer (rhs.len);
 

@@ -28,6 +28,7 @@
 #include <assert.h>
 #include "util.h"
 #include "log.h"
+#include "command_util.h"
 
 const char*
 status_to_string (enum CI2C_STATUS_RESPONSE rsp)

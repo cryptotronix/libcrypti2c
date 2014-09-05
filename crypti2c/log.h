@@ -48,6 +48,6 @@ ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
  * @return True if debug is enabled.
  */
 bool
-ci2c_is_debug ();
+ci2c_is_debug (void);
 
 #endif /* LOG_H */

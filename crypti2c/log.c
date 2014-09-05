@@ -54,7 +54,7 @@ ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len)
   if (CURRENT_LOG_LEVEL < DEBUG)
     return;
 
-  int i;
+  unsigned int i;
 
   assert(NULL != str);
   assert(NULL != hex);
@@ -72,7 +72,7 @@ ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len)
 }
 
 bool
-ci2c_is_debug ()
+ci2c_is_debug (void)
 {
   return (DEBUG == CURRENT_LOG_LEVEL) ? true : false;
 }

@@ -28,7 +28,7 @@
 void
 ci2c_print_sexp (gcry_sexp_t to_print) {
 
-  if (!ci2c_is_debug)
+  if (!ci2c_is_debug())
     return;
 
   const int DEBUG_MAX_SIZE = 1024;

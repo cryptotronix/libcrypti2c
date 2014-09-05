@@ -110,7 +110,7 @@ enum DATA_ZONE
 
 
 struct Command_ATSHA204
-make_command ();
+make_command (void);
 
 struct Command_ATSHA204
 build_command (uint8_t opcode,
@@ -121,4 +121,77 @@ build_command (uint8_t opcode,
                unsigned int sec,
                unsigned long nano);
 
+/**
+ * Print the command structure to the debug log source.
+ *
+ * @param c The command to be sent.
+ */
+void
+print_command (struct Command_ATSHA204 *c);
+
+/**
+ * Returns the status, as an enumeration, from the response buffer
+ *
+ * @param rsp The full response buffer
+ *
+ * @return The converted enumeration
+ */
+enum CI2C_STATUS_RESPONSE
+get_status_response(const uint8_t *rsp);
+
+/**
+ * Sets the param1 field in the command structure.
+ *
+ * @param c The Command structure
+ * @param param1 The single byte parameter 1 field.
+ */
+void set_param1 (struct Command_ATSHA204 *c, uint8_t param1);
+
+/**
+ * Sets the param2 field in the command structure. It is a two byte
+ * field, which is *little endian*.
+ *
+ * @param c The command structure
+ * @param param2 The two byte array to set.
+ */
+void set_param2 (struct Command_ATSHA204 *c, uint8_t *param2);
+
+/**
+ * Sets the opcode field for the command
+ *
+ * @param c The Command structure
+ * @param opcode The byte containing the opcode
+ */
+void set_opcode (struct Command_ATSHA204 *c, uint8_t opcode);
+
+/**
+ * Sets the data field for the command. The caller must manage the
+ * memory. This function will not attempt to free or allocate memory.
+ *
+ * @param c The command structure
+ * @param data The pointer to the data to set.
+ * @param len The length of the data to set.
+ */
+void set_data (struct Command_ATSHA204 *c, uint8_t *data, uint8_t len);
+
+/**
+ * Sets the expected execution time of the command. This is the time
+ * to wait for a response.
+ *
+ * @param c The command structure
+ * @param sec The amount of time in seconds.
+ * @param nano The amount of time in nanoseconds.
+ */
+void set_execution_time (struct Command_ATSHA204 *c, unsigned int sec,
+                         unsigned long nano);
+
+/**
+ * Convert the zone into the appropriate bit mask.
+ *
+ * @param zone the zone enum
+ *
+ * @return A byte with the appropriate bit field set
+ */
+uint8_t
+set_zone_bits (enum DATA_ZONE zone);
 #endif

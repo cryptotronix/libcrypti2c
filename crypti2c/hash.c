@@ -79,7 +79,7 @@ ci2c_sha256_buffer (struct ci2c_octet_buffer data)
   }
 
 unsigned int
-copy_over(uint8_t *dst, const uint8_t *src, unsigned int src_len,
+copy_over (uint8_t *dst, const uint8_t *src, unsigned int src_len,
           unsigned int offset)
 {
   memcpy(dst + offset, src, src_len);
