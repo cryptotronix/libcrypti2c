@@ -18,47 +18,108 @@
  *
  */
 #include <libguile.h>
-#include "../libcrypti2c.h"
+#include "atsha204_command.h"
+#include <assert.h>
+#include "i2c.h"
+#include "crc.h"
+#include <errno.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <linux/i2c-dev.h>
+#include <sys/ioctl.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include "log.h"
 
-#warning GUILE EXTENSIONS NOT YET TESTED
-
-/* SCM send_recv_wrapper (SCM scm_fd, SCM scm_data_to_send, SCM scm_recv_len, */
-/*                        SCM wait_time) */
-/* { */
-
-/*     int fd = scm_to_int (scm_fd); */
-/*     uint8_t * buf = SCM_BYTEVECTOR_CONTENTS (scm_data_to_send); */
-/*     size_t len = SCM_BYTEVECTOR_LENGTH (scm_data_to_send); */
-/*     int recv_len = scm_to_int (scm_recv_len); */
-/*     SCM scm_rsp = scm_c_make_bytevector (recv_len); */
-/*     struct timespec t = {}; */
-
-/*     enum CI2C_STATUS_RESPONSE rsp = RSP_COMM_ERROR; */
-
-/*     rsp = ci2c_send_and_receive (fd, buf, len, */
-/*                                  SCM_BYTEVECTOR_CONTENTS (scm_rsp), */
-/*                                  recv_len, */
-/*                                  &t); */
-
-/*     return scm_cons (scm_from_int (rsp), scm_rsp); */
-
-/* } */
-
-void
-acquire_bus_wrapper (SCM fd, SCM addr)
+SCM
+open_device ()
 {
-  ci2c_acquire_bus (scm_from_int (fd), scm_from_uint8 (addr));
+
+  int fd;
+  char *bus = "/dev/i2c-1";
+  uint8_t addr = 0x42;
+
+  if ((fd = open(bus, O_RDWR)) < 0)
+    {
+      CI2C_LOG (DEBUG, "%s", "Failed to open bus.");
+      scm_throw (scm_from_locale_symbol ("I2C_ERROR"), NULL);
+    }
+
+  if (ioctl(fd, I2C_SLAVE, addr) < 0)
+    {
+      CI2C_LOG (DEBUG, "%s", "Failed set slave address.");
+      scm_throw (scm_from_locale_symbol ("I2C_ERROR"), NULL);
+    }
+
+  return scm_fdopen (scm_from_int(fd),
+                     scm_from_locale_string("r+b"));
+}
+
+
+/**
+ * Fills the BV from src and len
+ *
+ * @param src The source buffer
+ * @param len The len, must match bv length
+ * @param bv The destination bytevector
+ */
+void
+copy_to_bytevector (const uint8_t *src, unsigned int len, SCM bv)
+{
+  int x = 0;
+
+  assert (SCM_BYTEVECTOR_LENGTH (bv) == len);
+
+  for (x = 0; x < len; x++)
+    {
+      scm_c_bytevector_set_x (bv, x, src[x]);
+    }
+
+}
+
+/**
+ * Serialize the command structure and return a bytevector
+ *
+ * @param c The command to serialize
+ *
+ * @return A serialized bytevector
+ */
+SCM
+command_to_bytevector (struct Command_ATSHA204 c)
+{
+  uint8_t c_len = 0;
+  uint8_t *serialized;
+
+  c_len = ci2c_serialize_command (&c, &serialized);
+
+  SCM bv = scm_c_make_bytevector (c_len);
+
+  copy_to_bytevector (serialized, c_len, bv);
+
+  ci2c_free_wipe (serialized, c_len);
+
+  return bv;
+}
+
+SCM
+build_random_cmd_wrapper (SCM bool_obj)
+{
+  bool update_seed = scm_is_true (bool_obj) ? true : false;
+
+  struct Command_ATSHA204 c = ci2c_build_random_cmd (update_seed);
+
+  return command_to_bytevector (c);
 }
 
 void
 init_crypti2c (void *unused)
 {
-    scm_c_define_gsubr ("i2c-acquire", 2, 0, 0, acquire_bus_wrapper);
-    scm_c_export ("i2c-acquire", NULL);
-}
+    scm_c_define_gsubr ("ci2c-build-random", 1, 0, 0, build_random_cmd_wrapper);
+    scm_c_define_gsubr ("ci2c-open-device", 0, 0, 0, open_device);
 
-void
-scm_init_crypti2c_module ()
-{
-    scm_c_define_module ("crypti2c", init_crypti2c, NULL);
+    scm_c_export ("ci2c-build-random", NULL);
+    scm_c_export ("ci2c-open-device", NULL);
 }
