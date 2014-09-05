@@ -22,7 +22,7 @@ AM_INIT_AUTOMAKE([1.10 -Wall no-define])
 AC_CONFIG_MACRO_DIR([m4])
 PKG_PROG_PKG_CONFIG
 # Guile Extensions
-PKG_CHECK_MODULES([GUILE], [guile-1.8])
+PKG_CHECK_MODULES([GUILE], [guile-2.0])
 
 #Check for lgcrypt
 have_gcrypt=no
