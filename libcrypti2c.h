@@ -30,5 +30,9 @@
 #include "crypti2c/hash.h"
 #include "crypti2c/i2c.h"
 #include "crypti2c/ecdsa.h"
+#include "crypti2c/atecc108_command.h"
+#include "crypti2c/atsha204_command.h"
+#include "crypti2c/command_util.h"
+
 
 #endif // LIBCRYPTI2C_H_

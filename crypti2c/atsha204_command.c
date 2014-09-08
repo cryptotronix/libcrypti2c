@@ -554,8 +554,8 @@ ci2c_get_device_state (int fd)
   bool data_locked;
   enum DEVICE_STATE state = STATE_FACTORY;
 
-  config_locked = is_config_locked (fd);
-  data_locked = is_data_locked (fd);
+  config_locked = ci2c_is_config_locked (fd);
+  data_locked = ci2c_is_data_locked (fd);
 
   if (!config_locked && !data_locked)
     state = STATE_FACTORY;

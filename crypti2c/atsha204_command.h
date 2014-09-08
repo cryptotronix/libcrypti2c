@@ -187,7 +187,7 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone);
  * @return True if the configuration zone is locked
  */
 bool
-is_config_locked (int fd);
+ci2c_is_config_locked (int fd);
 
 /**
  *
@@ -197,7 +197,7 @@ is_config_locked (int fd);
  * @return True if the data zone is locked
  */
 bool
-is_data_locked (int fd);
+ci2c_is_data_locked (int fd);
 
 /**
  * Returns the entire configuration zone.
@@ -284,7 +284,7 @@ enum DEVICE_STATE
  * @return The devie state
  */
 enum DEVICE_STATE
-get_device_state (int fd);
+ci2c_get_device_state (int fd);
 
 /**
  * Converts the slot number to the correct address byte

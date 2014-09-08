@@ -22,6 +22,7 @@
 #define ECDSA_H
 
 #include <stdio.h>
+#include <gcrypt.h>
 #include "util.h"
 #include "log.h"
 
@@ -46,4 +47,11 @@ void ci2c_hard_coded(void);
 struct ci2c_octet_buffer
 ci2c_add_uncompressed_point_tag (struct ci2c_octet_buffer q);
 
+/**
+ * Prints out the sexp to the logging facility.
+ *
+ * @param to_print The sexp to print.
+ */
+void
+ci2c_print_sexp (gcry_sexp_t to_print);
 #endif /* ECDSA_H */

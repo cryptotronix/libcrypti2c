@@ -21,7 +21,6 @@
 #include "config.h"
 
 #include <assert.h>
-#include <gcrypt.h>
 #include "ecdsa.h"
 #include "log.h"
 
