@@ -36,7 +36,7 @@ make_command (void)
 }
 
 
-void set_param1 (struct Command_ATSHA204 *c, uint8_t param1)
+void set_param1 (struct Command_ATSHA204 *c, const uint8_t param1)
 {
   assert (NULL != c);
 
@@ -44,7 +44,7 @@ void set_param1 (struct Command_ATSHA204 *c, uint8_t param1)
 
 }
 
-void set_param2 (struct Command_ATSHA204 *c, uint8_t *param2)
+void set_param2 (struct Command_ATSHA204 *c, const uint8_t *param2)
 {
   assert (NULL != c);
   assert (NULL != param2);
@@ -54,7 +54,7 @@ void set_param2 (struct Command_ATSHA204 *c, uint8_t *param2)
 
 }
 
-void set_opcode (struct Command_ATSHA204 *c, uint8_t opcode)
+void set_opcode (struct Command_ATSHA204 *c, const uint8_t opcode)
 {
   assert (NULL != c);
 
@@ -62,7 +62,8 @@ void set_opcode (struct Command_ATSHA204 *c, uint8_t opcode)
 
 }
 
-void set_data (struct Command_ATSHA204 *c, uint8_t *data, uint8_t len)
+void set_data (struct Command_ATSHA204 *c,
+               const uint8_t *data, const uint8_t len)
 {
   assert (NULL != c);
 
@@ -82,8 +83,8 @@ void set_data (struct Command_ATSHA204 *c, uint8_t *data, uint8_t len)
 
 }
 
-void set_execution_time (struct Command_ATSHA204 *c, unsigned int sec,
-                        unsigned long nano)
+void set_execution_time (struct Command_ATSHA204 *c, const unsigned int sec,
+                        const unsigned long nano)
 {
   assert (NULL != c);
   c->exec_time.tv_sec = sec;
@@ -206,7 +207,7 @@ get_status_response(const uint8_t *rsp)
 }
 
 uint8_t
-set_zone_bits (enum DATA_ZONE zone)
+set_zone_bits (const enum DATA_ZONE zone)
 {
     uint8_t z;
 
@@ -231,7 +232,7 @@ set_zone_bits (enum DATA_ZONE zone)
 }
 
 uint8_t
-slot_to_addr (enum DATA_ZONE zone, uint8_t slot)
+slot_to_addr (const enum DATA_ZONE zone, const uint8_t slot)
 {
     switch (zone)
     {
@@ -251,8 +252,10 @@ slot_to_addr (enum DATA_ZONE zone, uint8_t slot)
         assert (false);
     }
 
-    slot <<= 3;
+    uint8_t val = slot;
 
-    return slot;
+    val <<= 3;
+
+    return val;
 
 }

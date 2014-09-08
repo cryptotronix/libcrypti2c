@@ -47,15 +47,16 @@ ci2c_build_random_cmd (bool update_seed)
 struct ci2c_octet_buffer
 get_random (int fd, bool update_seed)
 {
-  uint8_t *random = NULL;
+  uint8_t *random_buf = NULL;
   struct ci2c_octet_buffer buf = {0, 0};
-  random = ci2c_malloc_wipe (RANDOM_RSP_LENGTH);
+  random_buf = ci2c_malloc_wipe (RANDOM_RSP_LENGTH);
 
   struct Command_ATSHA204 c = ci2c_build_random_cmd (update_seed);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, random, RANDOM_RSP_LENGTH))
+  if (RSP_SUCCESS == ci2c_process_command (fd, &c, random_buf,
+                                           RANDOM_RSP_LENGTH))
     {
-      buf.ptr = random;
+      buf.ptr = random_buf;
       buf.len = RANDOM_RSP_LENGTH;
     }
   else
@@ -95,7 +96,9 @@ read4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t *buf)
 
   struct Command_ATSHA204 c = ci2c_build_read4_cmd (zone, addr);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, (uint8_t *)buf, sizeof (uint32_t)))
+  if (RSP_SUCCESS == ci2c_process_command (fd,
+                                           &c,
+                                           (uint8_t *)buf, sizeof (uint32_t)))
     {
       result = true;
     }
@@ -186,10 +189,10 @@ write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
 }
 
 struct Command_ATSHA204
-ci2c_build_write32_cmd (enum DATA_ZONE zone, uint8_t addr,
-                        struct ci2c_octet_buffer buf,
-                        struct ci2c_octet_buffer *mac,
-                        struct ci2c_octet_buffer data)
+ci2c_build_write32_cmd (const enum DATA_ZONE zone,
+                        const uint8_t addr,
+                        const struct ci2c_octet_buffer buf,
+                        const struct ci2c_octet_buffer *mac)
 {
 
   assert (NULL != buf.ptr);
@@ -200,7 +203,7 @@ ci2c_build_write32_cmd (enum DATA_ZONE zone, uint8_t addr,
   uint8_t param2[2] = {0};
   uint8_t param1 = set_zone_bits (zone);
 
-
+  struct ci2c_octet_buffer data = {0,0};
 
   if (NULL != mac)
     data = ci2c_make_buffer (buf.len + mac->len);
@@ -222,7 +225,7 @@ ci2c_build_write32_cmd (enum DATA_ZONE zone, uint8_t addr,
     build_command (COMMAND_WRITE,
                    param1,
                    param2,
-                   (uint8_t *)&buf, sizeof (buf),
+                   data.ptr, data.len,
                    0, WRITE_AVG_EXEC);
 
   return c;
@@ -230,23 +233,20 @@ ci2c_build_write32_cmd (enum DATA_ZONE zone, uint8_t addr,
 }
 
 bool
-ci2c_write32_cmd (int fd,
-                  uint8_t addr,
-                  struct ci2c_octet_buffer buf,
-                  struct ci2c_octet_buffer *mac)
+ci2c_write32_cmd (const int fd,
+                  const uint8_t addr,
+                  const struct ci2c_octet_buffer buf,
+                  const struct ci2c_octet_buffer *mac)
 {
 
   bool status = false;
   uint8_t recv = 0;
 
-  struct ci2c_octet_buffer data = {0,0};
-
   struct Command_ATSHA204 c =
     ci2c_build_write32_cmd (COMMAND_WRITE,
                             addr,
                             buf,
-                            mac,
-                            data);
+                            mac);
 
   if (RSP_SUCCESS == ci2c_process_command (fd, &c, &recv, sizeof (recv)))
   {
@@ -255,8 +255,8 @@ ci2c_write32_cmd (int fd,
       status = true;
   }
 
-  if (NULL != data.ptr)
-    ci2c_free_octet_buffer (data);
+  if (NULL != c.data)
+    free (c.data);
 
   return status;
 }
@@ -486,22 +486,22 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
   buf.len = sizeof (nulls);
 
   /* Fill the OTP zone with blanks from their default FFFF */
-  success = write32 (fd, OTP_ZONE, 0, buf, NULL);
+  success = ci2c_write32_cmd (fd, 0, buf, NULL);
 
   if (success)
-    success = write32 (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
-                       buf, NULL);
+    success = ci2c_write32_cmd (fd, SIZE_OF_WRITE / sizeof (uint32_t),
+                                buf, NULL);
 
   /* Fill in the data */
   buf.ptr = part1;
   CI2C_LOG (DEBUG, "Writing: %s", buf.ptr);
   if (success)
-    success = write32 (fd, OTP_ZONE, 0, buf, NULL);
+    success = ci2c_write32_cmd (fd, 0, buf, NULL);
   buf.ptr = part2;
   CI2C_LOG (DEBUG, "Writing: %s", buf.ptr);
   if (success)
-    success = write32 (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
-                       buf, NULL);
+    success = ci2c_write32_cmd (fd, SIZE_OF_WRITE / sizeof (uint32_t),
+                                buf, NULL);
 
   /* Lastly, copy the OTP zone into one contiguous buffer.
      Ironically, the OTP can't be read while unlocked. */

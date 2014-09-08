@@ -22,6 +22,35 @@
 #define CRYPTI2C_GUILE_EXT_H_
 
 /**
+ * Fills the BV from src and len
+ *
+ * @param src The source buffer
+ * @param len The len, must match bv length
+ * @param bv The destination bytevector
+ */
+void
+copy_to_bytevector (const uint8_t *src, unsigned int len, SCM bv);
+
+/**
+ * Serialize the command structure and return a bytevector
+ *
+ * @param c The command to serialize
+ *
+ * @return A serialized bytevector
+ */
+SCM
+command_to_bytevector (struct Command_ATSHA204 c);
+
+/**
+ * Builds the random command.
+ *
+ * @param bool_obj #t if update seed is required.
+ *
+ * @return A bytevector representing the built command.
+ */
+SCM
+build_random_cmd_wrapper (SCM bool_obj);
+/**
  * The main initialization function for the guile extension.
  *
  */

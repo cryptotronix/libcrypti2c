@@ -74,7 +74,8 @@ ci2c_free_wipe(unsigned char* buf, unsigned int len);
  */
 bool
 ci2c_memcmp_octet_buffer (struct ci2c_octet_buffer lhs,
-                          struct ci2c_octet_buffer rhs);
+                          struct ci2c_octet_buffer rhs)
+  __attribute__ ((pure));
 
 /**
  * Created a malloc'd octet buffer.
@@ -95,7 +96,7 @@ void
 ci2c_free_octet_buffer(struct ci2c_octet_buffer buf);
 
 uint8_t
-ci2c_reverse_bits_in_byte(uint8_t b);
+ci2c_reverse_bits_in_byte(uint8_t b) __attribute__ ((const));
 
 /**
  * Converts an ASCII encoded Hex character string into binary.
@@ -172,5 +173,5 @@ ci2c_xor_buffers (const struct ci2c_octet_buffer lhs,
  * on error.
  */
 unsigned int
-ci2c_c2b (char c);
+ci2c_c2b (char c) __attribute__ ((const));
 #endif /* UTIL_H */

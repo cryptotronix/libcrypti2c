@@ -110,7 +110,7 @@ enum DATA_ZONE
 
 
 struct Command_ATSHA204
-make_command (void);
+make_command (void) __attribute__ ((const));
 
 struct Command_ATSHA204
 build_command (uint8_t opcode,
@@ -145,7 +145,7 @@ get_status_response(const uint8_t *rsp);
  * @param c The Command structure
  * @param param1 The single byte parameter 1 field.
  */
-void set_param1 (struct Command_ATSHA204 *c, uint8_t param1);
+void set_param1 (struct Command_ATSHA204 *c, const uint8_t param1);
 
 /**
  * Sets the param2 field in the command structure. It is a two byte
@@ -154,7 +154,7 @@ void set_param1 (struct Command_ATSHA204 *c, uint8_t param1);
  * @param c The command structure
  * @param param2 The two byte array to set.
  */
-void set_param2 (struct Command_ATSHA204 *c, uint8_t *param2);
+void set_param2 (struct Command_ATSHA204 *c, const uint8_t *param2);
 
 /**
  * Sets the opcode field for the command
@@ -162,7 +162,7 @@ void set_param2 (struct Command_ATSHA204 *c, uint8_t *param2);
  * @param c The Command structure
  * @param opcode The byte containing the opcode
  */
-void set_opcode (struct Command_ATSHA204 *c, uint8_t opcode);
+void set_opcode (struct Command_ATSHA204 *c, const uint8_t opcode);
 
 /**
  * Sets the data field for the command. The caller must manage the
@@ -172,7 +172,9 @@ void set_opcode (struct Command_ATSHA204 *c, uint8_t opcode);
  * @param data The pointer to the data to set.
  * @param len The length of the data to set.
  */
-void set_data (struct Command_ATSHA204 *c, uint8_t *data, uint8_t len);
+void set_data (struct Command_ATSHA204 *c,
+               const uint8_t *data,
+               const uint8_t len);
 
 /**
  * Sets the expected execution time of the command. This is the time
@@ -182,8 +184,9 @@ void set_data (struct Command_ATSHA204 *c, uint8_t *data, uint8_t len);
  * @param sec The amount of time in seconds.
  * @param nano The amount of time in nanoseconds.
  */
-void set_execution_time (struct Command_ATSHA204 *c, unsigned int sec,
-                         unsigned long nano);
+void set_execution_time (struct Command_ATSHA204 *c,
+                         const unsigned int sec,
+                         const unsigned long nano);
 
 /**
  * Convert the zone into the appropriate bit mask.
@@ -193,5 +196,18 @@ void set_execution_time (struct Command_ATSHA204 *c, unsigned int sec,
  * @return A byte with the appropriate bit field set
  */
 uint8_t
-set_zone_bits (enum DATA_ZONE zone);
+set_zone_bits (const enum DATA_ZONE zone)
+  __attribute__ ((pure));
+
+/**
+ * Serialize the slot byte based on the data zone and the logical slot number.
+ *
+ * @param zone The zone where this slot lives.
+ * @param slot The slot number.
+ *
+ * @return The serialized byte for this slot.
+ */
+uint8_t
+slot_to_addr (const enum DATA_ZONE zone, const uint8_t slot)
+  __attribute__ ((pure));
 #endif

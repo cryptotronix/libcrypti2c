@@ -87,5 +87,6 @@ ci2c_read_and_validate (int fd,
  * @return A pointer to a static string.
  */
 const char*
-status_to_string (enum CI2C_STATUS_RESPONSE rsp);
+status_to_string (enum CI2C_STATUS_RESPONSE rsp) __attribute__ ((pure));
+
 #endif /* COMMAND_ADAPTATION_H */

@@ -27,9 +27,41 @@
 #define CI2C_CRC_16_LEN  2
 #define CI2C_POLYNOMIAL 0x8005
 
+/**
+ * Calculates a CRC16 and compares it to the specified CRC. Returns
+ * true if the CRC matches.
+ *
+ * @param data The data on which a CRC is calculated.
+ * @param data_len The length of the data.
+ * @param crc A two byte CRC to which a new CRC will be compared.
+ *
+ * @return true if the CRC matches the calculated, otherwise false.
+ */
 bool ci2c_is_crc_16_valid (const uint8_t *data, unsigned int data_len,
-                      const uint8_t *crc);
+                           const uint8_t *crc) __attribute__ ((pure));
 
-uint16_t ci2c_calculate_crc16 (const uint8_t *p, unsigned int length);
+/**
+ * Calculates a two byte CRC over the specified data.
+ *
+ * @param p The pointer to the data on which a CRC will be calculated
+ * @param length The length of the data.
+ *
+ * @return The CRC16 over the data.
+ */
+uint16_t ci2c_calculate_crc16 (const uint8_t *p, unsigned int length)
+  __attribute__ ((pure));
+
+/* CRC Helper routines */
+uint16_t
+update_crc16_normal(const uint16_t table[], uint16_t crc, char c )
+  __attribute__ ((pure));
+
+uint16_t
+update_crc16_reflected(const uint16_t table[], uint16_t crc, char c )
+  __attribute__ ((pure));
+
+uint16_t
+update_crc16_8005( uint16_t crc, char c )
+  __attribute__ ((pure));
 
 #endif /* CRC_H */

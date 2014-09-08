@@ -71,6 +71,18 @@ bool
 read4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t *buf);
 
 /**
+ * Builds the command structure for the write 4 command.
+ *
+ * @param zone The zone to which to write.
+ * @param addr The address to which to write.
+ * @param buf The 4 byte buffer, which will be written.
+ *
+ * @return The populated command struct.
+ */
+struct Command_ATSHA204
+ci2c_build_write4_cmd (enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
+
+/**
  * Write four bytes to the device
  *
  * @param fd The open file descriptor
@@ -85,10 +97,25 @@ bool
 write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
 
 /**
+ * Builds the command structure for the write 32 command.
+ *
+ * @param zone The zone to which to write.
+ * @param addr The address to which to write.
+ * @param buf The data to write.
+ * @param mac An optional mac.
+ *
+ * @return The populated structure.
+ */
+struct Command_ATSHA204
+ci2c_build_write32_cmd (const enum DATA_ZONE zone,
+                        const uint8_t addr,
+                        const struct ci2c_octet_buffer buf,
+                        const struct ci2c_octet_buffer *mac);
+
+/**
  * Write 32 bytes to the device.
  *
  * @param fd The open file descriptor.
- * @param zone The data zone to which to write
  * @param addr The address to write to.
  * @param buf The buffer to write, passed by value.  Buf.ptr should be
  * a valid pointer to the data and buf.len must be 32.
@@ -97,8 +124,10 @@ write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
  * @return True if successful.
  */
 bool
-write32 (int fd, enum DATA_ZONE zone, uint8_t addr,
-         struct ci2c_octet_buffer buf, struct ci2c_octet_buffer *mac);
+ci2c_write32_cmd (const int fd,
+                  const uint8_t addr,
+                  const struct ci2c_octet_buffer buf,
+                  const struct ci2c_octet_buffer *mac);
 
 /**
  * Performs the nonce operation on the device.  Depending on the data
@@ -215,6 +244,16 @@ struct ci2c_octet_buffer
 get_serial_num (int fd);
 
 /**
+ * Builds the command structure for a read 32 command.
+ *
+ * @param zone The zone from which to read.
+ * @param addr The address from which to read.
+ *
+ * @return The populated command structure.
+ */
+struct Command_ATSHA204
+ci2c_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr);
+/**
  * Reads 32 Bytes from the address
  *
  * @param fd The open file descriptor
@@ -263,6 +302,37 @@ slot_to_addr (enum DATA_ZONE zone, uint8_t slot);
 bool
 load_nonce (int fd, struct ci2c_octet_buffer data);
 
+
+/**
+ * Returns a status if the specified zone is locked or not.
+ *
+ * @param fd The open file descriptor.
+ * @param zone The zone to test.
+ *
+ * @return True if locked.
+ */
+bool
+ci2c_is_locked (int fd, enum DATA_ZONE zone);
+
+/**
+ * Returns true if the configuration zone is locked.
+ *
+ * @param fd The open file descriptor.
+ *
+ * @return true or false.
+ */
+bool
+ci2c_is_config_locked (int fd);
+
+/**
+ * Returns true if the data section is locked.
+ *
+ * @param fd The open file descriptor.
+ *
+ * @return True if locked.
+ */
+bool
+ci2c_is_data_locked (int fd);
 
 
 #endif /* COMMAND_H */

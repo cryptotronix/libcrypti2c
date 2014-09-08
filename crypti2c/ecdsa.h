@@ -31,9 +31,9 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
                         struct ci2c_octet_buffer signature,
                         struct ci2c_octet_buffer sha256_digest);
 
-void ci2c_ecda_test();
+void ci2c_ecda_test(void);
 
-void ci2c_hard_coded();
+void ci2c_hard_coded(void);
 
 /**
  * Adds the uncompressed point format tag (0x04) to the Public Key

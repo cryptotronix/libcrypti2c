@@ -60,13 +60,6 @@ open_device (void)
 }
 
 
-/**
- * Fills the BV from src and len
- *
- * @param src The source buffer
- * @param len The len, must match bv length
- * @param bv The destination bytevector
- */
 void
 copy_to_bytevector (const uint8_t *src, unsigned int len, SCM bv)
 {
@@ -81,13 +74,6 @@ copy_to_bytevector (const uint8_t *src, unsigned int len, SCM bv)
 
 }
 
-/**
- * Serialize the command structure and return a bytevector
- *
- * @param c The command to serialize
- *
- * @return A serialized bytevector
- */
 SCM
 command_to_bytevector (struct Command_ATSHA204 c)
 {

@@ -121,7 +121,7 @@ die (const char *format, ...)
   exit (1);
 }
 
-void ci2c_ecda_test ()
+void ci2c_ecda_test (void)
 {
 
   assert (NULL != gcry_check_version (NULL));
@@ -235,7 +235,7 @@ void ci2c_ecda_test ()
 }
 
 
-void ci2c_hard_coded()
+void ci2c_hard_coded(void)
 {
 
   assert (NULL != gcry_check_version (NULL));

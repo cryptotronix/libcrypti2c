@@ -58,6 +58,9 @@ status_to_string (enum CI2C_STATUS_RESPONSE rsp)
     case RSP_NAK:
       rsp_string = "Response NAK";
       break;
+    case ECC_FAULT:
+      rsp_string = "ECC Fault";
+      break;
     default:
       assert (false);
 
@@ -159,7 +162,8 @@ ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
   assert (NULL != serialized);
 
   total_len = sizeof (c->command) + sizeof (c->count) +sizeof (c->opcode) +
-    sizeof (c->param1) + sizeof (c->param2) + c->data_len + sizeof (c->checksum);
+    sizeof (c->param1) + sizeof (c->param2) + c->data_len +
+    sizeof (c->checksum);
 
   crc_len = total_len - sizeof (c->command) - sizeof (c->checksum);
 
@@ -204,7 +208,7 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
   const int PAYLOAD_LEN_SIZE = 1;
   const int CRC_SIZE = 2;
   enum CI2C_STATUS_RESPONSE status = RSP_COMM_ERROR;
-  unsigned int recv_buf_len = 0;
+  int recv_buf_len = 0;
   bool crc_valid;
   unsigned int crc_offset;
   int read_bytes;
