@@ -101,12 +101,30 @@ build_random_cmd_wrapper (SCM bool_obj)
   return command_to_bytevector (c);
 }
 
+SCM
+crc_16_wrapper (SCM bv)
+{
+
+  SCM crc_bv = scm_c_make_bytevector (sizeof (uint16_t));
+
+  signed char* p = SCM_BYTEVECTOR_CONTENTS (bv);
+  size_t len = SCM_BYTEVECTOR_LENGTH (bv);
+  uint16_t crc = ci2c_calculate_crc16 (p, len);
+
+  memcpy (SCM_BYTEVECTOR_CONTENTS (crc_bv), &crc, sizeof (uint16_t));
+
+  return crc_bv;
+}
+
+
 void
 init_crypti2c (void)
 {
     scm_c_define_gsubr ("ci2c-build-random", 1, 0, 0, build_random_cmd_wrapper);
     scm_c_define_gsubr ("ci2c-open-device", 0, 0, 0, open_device);
+    scm_c_define_gsubr ("ci2c-crc16", 1, 0, 0, crc_16_wrapper);
 
     scm_c_export ("ci2c-build-random", NULL);
     scm_c_export ("ci2c-open-device", NULL);
+    scm_c_export ("ci2c-crc16", NULL);
 }

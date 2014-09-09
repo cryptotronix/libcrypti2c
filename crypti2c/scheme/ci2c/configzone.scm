@@ -3,7 +3,25 @@
   #:use-module (sxml simple)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
-  #:export (xml-file->config-bv))
+  #:export (xml-file->config-bv
+            ci2c-crc16))
+
+(load-extension "/usr/local/lib/libcrypti2c-0.1" "init_crypti2c")
+
+(define (is-ecc-content? x)
+  (if (equal? 'ECC108Content.01 x)
+      #t
+      #f))
+
+(define (get-ecc108-content sxmldata)
+  (let ([top-list (cdr sxmldata)])
+    (car (filter (lambda [x] (is-ecc-content? (car x))) top-list))))
+
+(define (get-config-data ecc108-content)
+  (caddr ecc108-content))
+
+(define (get-config-elements config-data)
+  (filter list? config-data))
 
 (define hexstring->intlist
   (lambda [hexstring]
@@ -16,7 +34,7 @@
 (define xml-file-port->config-bv
   (lambda [port]
     (let* ([top (xml->sxml port)]
-           [config (filter list? (caddr top))]
+           [config (get-config-elements (get-config-data (get-ecc108-content top)))]
            [byte-list (map (lambda [x] (elementstr->elementint x)) config)])
       (u8-list->bytevector (concatenate (map cadr byte-list))))))
 
