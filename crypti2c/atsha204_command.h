@@ -125,6 +125,7 @@ ci2c_build_write32_cmd (const enum DATA_ZONE zone,
  */
 bool
 ci2c_write32_cmd (const int fd,
+                  const enum DATA_ZONE zone,
                   const uint8_t addr,
                   const struct ci2c_octet_buffer buf,
                   const struct ci2c_octet_buffer *mac);

@@ -234,6 +234,7 @@ ci2c_build_write32_cmd (const enum DATA_ZONE zone,
 
 bool
 ci2c_write32_cmd (const int fd,
+                  const enum DATA_ZONE zone,
                   const uint8_t addr,
                   const struct ci2c_octet_buffer buf,
                   const struct ci2c_octet_buffer *mac)
@@ -243,7 +244,7 @@ ci2c_write32_cmd (const int fd,
   uint8_t recv = 0;
 
   struct Command_ATSHA204 c =
-    ci2c_build_write32_cmd (COMMAND_WRITE,
+    ci2c_build_write32_cmd (zone,
                             addr,
                             buf,
                             mac);
@@ -486,21 +487,21 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
   buf.len = sizeof (nulls);
 
   /* Fill the OTP zone with blanks from their default FFFF */
-  success = ci2c_write32_cmd (fd, 0, buf, NULL);
+  success = ci2c_write32_cmd (fd, OTP_ZONE, 0, buf, NULL);
 
   if (success)
-    success = ci2c_write32_cmd (fd, SIZE_OF_WRITE / sizeof (uint32_t),
+    success = ci2c_write32_cmd (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
                                 buf, NULL);
 
   /* Fill in the data */
   buf.ptr = part1;
   CI2C_LOG (DEBUG, "Writing: %s", buf.ptr);
   if (success)
-    success = ci2c_write32_cmd (fd, 0, buf, NULL);
+    success = ci2c_write32_cmd (fd, OTP_ZONE, 0, buf, NULL);
   buf.ptr = part2;
   CI2C_LOG (DEBUG, "Writing: %s", buf.ptr);
   if (success)
-    success = ci2c_write32_cmd (fd, SIZE_OF_WRITE / sizeof (uint32_t),
+    success = ci2c_write32_cmd (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
                                 buf, NULL);
 
   /* Lastly, copy the OTP zone into one contiguous buffer.
