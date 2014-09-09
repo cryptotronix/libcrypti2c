@@ -4,7 +4,8 @@
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
   #:export (xml-file->config-bv
-            ci2c-crc16))
+            ci2c-crc16
+            bytevector->hex-string))
 
 (load-extension "/usr/local/lib/libcrypti2c-0.1" "init_crypti2c")
 
@@ -41,3 +42,11 @@
 (define xml-file->config-bv
   (lambda [filename]
     (call-with-input-file filename xml-file-port->config-bv)))
+
+;;useful
+;; From https://raw.githubusercontent.com/artyom-poptsov/guile-ssh/master/ssh/key.scm
+(define (bytevector->hex-string bv)
+  "Convert bytevector BV to a colon separated hex string."
+  (string-join (map (lambda (e) (format #f "~2,'0x" e))
+                    (bytevector->u8-list bv))
+               ":"))
