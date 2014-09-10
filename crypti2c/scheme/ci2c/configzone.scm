@@ -3,6 +3,7 @@
   #:use-module (sxml simple)
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
+  #:use-module (ice-9 format)
   #:export (xml-file->config-bv
             ci2c-crc16
             bytevector->hex-string))
