@@ -270,3 +270,104 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
 
   return status;
 }
+
+struct ci2c_octet_buffer
+ci2c_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
+{
+
+  const int STATUS_RSP_LEN = 4;
+  struct ci2c_octet_buffer tmp = ci2c_make_buffer (STATUS_RSP_LEN);
+  struct ci2c_octet_buffer rsp = {0,0};
+
+  int read_bytes = 0;;
+
+  /* The buffer that comes back has a length byte at the front and a
+   * two byte crc at the end. */
+  read_bytes = ci2c_read_sleep (fd, tmp.ptr, tmp.len, wait_time);
+
+  /* First Case: We've read the buffer and it's a status packet */
+
+  if (read_bytes == STATUS_RSP_LEN && tmp.ptr[0] == STATUS_RSP_LEN)
+    {
+      ci2c_print_hex_string ("Status RSP", tmp.ptr, STATUS_RSP_LEN);
+      enum CI2C_STATUS_RESPONSE status = RSP_COMM_ERROR;
+      status = get_status_response (tmp.ptr);
+      CI2C_LOG (DEBUG, status_to_string (status));
+
+      rsp = tmp;
+    }
+  /* Second Case: There is more to read */
+  else if (read_bytes > 0 &&
+           tmp.ptr[0] > STATUS_RSP_LEN &&
+           tmp.ptr[0] <= MAX_RECV_LEN)
+    {
+      const int PACKET_SIZE = tmp.ptr[0];
+      rsp = ci2c_make_buffer (PACKET_SIZE);
+      read_bytes = ci2c_read (fd, rsp.ptr + STATUS_RSP_LEN, PACKET_SIZE);
+      if (read_bytes + STATUS_RSP_LEN == PACKET_SIZE)
+        {
+          memcpy (rsp.ptr, tmp.ptr, STATUS_RSP_LEN);
+          ci2c_free_octet_buffer (tmp);
+        }
+      else
+        {
+          CI2C_LOG (DEBUG, "Error reading rest of response.");
+        }
+    }
+  /* Otherwise: Error */
+  else
+    {
+      CI2C_LOG (DEBUG, "Read failed.");
+    }
+
+  /* Data is read, check the CRC before returning */
+  if (NULL != rsp.ptr)
+    {
+      if (ci2c_is_crc_16_valid (rsp.ptr,
+                                rsp.len - CI2C_CRC_16_LEN,
+                                rsp.ptr - CI2C_CRC_16_LEN))
+        {
+          CI2C_LOG (DEBUG, "Received CRC checks out.");
+          /* Strip off length byte and CRC and return just the data */
+          struct ci2c_octet_buffer data =
+            ci2c_make_buffer (rsp.len - CI2C_CRC_16_LEN - 1);
+
+          memcpy (data.ptr, rsp.ptr + 1, data.len);
+          ci2c_free_octet_buffer (rsp);
+          rsp = data;
+        }
+      else
+        {
+          CI2C_LOG (DEBUG, "Received CRC Failed!");
+          ci2c_free_octet_buffer (rsp);
+        }
+    }
+
+  return rsp;
+}
+
+
+struct ci2c_octet_buffer
+ci2c_send_and_get_rsp (int fd,
+                       const uint8_t *send_buf,
+                       const unsigned int send_buf_len,
+                       struct timespec wait_time,
+                       const int MAX_RECV_LEN)
+{
+  unsigned int x = 0;
+  ssize_t result = 0;
+  struct ci2c_octet_buffer rsp = {0,0};
+
+  assert (NULL != send_buf);
+
+  if (1 < (result = ci2c_write (fd, send_buf, send_buf_len)))
+    {
+      rsp = ci2c_get_response (fd, MAX_RECV_LEN, wait_time);
+    }
+  else
+    {
+      CI2C_LOG (DEBUG, "Send failed.");
+    }
+
+  return rsp;
+}

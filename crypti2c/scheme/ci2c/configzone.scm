@@ -4,9 +4,14 @@
   #:use-module (rnrs bytevectors)
   #:use-module (srfi srfi-1)
   #:use-module (ice-9 format)
+  #:use-module (srfi srfi-64)
+  #:use-module (srfi srfi-9)
+  #:use-module (srfi srfi-9 gnu)
+  #:use-module (srfi srfi-11)
   #:export (xml-file->config-bv
             ci2c-crc16
-            bytevector->hex-string))
+            bytevector->hex-string
+            ci2c-send-receive))
 
 (load-extension "/usr/local/lib/libcrypti2c-0.1" "init_crypti2c")
 
@@ -63,12 +68,14 @@ contiguous bytes of the entire configuration zone"
 
 ;; commands
 (define-immutable-record-type <atsha204-command>
-  (make-atsha204-command opcode param1 param2 data)
+  (make-atsha204-command opcode param1 param2 data wait-time expected-rsp-len)
   atsha204-command?
   (opcode atsha204-command-opcode)
   (param1 atsha204-command-param1)
   (param2 atsha204-command-param2)
-  (data atsha204-command-data))
+  (data atsha204-command-data)
+  (wait-time atsha204-command-wait-time)
+  (expected-rsp-len atsha204-command-expected-rsp-len))
 
 (define (make-zone-bits zone-sym)
   (case zone-sym
@@ -77,7 +84,8 @@ contiguous bytes of the entire configuration zone"
     ((DATA-ZONE) #x02)))
 
 (define (make-write4-cmd zone addr data)
-  (make-atsha204-command 'COMMAND-WRITE (make-zone-bits zone) addr data))
+  (make-atsha204-command
+   'COMMAND-WRITE (make-zone-bits zone) addr data 42000000 4))
 
 (define opcodes (make-hash-table))
 
@@ -114,3 +122,24 @@ This applies the CRC as well."
                  (bytevector-copy! data 0 bv 6
                                    (length (atsha204-command-data cmd)))))
            (atsha204-command-apply-crc bv))))
+
+
+(define (split-4 lst)
+  "Split the list in to a list contains lists of 4 elements"
+  (unless (= 0 (modulo (length lst) 4))
+    (throw 'split4 "List is not of modulo 4"))
+  (if (null? lst)
+      '()
+      (let ([first (take lst 4)]
+            [last (drop lst 4)])
+        (cons first (word-split last)))))
+
+(define (burn-config sxml-bytevector)
+  (let ([sxml-lst (bytevector->u8-list sxml-bytevector)]
+        [index 0])
+    (map (lambda [x]
+           (let ([bv (atsha204-command-serialize
+                      (make-write4-cmd 'CONFIG-ZONE index x))])
+             (begin (set! index (+ index 4))
+                    bv)))
+         (split-4 sxml-lst))))

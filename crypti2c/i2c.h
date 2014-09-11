@@ -23,6 +23,7 @@
 
 #include <unistd.h>
 #include <stdbool.h>
+#include <time.h>
 
 /**
  * Open the I2C bus
@@ -78,4 +79,10 @@ ci2c_atmel_setup(const char *bus, unsigned int addr);
  */
 void
 ci2c_atmel_teardown(int fd);
+
+ssize_t
+ci2c_read_sleep(int fd,
+                unsigned char *buf,
+                unsigned int len,
+                struct timespec wait_time);
 #endif /* I2C_H */

@@ -154,6 +154,35 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len)
 
 }
 
+ssize_t
+ci2c_read_sleep(int fd,
+                unsigned char *buf,
+                unsigned int len,
+                struct timespec wait_time)
+{
+  assert(NULL != buf);
+
+  int bytes = -1;
+  int attempt = 0;
+  const int NUM_RETRIES = 3;
+  struct timespec tim_rem;
+
+  while (bytes < 0 && attempt < NUM_RETRIES)
+    {
+      if (0 > (bytes = read(fd, buf, len)))
+        {
+          CI2C_LOG (DEBUG, "ci2c_read_sleep failed, retrying");
+          if (0 != nanosleep (&wait_time , &tim_rem))
+            {
+              CI2C_LOG (DEBUG, "Irritably woken from peaceful slumber.");
+            }
+        }
+
+    }
+
+  return bytes;
+}
+
 int
 ci2c_atmel_setup(const char *bus, unsigned int addr)
 {

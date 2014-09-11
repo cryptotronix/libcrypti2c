@@ -89,4 +89,11 @@ ci2c_read_and_validate (int fd,
 const char*
 status_to_string (enum CI2C_STATUS_RESPONSE rsp) __attribute__ ((pure));
 
+struct ci2c_octet_buffer
+ci2c_send_and_get_rsp (int fd,
+                       const uint8_t *send_buf,
+                       const unsigned int send_buf_len,
+                       struct timespec wait_time,
+                       const int MAX_RECV_LEN);
+
 #endif /* COMMAND_ADAPTATION_H */
