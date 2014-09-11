@@ -1,4 +1,4 @@
-(define-module (ci2c configzone)
+(define-module (crypti2c configzone)
   #:version (0 1)
   #:use-module (sxml simple)
   #:use-module (rnrs bytevectors)

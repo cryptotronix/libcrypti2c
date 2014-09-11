@@ -19,6 +19,9 @@
 ## files, in order to avoid collisions when non-recursive make is used.
 AUTOMAKE_OPTIONS = subdir-objects
 
+## Define the Data dir so we know where our data files are
+AM_CFLAGS = -DDATA_DIR=\"$(pkgdatadir)\"
+
 ## Additional flags to pass to aclocal when it is invoked automatically at
 ## make time. The ${ACLOCAL_FLAGS} variable is picked up from the environment
 ## to provide a way for the user to supply additional arguments.
@@ -81,6 +84,18 @@ nobase_crypti2c_include_HEADERS = libcrypti2c.h \
                                   crypti2c/atsha204_command.h \
                                   crypti2c/atecc108_command.h
 
+
+## Scheme source
+SCM_SOURCES = crypti2c/configzone.scm
+
+pkgguilesitedir = $(GUILE_SITE)
+
+nobase_dist_pkgguilesite_DATA = $(SCM_SOURCES)
+
+ETAGS_ARGS = $(SCM_SOURCES)
+
+## Data files
+dist_pkgdata_DATA = data/atecc108_default.xml
 
 ## The generated configuration header is installed in its own subdirectory of
 ## $(libdir).  The reason for this is that the configuration information put
