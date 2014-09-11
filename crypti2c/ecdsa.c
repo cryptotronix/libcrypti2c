@@ -32,7 +32,7 @@ ci2c_print_sexp (gcry_sexp_t to_print) {
 
   const int DEBUG_MAX_SIZE = 1024;
   char * debug = malloc (DEBUG_MAX_SIZE);
-  memset (debug, DEBUG_MAX_SIZE, 0);
+  memset (debug, 0, DEBUG_MAX_SIZE);
   int bytes = gcry_sexp_sprint (to_print,
                                 GCRYSEXP_FMT_ADVANCED,
                                 debug,
