@@ -168,6 +168,12 @@ ci2c_scm_send_and_receive (SCM to_send, SCM to_receive,
 
 }
 
+SCM
+ci2c_get_data_dir (void)
+{
+  return scm_from_locale_string (DATA_DIR);
+}
+
 void
 init_crypti2c (void)
 {
@@ -175,9 +181,11 @@ init_crypti2c (void)
     scm_c_define_gsubr ("ci2c-open-device", 0, 0, 0, open_device);
     scm_c_define_gsubr ("ci2c-crc16", 1, 0, 0, crc_16_wrapper);
     scm_c_define_gsubr ("ci2c-send-receive", 4, 0, 0, ci2c_scm_send_and_receive);
+    scm_c_define_gsubr ("ci2c-get-data-dir", 0, 0, 0, ci2c_get_data_dir);
 
     scm_c_export ("ci2c-build-random", NULL);
     scm_c_export ("ci2c-open-device", NULL);
     scm_c_export ("ci2c-crc16", NULL);
     scm_c_export ("ci2c-send-receive", NULL);
+    scm_c_export ("ci2c-get-data-dir");
 }
