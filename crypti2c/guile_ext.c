@@ -138,7 +138,7 @@ crc_16_wrapper (SCM bv)
 }
 
 SCM
-ci2c_scm_send_and_receive (SCM to_send, SCM to_receive,
+ci2c_scm_send_and_receive (SCM to_send,
                            SCM wait_time, SCM MAX_RECV_LEN)
 {
 
@@ -180,7 +180,7 @@ init_crypti2c (void)
     scm_c_define_gsubr ("ci2c-build-random", 1, 0, 0, build_random_cmd_wrapper);
     scm_c_define_gsubr ("ci2c-open-device", 0, 0, 0, open_device);
     scm_c_define_gsubr ("ci2c-crc16", 1, 0, 0, crc_16_wrapper);
-    scm_c_define_gsubr ("ci2c-send-receive", 4, 0, 0, ci2c_scm_send_and_receive);
+    scm_c_define_gsubr ("ci2c-send-receive", 3, 0, 0, ci2c_scm_send_and_receive);
     scm_c_define_gsubr ("ci2c-get-data-dir", 0, 0, 0, ci2c_get_data_dir);
 
     scm_c_export ("ci2c-build-random", NULL);

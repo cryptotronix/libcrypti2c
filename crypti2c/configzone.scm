@@ -10,7 +10,10 @@
   #:export (xml-file->config-bv
             ci2c-crc16
             bytevector->hex-string
-            ci2c-send-receive))
+            ci2c-send-receive
+            ci2c-make-random-cmd
+            atsha204-command-serialize
+            atsha204-send))
 
 (load-extension "/usr/local/lib/libcrypti2c-0.1" "init_crypti2c")
 
@@ -86,9 +89,16 @@ contiguous bytes of the entire configuration zone"
   (make-atsha204-command
    'COMMAND-WRITE (make-zone-bits zone) addr data 42000000 4))
 
+(define (ci2c-make-random-cmd update-seed)
+  (make-atsha204-command
+   'COMMAND-RANDOM (if update-seed
+                       1
+                       0) 0 '() 50000000 35))
+
 (define opcodes (make-hash-table))
 
 (hash-set! opcodes 'COMMAND-WRITE #x12)
+(hash-set! opcodes 'COMMAND-RANDOM #x1B)
 
 (define (atsha204-command-apply-crc bv)
   "Apply the CRC to the already serialized command. Requires some byte moving"
@@ -131,7 +141,7 @@ This applies the CRC as well."
       '()
       (let ([first (take lst 4)]
             [last (drop lst 4)])
-        (cons first (word-split last)))))
+        (cons first (split-4 last)))))
 
 (define (burn-config sxml-bytevector)
   (let ([sxml-lst (bytevector->u8-list sxml-bytevector)]
@@ -142,3 +152,9 @@ This applies the CRC as well."
              (begin (set! index (+ index 4))
                     bv)))
          (split-4 sxml-lst))))
+
+(define (atsha204-send cmd)
+  (let ([to-send (atsha204-command-serialize cmd)])
+    (ci2c-send-receive to-send
+                       (atsha204-command-wait-time cmd)
+                       (atsha204-command-expected-rsp-len cmd))))
