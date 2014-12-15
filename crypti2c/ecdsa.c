@@ -309,3 +309,36 @@ ci2c_add_uncompressed_point_tag (struct ci2c_octet_buffer q)
   return new_q;
 
 }
+
+int
+ci2c_gen_soft_keypair (gcry_sexp_t *key)
+{
+  static const char key_param[]=
+    "(genkey\n"
+    "(ecc\n"
+    "(curve NIST P-256)\n"
+    "(flags param)))";
+
+  assert (NULL != key);
+
+  gcry_sexp_t keyparam;
+  int rc;
+
+  rc = gcry_sexp_build (&keyparam, NULL, key_param);
+
+  if (0 == rc)
+    {
+      rc = gcry_pk_genkey (key, keyparam);
+      gcry_sexp_release (keyparam);
+    }
+
+  return rc;
+
+}
+
+
+struct ci2c_octet_buffer
+ci2c_soft_sign (gcry_sexp_t *key_pair, struct ci2c_octet_buffer hash)
+{
+
+}

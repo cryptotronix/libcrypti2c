@@ -54,4 +54,17 @@ ci2c_add_uncompressed_point_tag (struct ci2c_octet_buffer q);
  */
 void
 ci2c_print_sexp (gcry_sexp_t to_print);
+
+/**
+ * Creates an ECDSA P256 Key pair in software.
+ *
+ * @param key Pointer to key storage
+ *
+ * @return libgcrypt result code
+ */
+int
+ci2c_gen_soft_keypair (gcry_sexp_t *key);
+
+struct ci2c_octet_buffer
+ci2c_soft_sign (gcry_sexp_t *key_pair, struct ci2c_octet_buffer hash);
 #endif /* ECDSA_H */
