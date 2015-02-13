@@ -31,6 +31,9 @@ AM_PROG_AR
 #GUILE_FLAGS
 #GUILE_SITE_DIR
 
+#Check for libxml
+PKG_CHECK_MODULES([XML], [libxml-2.0 >= 2.8])
+
 #Check for lgcrypt
 have_gcrypt=no
 AC_SEARCH_LIBS([gcry_md_open], [gcrypt], [have_gcrypt=yes])

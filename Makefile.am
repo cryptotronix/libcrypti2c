@@ -31,6 +31,9 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 #libcrypti2c_@CRYPTI2C_API_VERSION@_la_CPPFLAGS = $(GUILE_CFLAGS)
 #libcrypti2c_@CRYPTI2C_API_VERSION@_la_LIBADD = $(GUILE_LIBS)
 
+libcrypti2c_@CRYPTI2C_API_VERSION@_la_CPPFLAGS = $(XML_CFLAGS)
+libcrypti2c_@CRYPTI2C_API_VERSION@_la_LIBADD = $(XML_LIBS)
+
 ## Define a libtool archive target "libcrypti2c-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTI2C_API_VERSION@ substituted into the generated Makefile at configure
 ## time.
@@ -56,7 +59,8 @@ libcrypti2c_@CRYPTI2C_API_VERSION@_la_SOURCES =	crypti2c/util.c \
 						crypti2c/ecdsa.c \
                                                 crypti2c/command_util.c \
                                                 crypti2c/atsha204_command.c \
-                                                crypti2c/atecc108_command.c
+                                                crypti2c/atecc108_command.c \
+						crypti2c/configfile.c
 
 
 ## Instruct libtool to include ABI version information in the generated shared
