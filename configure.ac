@@ -22,12 +22,14 @@ AM_INIT_AUTOMAKE([1.10 -Wall no-define])
 AC_CONFIG_MACRO_DIR([m4])
 PKG_PROG_PKG_CONFIG
 AM_PROG_AR
-# Guile Extensions
-PKG_CHECK_MODULES([GUILE], [guile-2.0])
 
-GUILE_PROGS
-GUILE_FLAGS
-GUILE_SITE_DIR
+# Guile Extensions
+# Maybe guile one day will be optional?
+#PKG_CHECK_MODULES([GUILE], [guile-2.0])
+
+#GUILE_PROGS
+#GUILE_FLAGS
+#GUILE_SITE_DIR
 
 #Check for lgcrypt
 have_gcrypt=no
@@ -57,7 +59,7 @@ LT_INIT([disable-static])
 AC_SUBST([CRYPTI2C_SO_VERSION], [0:0:0])
 AC_SUBST([CRYPTI2C_API_VERSION], [0.1])
 
-AC_SUBST([GUILE_SITE], [/usr/local/share/guile/2.0])
+#AC_SUBST([GUILE_SITE], [/usr/local/share/guile/2.0])
 
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.

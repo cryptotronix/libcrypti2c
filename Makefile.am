@@ -28,8 +28,8 @@ AM_CFLAGS = -DDATA_DIR=\"$(pkgdatadir)\"
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 ## Add Guile libs
-libcrypti2c_@CRYPTI2C_API_VERSION@_la_CPPFLAGS = $(GUILE_CFLAGS)
-libcrypti2c_@CRYPTI2C_API_VERSION@_la_LIBADD = $(GUILE_LIBS)
+#libcrypti2c_@CRYPTI2C_API_VERSION@_la_CPPFLAGS = $(GUILE_CFLAGS)
+#libcrypti2c_@CRYPTI2C_API_VERSION@_la_LIBADD = $(GUILE_LIBS)
 
 ## Define a libtool archive target "libcrypti2c-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTI2C_API_VERSION@ substituted into the generated Makefile at configure
@@ -51,7 +51,6 @@ libcrypti2c_@CRYPTI2C_API_VERSION@_la_SOURCES =	crypti2c/util.c \
 						crypti2c/log.c \
 						crypti2c/crc.c \
 						crypti2c/command_adaptation.c \
-						crypti2c/guile_ext.c \
 						crypti2c/hash.c \
 						crypti2c/ecdsa.c \
                                                 crypti2c/command_util.c \
@@ -75,7 +74,6 @@ nobase_crypti2c_include_HEADERS = libcrypti2c.h \
 				  crypti2c/log.h \
                                   crypti2c/crc.h \
                                   crypti2c/command_adaptation.h \
-			          crypti2c/guile_ext.h \
 				  crypti2c/hash.h \
 				  crypti2c/ecdsa.h \
                                   crypti2c/command_util.h \
@@ -84,13 +82,10 @@ nobase_crypti2c_include_HEADERS = libcrypti2c.h \
 
 
 ## Scheme source
-SCM_SOURCES = crypti2c/configzone.scm
-
-pkgguilesitedir = $(GUILE_SITE)
-
-nobase_dist_pkgguilesite_DATA = $(SCM_SOURCES)
-
-ETAGS_ARGS = $(SCM_SOURCES)
+#SCM_SOURCES = crypti2c/configzone.scm
+#pkgguilesitedir = $(GUILE_SITE)
+#nobase_dist_pkgguilesite_DATA = $(SCM_SOURCES)
+#ETAGS_ARGS = $(SCM_SOURCES)
 
 ## Data files
 dist_pkgdata_DATA = data/atecc108_default.xml
