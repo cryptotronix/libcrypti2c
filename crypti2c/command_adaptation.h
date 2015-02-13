@@ -73,6 +73,11 @@ unsigned int
 ci2c_serialize_command (struct Command_ATSHA204 *c,
                         uint8_t **serialized);
 
+enum CI2C_STATUS_RESPONSE
+ci2c_read_and_validate (int fd,
+                        uint8_t *buf,
+                        unsigned int len);
+
 /**
  * Returns a string for the enumerated response code. Useful for
  * debugging and logging functions.
@@ -83,5 +88,12 @@ ci2c_serialize_command (struct Command_ATSHA204 *c,
  */
 const char*
 status_to_string (enum CI2C_STATUS_RESPONSE rsp) __attribute__ ((pure));
+
+struct ci2c_octet_buffer
+ci2c_send_and_get_rsp (int fd,
+                       const uint8_t *send_buf,
+                       const unsigned int send_buf_len,
+                       struct timespec wait_time,
+                       const int MAX_RECV_LEN);
 
 #endif /* COMMAND_ADAPTATION_H */

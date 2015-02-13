@@ -51,6 +51,7 @@ libcrypti2c_@CRYPTI2C_API_VERSION@_la_SOURCES =	crypti2c/util.c \
 						crypti2c/log.c \
 						crypti2c/crc.c \
 						crypti2c/command_adaptation.c \
+						crypti2c/i2c.c \
 						crypti2c/hash.c \
 						crypti2c/ecdsa.c \
                                                 crypti2c/command_util.c \
@@ -74,6 +75,7 @@ nobase_crypti2c_include_HEADERS = libcrypti2c.h \
 				  crypti2c/log.h \
                                   crypti2c/crc.h \
                                   crypti2c/command_adaptation.h \
+			          crypti2c/i2c.h \
 				  crypti2c/hash.h \
 				  crypti2c/ecdsa.h \
                                   crypti2c/command_util.h \

@@ -20,6 +20,7 @@
 #include <libguile.h>
 #include "atsha204_command.h"
 #include <assert.h>
+#include "i2c.h"
 #include "crc.h"
 #include <errno.h>
 #include <string.h>
@@ -137,6 +138,37 @@ crc_16_wrapper (SCM bv)
 }
 
 SCM
+ci2c_scm_send_and_receive (SCM to_send,
+                           SCM wait_time, SCM MAX_RECV_LEN)
+{
+
+  int fd = ci2c_scm_open_device ("/dev/i2c-1", 0x60);
+  struct timespec wait = {0, scm_to_long (wait_time)};
+
+  struct ci2c_octet_buffer rsp =
+    ci2c_send_and_get_rsp (fd,
+                           SCM_BYTEVECTOR_CONTENTS (to_send),
+                           SCM_BYTEVECTOR_LENGTH (to_send),
+                           wait,
+                           scm_to_int (MAX_RECV_LEN));
+
+  close (fd);
+
+  if (NULL == rsp.ptr)
+    {
+      scm_throw (scm_from_locale_symbol ("SEND-RECEIVE-ERROR"), NULL);
+    }
+
+  SCM bv = scm_c_make_bytevector (rsp.len);
+
+  memcpy (SCM_BYTEVECTOR_CONTENTS (bv), rsp.ptr, rsp.len);
+
+  return bv;
+
+
+}
+
+SCM
 ci2c_get_data_dir (void)
 {
   return scm_from_locale_string (DATA_DIR);
@@ -148,10 +180,12 @@ init_crypti2c (void)
     scm_c_define_gsubr ("ci2c-build-random", 1, 0, 0, build_random_cmd_wrapper);
     scm_c_define_gsubr ("ci2c-open-device", 0, 0, 0, open_device);
     scm_c_define_gsubr ("ci2c-crc16", 1, 0, 0, crc_16_wrapper);
+    scm_c_define_gsubr ("ci2c-send-receive", 3, 0, 0, ci2c_scm_send_and_receive);
     scm_c_define_gsubr ("ci2c-get-data-dir", 0, 0, 0, ci2c_get_data_dir);
 
     scm_c_export ("ci2c-build-random", NULL);
     scm_c_export ("ci2c-open-device", NULL);
     scm_c_export ("ci2c-crc16", NULL);
+    scm_c_export ("ci2c-send-receive", NULL);
     scm_c_export ("ci2c-get-data-dir");
 }
