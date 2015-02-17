@@ -111,7 +111,8 @@ build_command (uint8_t opcode,
   return c;
 }
 
-void print_command (struct Command_ATSHA204 *c)
+void
+ci2c_print_command (struct Command_ATSHA204 *c)
 {
   assert (NULL != c);
 
@@ -189,7 +190,7 @@ void print_command (struct Command_ATSHA204 *c)
 }
 
 enum CI2C_STATUS_RESPONSE
-get_status_response(const uint8_t *rsp)
+ci2c_get_status_response(const uint8_t *rsp)
 {
   const unsigned int OFFSET_TO_CRC = 2;
   const unsigned int OFFSET_TO_RSP = 1;

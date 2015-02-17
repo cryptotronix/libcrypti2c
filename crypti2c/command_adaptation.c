@@ -175,7 +175,7 @@ ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 
   assert (NULL != data);
 
-  print_command (c);
+  ci2c_print_command (c);
 
   CI2C_LOG (DEBUG,
            "Total len: %d, count: %d, CRC_LEN: %d, CRC_OFFSET: %d\n",
@@ -231,7 +231,7 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
   if (read_bytes == recv_buf_len && tmp[0] == STATUS_RSP)
   {
       ci2c_print_hex_string ("Status RSP", tmp, STATUS_RSP);
-      status = get_status_response (tmp);
+      status = ci2c_get_status_response (tmp);
       CI2C_LOG (DEBUG, status_to_string (status));
       CI2C_LOG (DEBUG, "Copying %d into buf", tmp[1]);
       memcpy (buf, &tmp[1], 1);
@@ -291,7 +291,7 @@ ci2c_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
     {
       ci2c_print_hex_string ("Status RSP", tmp.ptr, STATUS_RSP_LEN);
       enum CI2C_STATUS_RESPONSE status = RSP_COMM_ERROR;
-      status = get_status_response (tmp.ptr);
+      status = ci2c_get_status_response (tmp.ptr);
       CI2C_LOG (DEBUG, status_to_string (status));
 
       rsp = tmp;

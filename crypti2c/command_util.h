@@ -127,7 +127,7 @@ build_command (uint8_t opcode,
  * @param c The command to be sent.
  */
 void
-print_command (struct Command_ATSHA204 *c);
+ci2c_print_command (struct Command_ATSHA204 *c);
 
 /**
  * Returns the status, as an enumeration, from the response buffer
@@ -137,7 +137,7 @@ print_command (struct Command_ATSHA204 *c);
  * @return The converted enumeration
  */
 enum CI2C_STATUS_RESPONSE
-get_status_response(const uint8_t *rsp);
+ci2c_get_status_response(const uint8_t *rsp);
 
 /**
  * Sets the param1 field in the command structure.
