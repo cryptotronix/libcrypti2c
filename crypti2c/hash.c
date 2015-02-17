@@ -263,12 +263,12 @@ struct ci2c_octet_buffer perform_hmac_256(struct ci2c_octet_buffer challenge,
   offset = copy_over(buf, sn2, sizeof (sn2), offset);
   offset = copy_over(buf, sn23.ptr, sn23.len, offset);
 
-  print_hex_string("Data to hmac", buf, len);
+  ci2c_print_hex_string("Data to hmac", buf, len);
   struct ci2c_octet_buffer data_to_hash = {buf, len};
   struct ci2c_octet_buffer digest;
   digest = hmac_buffer (data_to_hash, key);
 
-  print_hex_string("Result hash", digest.ptr, digest.len);
+  ci2c_print_hex_string("Result hash", digest.ptr, digest.len);
 
   free(buf);
 
@@ -299,14 +299,14 @@ ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
   digest = perform_hmac_256 (challenge, key, mode, param2,
                              otp8, otp3, sn4, sn23);
 
-  free_ci2c_octet_buffer (otp8);
-  free_ci2c_octet_buffer (otp3);
-  free_ci2c_octet_buffer (sn4);
-  free_ci2c_octet_buffer (sn23);
+  ci2c_free_octet_buffer (otp8);
+  ci2c_free_octet_buffer (otp3);
+  ci2c_free_octet_buffer (sn4);
+  ci2c_free_octet_buffer (sn23);
 
-  result = memcmp_ci2c_octet_buffer (digest, challenge_rsp);
+  result = ci2c_memcmp_octet_buffer (digest, challenge_rsp);
 
-  free_ci2c_octet_buffer (digest);
+  ci2c_free_octet_buffer (digest);
 
   return result;
 

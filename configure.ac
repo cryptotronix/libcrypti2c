@@ -34,6 +34,9 @@ AM_PROG_AR
 #Check for libxml
 PKG_CHECK_MODULES([XML], [libxml-2.0 >= 2.8])
 
+#Check for check
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.8])
+
 #Check for lgcrypt
 have_gcrypt=no
 AC_SEARCH_LIBS([gcry_md_open], [gcrypt], [have_gcrypt=yes])
@@ -53,6 +56,7 @@ fi
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
 AC_PROG_CC_C_O
+AM_PROG_CC_C_O
 LT_INIT([disable-static])
 
 # Define these substitions here to keep all version information in one place.
@@ -66,7 +70,7 @@ AC_SUBST([CRYPTI2C_API_VERSION], [0.1])
 
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.
-AC_CONFIG_FILES([Makefile
+AC_CONFIG_FILES([Makefile test/Makefile
                  crypti2c-${CRYPTI2C_API_VERSION}.pc:crypti2c.pc.in])
 AC_OUTPUT
 

@@ -15,6 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
 
+SUBDIRS = . test
 ## Place generated object files (.o) into the same directory as their source
 ## files, in order to avoid collisions when non-recursive make is used.
 AUTOMAKE_OPTIONS = subdir-objects

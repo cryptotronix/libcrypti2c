@@ -49,3 +49,6 @@ m4/
 .libs/
 *.la
 /crypti2c-1.0.pc
+/test/Makefile
+/test/Makefile.in
+/test/check_libcrypti2c
