@@ -69,3 +69,13 @@ AC_SUBST([CRYPTI2C_API_VERSION], [0.1])
 AC_CONFIG_FILES([Makefile
                  crypti2c-${CRYPTI2C_API_VERSION}.pc:crypti2c.pc.in])
 AC_OUTPUT
+
+
+echo "
+     $PACKAGE_NAME version $PACKAGE_VERSION
+     Prefix.........: $prefix
+     Debug Build....: $debug
+     C Compiler.....: $CC $CFLAGS $CPPFLAGS
+     C++ Compiler...: $CXX $CXXFLAGS $CPPFLAGS
+     Linker.........: $LD $LDFLAGS $LIBS
+"
