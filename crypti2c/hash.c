@@ -275,6 +275,30 @@ struct ci2c_octet_buffer perform_hmac_256(struct ci2c_octet_buffer challenge,
   return digest;
 }
 
+struct ci2c_octet_buffer
+perform_soft_hmac_256_defaults(struct ci2c_octet_buffer challenge,
+                               struct ci2c_octet_buffer key)
+{
+  struct ci2c_octet_buffer otp8 = ci2c_make_buffer (8);
+  struct ci2c_octet_buffer otp3 = ci2c_make_buffer (3);
+  struct ci2c_octet_buffer sn4 = ci2c_make_buffer (4);
+  struct ci2c_octet_buffer sn23 = ci2c_make_buffer (2);
+  uint8_t mode = 0x04;
+  uint16_t param2 = 0;
+
+  struct ci2c_octet_buffer digest;
+  digest = perform_hmac_256 (challenge, key, mode, param2,
+                             otp8, otp3, sn4, sn23);
+
+  ci2c_free_octet_buffer (otp8);
+  ci2c_free_octet_buffer (otp3);
+  ci2c_free_octet_buffer (sn4);
+  ci2c_free_octet_buffer (sn23);
+
+  return digest;
+
+}
+
 bool
 ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
                            struct ci2c_octet_buffer challenge_rsp,

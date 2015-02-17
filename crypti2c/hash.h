@@ -92,4 +92,18 @@ ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
                            struct ci2c_octet_buffer challenge_rsp,
                            struct ci2c_octet_buffer key, unsigned int key_slot);
 
+
+/**
+ * Performs a software based HMAC 256 using default values for the
+ * ATSHA204.
+ *
+ * @param challenge The 32 byte challenge to HMAC.
+ * @param key The HMAC 256 key.
+ *
+ * @return A buffer containing the digest
+ */
+struct ci2c_octet_buffer
+perform_soft_hmac_256_defaults(struct ci2c_octet_buffer challenge,
+                               struct ci2c_octet_buffer key);
+
 #endif /* HASH_H */
