@@ -52,3 +52,5 @@ m4/
 /test/Makefile
 /test/Makefile.in
 /test/check_libcrypti2c
+/ar-lib
+/config.rpath
