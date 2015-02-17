@@ -1,5 +1,5 @@
 /* -*- mode: c; c-file-style: "gnu" -*-
- * Copyright (C) 2014 Cryptotronix, LLC.
+ * Copyright (C) 2014-2015 Cryptotronix, LLC.
  *
  * This file is part of libcrypti2c.
  *
@@ -172,6 +172,141 @@ ci2c_verify_hash_defaults (struct ci2c_octet_buffer challenge,
   result = ci2c_memcmp_octet_buffer (digest, challenge_rsp);
 
   ci2c_free_octet_buffer (digest);
+
+  return result;
+
+}
+
+struct ci2c_octet_buffer hmac_buffer (struct ci2c_octet_buffer data_to_hash,
+                                 struct ci2c_octet_buffer key)
+{
+  struct ci2c_octet_buffer digest;
+  const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
+
+  assert (NULL != data_to_hash.ptr);
+  assert (NULL != key.ptr);
+
+  /* Init gcrypt */
+  assert (NULL != gcry_check_version (NULL));
+
+  digest = ci2c_make_buffer (DLEN);
+
+  gcry_md_hd_t hd;
+
+  gcry_md_open (&hd, GCRY_MD_SHA256, GCRY_MD_FLAG_HMAC);
+
+  assert (NULL != hd);
+
+  gcry_md_setkey (hd, key.ptr, key.len);
+
+  gcry_md_write (hd, data_to_hash.ptr, data_to_hash.len);
+
+  unsigned char *result = gcry_md_read (hd, GCRY_MD_SHA256);
+
+  assert (NULL != result);
+
+  memcpy (digest.ptr, result, DLEN);
+
+  gcry_md_close (hd);
+
+  return digest;
+}
+
+struct ci2c_octet_buffer perform_hmac_256(struct ci2c_octet_buffer challenge,
+                                     struct ci2c_octet_buffer key,
+                                     uint8_t mode, uint16_t param2,
+                                     struct ci2c_octet_buffer otp8,
+                                     struct ci2c_octet_buffer otp3,
+                                     struct ci2c_octet_buffer sn4,
+                                     struct ci2c_octet_buffer sn23)
+{
+
+  assert (NULL != challenge.ptr); assert (32 == challenge.len);
+  assert (NULL != key.ptr); assert (32 == key.len);
+  assert (NULL != otp8.ptr); assert (8 == otp8.len);
+  assert (NULL != otp3.ptr); assert (3 == otp3.len);
+  assert (NULL != sn4.ptr); assert (4 == sn4.len);
+  assert (NULL != sn23.ptr); assert (2 == sn23.len);
+
+  struct ci2c_octet_buffer zeros = ci2c_make_buffer (32);
+
+  const uint8_t opcode = {0x11};
+  const uint8_t sn = 0xEE;
+  const uint8_t sn2[] ={0x01, 0x23};
+
+  unsigned int len = zeros.len +
+    challenge.len +
+    sizeof(opcode) +
+    sizeof(mode) +
+    sizeof(param2) +
+    otp8.len +
+    otp3.len +
+    sizeof(sn) +
+    sn4.len +
+    sizeof(sn2) +
+    sn23.len;
+
+  assert (88 == len);
+
+  uint8_t *buf = ci2c_malloc_wipe(len);
+
+  unsigned int offset = 0;
+  offset = copy_over(buf, zeros.ptr, zeros.len, offset);
+  offset = copy_over(buf, challenge.ptr, challenge.len, offset);
+  offset = copy_over(buf, &opcode, sizeof(opcode), offset);
+  offset = copy_over(buf, &mode, sizeof(mode), offset);
+  offset = copy_over(buf, (uint8_t *)&param2, sizeof(param2), offset);
+  offset = copy_over(buf, otp8.ptr, otp8.len, offset);
+  offset = copy_over(buf, otp3.ptr, otp3.len, offset);
+  offset = copy_over(buf, &sn, sizeof(sn), offset);
+  offset = copy_over(buf, sn4.ptr, sn4.len, offset);
+  offset = copy_over(buf, sn2, sizeof (sn2), offset);
+  offset = copy_over(buf, sn23.ptr, sn23.len, offset);
+
+  print_hex_string("Data to hmac", buf, len);
+  struct ci2c_octet_buffer data_to_hash = {buf, len};
+  struct ci2c_octet_buffer digest;
+  digest = hmac_buffer (data_to_hash, key);
+
+  print_hex_string("Result hash", digest.ptr, digest.len);
+
+  free(buf);
+
+  return digest;
+}
+
+bool
+ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
+                           struct ci2c_octet_buffer challenge_rsp,
+                           struct ci2c_octet_buffer key, unsigned int key_slot)
+{
+
+  bool result = false;
+  const uint8_t MAX_NUM_DATA_SLOTS = 16;
+
+  struct ci2c_octet_buffer otp8 = ci2c_make_buffer (8);
+  struct ci2c_octet_buffer otp3 = ci2c_make_buffer (3);
+  struct ci2c_octet_buffer sn4 = ci2c_make_buffer (4);
+  struct ci2c_octet_buffer sn23 = ci2c_make_buffer (2);
+  uint8_t mode = 0x04;
+  uint16_t param2 = 0;
+
+  uint8_t *p = (uint8_t *)&param2;
+  assert (key_slot < MAX_NUM_DATA_SLOTS);
+  *p = key_slot;
+
+  struct ci2c_octet_buffer digest;
+  digest = perform_hmac_256 (challenge, key, mode, param2,
+                             otp8, otp3, sn4, sn23);
+
+  free_ci2c_octet_buffer (otp8);
+  free_ci2c_octet_buffer (otp3);
+  free_ci2c_octet_buffer (sn4);
+  free_ci2c_octet_buffer (sn23);
+
+  result = memcmp_ci2c_octet_buffer (digest, challenge_rsp);
+
+  free_ci2c_octet_buffer (digest);
 
   return result;
 

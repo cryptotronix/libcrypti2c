@@ -76,4 +76,20 @@ ci2c_verify_hash_defaults (struct ci2c_octet_buffer challenge,
 unsigned int
 copy_over (uint8_t *dst, const uint8_t *src, unsigned int src_len,
            unsigned int offset);
+
+/**
+ * Performs an offline verification of HMAC using the default settings.
+ *
+ * @param challenge The 32 Byte challenge
+ * @param challenge_rsp The 32 Byte challenge response
+ * @param key The 32 byte key
+ * @param key_slot The key slot used
+ *
+ * @return True if matched, otherwise false
+ */
+bool
+ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
+                           struct ci2c_octet_buffer challenge_rsp,
+                           struct ci2c_octet_buffer key, unsigned int key_slot);
+
 #endif /* HASH_H */
