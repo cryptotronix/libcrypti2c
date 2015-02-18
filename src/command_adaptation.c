@@ -31,7 +31,7 @@
 #include "command_util.h"
 
 const char*
-status_to_string (enum CI2C_STATUS_RESPONSE rsp)
+status_to_string (enum LCA_STATUS_RESPONSE rsp)
 {
   const char *rsp_string = NULL;
 
@@ -70,8 +70,8 @@ status_to_string (enum CI2C_STATUS_RESPONSE rsp)
 }
 
 
-enum CI2C_STATUS_RESPONSE
-ci2c_process_command (int fd, struct Command_ATSHA204 *c,
+enum LCA_STATUS_RESPONSE
+lca_process_command (int fd, struct Command_ATSHA204 *c,
                       uint8_t* rec_buf, unsigned int recv_len)
 {
   unsigned int c_len = 0;
@@ -80,24 +80,24 @@ ci2c_process_command (int fd, struct Command_ATSHA204 *c,
   assert (NULL != c);
   assert (NULL != rec_buf);
 
-  c_len = ci2c_serialize_command (c, &serialized);
+  c_len = lca_serialize_command (c, &serialized);
 
-  enum CI2C_STATUS_RESPONSE rsp = ci2c_send_and_receive (fd,
+  enum LCA_STATUS_RESPONSE rsp = lca_send_and_receive (fd,
                                                          serialized,
                                                          c_len,
                                                          rec_buf,
                                                          recv_len,
                                                          &c->exec_time);
 
-  ci2c_free_wipe (serialized, c_len);
+  lca_free_wipe (serialized, c_len);
 
   return rsp;
 
 
 }
 
-enum CI2C_STATUS_RESPONSE
-ci2c_send_and_receive (int fd,
+enum LCA_STATUS_RESPONSE
+lca_send_and_receive (int fd,
                        const uint8_t *send_buf,
                        unsigned int send_buf_len,
                        uint8_t *recv_buf,
@@ -105,7 +105,7 @@ ci2c_send_and_receive (int fd,
                        struct timespec *wait_time)
 {
   struct timespec tim_rem;
-  enum CI2C_STATUS_RESPONSE rsp = RSP_AWAKE;
+  enum LCA_STATUS_RESPONSE rsp = RSP_AWAKE;
   const unsigned int NUM_RETRIES = 10;
   unsigned int x = 0;
   ssize_t result = 0;
@@ -120,9 +120,9 @@ ci2c_send_and_receive (int fd,
   NUM_RETRIES times */
   for (x=0; x < NUM_RETRIES && rsp == RSP_AWAKE; x++)
     {
-      ci2c_print_hex_string ("Sending", send_buf, send_buf_len);
+      lca_print_hex_string ("Sending", send_buf, send_buf_len);
 
-      result = ci2c_write (fd,
+      result = lca_write (fd,
                            send_buf,
                            send_buf_len);
 
@@ -132,9 +132,9 @@ ci2c_send_and_receive (int fd,
             {
               nanosleep (wait_time , &tim_rem);
             }
-          while ((rsp = ci2c_read_and_validate (fd, recv_buf, recv_buf_len))
+          while ((rsp = lca_read_and_validate (fd, recv_buf, recv_buf_len))
                  == RSP_NAK);
-          CI2C_LOG (DEBUG, "Command Response: %s", status_to_string (rsp));
+          LCA_LOG (DEBUG, "Command Response: %s", status_to_string (rsp));
         }
       else
         {
@@ -149,7 +149,7 @@ ci2c_send_and_receive (int fd,
 }
 
 unsigned int
-ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
+lca_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 {
   unsigned int total_len = 0;
   unsigned int crc_len = 0;
@@ -175,9 +175,9 @@ ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 
   assert (NULL != data);
 
-  ci2c_print_command (c);
+  lca_print_command (c);
 
-  CI2C_LOG (DEBUG,
+  LCA_LOG (DEBUG,
            "Total len: %d, count: %d, CRC_LEN: %d, CRC_OFFSET: %d\n",
            total_len, c->count, crc_len, crc_offset);
 
@@ -192,7 +192,7 @@ ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
     memcpy (&data[6], c->data, c->data_len);
 
   crc = (uint16_t *)&data[crc_offset];
-  *crc = ci2c_calculate_crc16 (&data[1], crc_len);
+  *crc = lca_calculate_crc16 (&data[1], crc_len);
 
   *serialized = data;
 
@@ -200,14 +200,14 @@ ci2c_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 
 }
 
-enum CI2C_STATUS_RESPONSE
-ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
+enum LCA_STATUS_RESPONSE
+lca_read_and_validate (int fd, uint8_t *buf, unsigned int len)
 {
 
   uint8_t* tmp = NULL;
   const int PAYLOAD_LEN_SIZE = 1;
   const int CRC_SIZE = 2;
-  enum CI2C_STATUS_RESPONSE status = RSP_COMM_ERROR;
+  enum LCA_STATUS_RESPONSE status = RSP_COMM_ERROR;
   int recv_buf_len = 0;
   bool crc_valid;
   unsigned int crc_offset;
@@ -222,18 +222,18 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
 
   /* The buffer that comes back has a length byte at the front and a
    * two byte crc at the end. */
-  tmp = ci2c_malloc_wipe (recv_buf_len);
+  tmp = lca_malloc_wipe (recv_buf_len);
 
-  read_bytes = ci2c_read (fd, tmp, recv_buf_len);
+  read_bytes = lca_read (fd, tmp, recv_buf_len);
 
   /* First Case: We've read the buffer and it's a status packet */
 
   if (read_bytes == recv_buf_len && tmp[0] == STATUS_RSP)
   {
-      ci2c_print_hex_string ("Status RSP", tmp, STATUS_RSP);
-      status = ci2c_get_status_response (tmp);
-      CI2C_LOG (DEBUG, status_to_string (status));
-      CI2C_LOG (DEBUG, "Copying %d into buf", tmp[1]);
+      lca_print_hex_string ("Status RSP", tmp, STATUS_RSP);
+      status = lca_get_status_response (tmp);
+      LCA_LOG (DEBUG, status_to_string (status));
+      LCA_LOG (DEBUG, "Copying %d into buf", tmp[1]);
       memcpy (buf, &tmp[1], 1);
 
   }
@@ -241,15 +241,15 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
   /* Second case: We received the expected message length */
   else if (read_bytes == recv_buf_len && tmp[0] == recv_buf_len)
     {
-      ci2c_print_hex_string ("Received RSP", tmp, recv_buf_len);
+      lca_print_hex_string ("Received RSP", tmp, recv_buf_len);
 
-      crc_valid = ci2c_is_crc_16_valid (tmp,
-                                        recv_buf_len - CI2C_CRC_16_LEN,
+      crc_valid = lca_is_crc_16_valid (tmp,
+                                        recv_buf_len - LCA_CRC_16_LEN,
                                         tmp + crc_offset);
 
       if (true == crc_valid)
         {
-          ci2c_wipe (buf, len);
+          lca_wipe (buf, len);
           memcpy (buf, &tmp[1], len);
           status = RSP_SUCCESS;
 
@@ -261,38 +261,38 @@ ci2c_read_and_validate (int fd, uint8_t *buf, unsigned int len)
     }
   else
     {
-      CI2C_LOG (DEBUG,"Read failed, retrying");
+      LCA_LOG (DEBUG,"Read failed, retrying");
       status = RSP_NAK;
 
     }
 
-  ci2c_free_wipe (tmp, recv_buf_len);
+  lca_free_wipe (tmp, recv_buf_len);
 
   return status;
 }
 
-struct ci2c_octet_buffer
-ci2c_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
+struct lca_octet_buffer
+lca_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
 {
 
   const int STATUS_RSP_LEN = 4;
-  struct ci2c_octet_buffer tmp = ci2c_make_buffer (STATUS_RSP_LEN);
-  struct ci2c_octet_buffer rsp = {0,0};
+  struct lca_octet_buffer tmp = lca_make_buffer (STATUS_RSP_LEN);
+  struct lca_octet_buffer rsp = {0,0};
 
   int read_bytes = 0;;
 
   /* The buffer that comes back has a length byte at the front and a
    * two byte crc at the end. */
-  read_bytes = ci2c_read_sleep (fd, tmp.ptr, tmp.len, wait_time);
+  read_bytes = lca_read_sleep (fd, tmp.ptr, tmp.len, wait_time);
 
   /* First Case: We've read the buffer and it's a status packet */
 
   if (read_bytes == STATUS_RSP_LEN && tmp.ptr[0] == STATUS_RSP_LEN)
     {
-      ci2c_print_hex_string ("Status RSP", tmp.ptr, STATUS_RSP_LEN);
-      enum CI2C_STATUS_RESPONSE status = RSP_COMM_ERROR;
-      status = ci2c_get_status_response (tmp.ptr);
-      CI2C_LOG (DEBUG, status_to_string (status));
+      lca_print_hex_string ("Status RSP", tmp.ptr, STATUS_RSP_LEN);
+      enum LCA_STATUS_RESPONSE status = RSP_COMM_ERROR;
+      status = lca_get_status_response (tmp.ptr);
+      LCA_LOG (DEBUG, status_to_string (status));
 
       rsp = tmp;
     }
@@ -302,44 +302,44 @@ ci2c_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
            tmp.ptr[0] <= MAX_RECV_LEN)
     {
       const int PACKET_SIZE = tmp.ptr[0];
-      rsp = ci2c_make_buffer (PACKET_SIZE);
-      read_bytes = ci2c_read (fd, rsp.ptr + STATUS_RSP_LEN, PACKET_SIZE);
+      rsp = lca_make_buffer (PACKET_SIZE);
+      read_bytes = lca_read (fd, rsp.ptr + STATUS_RSP_LEN, PACKET_SIZE);
       if (read_bytes + STATUS_RSP_LEN == PACKET_SIZE)
         {
           memcpy (rsp.ptr, tmp.ptr, STATUS_RSP_LEN);
-          ci2c_free_octet_buffer (tmp);
+          lca_free_octet_buffer (tmp);
         }
       else
         {
-          CI2C_LOG (DEBUG, "Error reading rest of response.");
+          LCA_LOG (DEBUG, "Error reading rest of response.");
         }
     }
   /* Otherwise: Error */
   else
     {
-      CI2C_LOG (DEBUG, "Read failed.");
+      LCA_LOG (DEBUG, "Read failed.");
     }
 
   /* Data is read, check the CRC before returning */
   if (NULL != rsp.ptr)
     {
-      if (ci2c_is_crc_16_valid (rsp.ptr,
-                                rsp.len - CI2C_CRC_16_LEN,
-                                rsp.ptr - CI2C_CRC_16_LEN))
+      if (lca_is_crc_16_valid (rsp.ptr,
+                                rsp.len - LCA_CRC_16_LEN,
+                                rsp.ptr - LCA_CRC_16_LEN))
         {
-          CI2C_LOG (DEBUG, "Received CRC checks out.");
+          LCA_LOG (DEBUG, "Received CRC checks out.");
           /* Strip off length byte and CRC and return just the data */
-          struct ci2c_octet_buffer data =
-            ci2c_make_buffer (rsp.len - CI2C_CRC_16_LEN - 1);
+          struct lca_octet_buffer data =
+            lca_make_buffer (rsp.len - LCA_CRC_16_LEN - 1);
 
           memcpy (data.ptr, rsp.ptr + 1, data.len);
-          ci2c_free_octet_buffer (rsp);
+          lca_free_octet_buffer (rsp);
           rsp = data;
         }
       else
         {
-          CI2C_LOG (DEBUG, "Received CRC Failed!");
-          ci2c_free_octet_buffer (rsp);
+          LCA_LOG (DEBUG, "Received CRC Failed!");
+          lca_free_octet_buffer (rsp);
         }
     }
 
@@ -347,8 +347,8 @@ ci2c_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
 }
 
 
-struct ci2c_octet_buffer
-ci2c_send_and_get_rsp (int fd,
+struct lca_octet_buffer
+lca_send_and_get_rsp (int fd,
                        const uint8_t *send_buf,
                        const unsigned int send_buf_len,
                        struct timespec wait_time,
@@ -356,17 +356,17 @@ ci2c_send_and_get_rsp (int fd,
 {
   unsigned int x = 0;
   ssize_t result = 0;
-  struct ci2c_octet_buffer rsp = {0,0};
+  struct lca_octet_buffer rsp = {0,0};
 
   assert (NULL != send_buf);
 
-  if (1 < (result = ci2c_write (fd, send_buf, send_buf_len)))
+  if (1 < (result = lca_write (fd, send_buf, send_buf_len)))
     {
-      rsp = ci2c_get_response (fd, MAX_RECV_LEN, wait_time);
+      rsp = lca_get_response (fd, MAX_RECV_LEN, wait_time);
     }
   else
     {
-      CI2C_LOG (DEBUG, "Send failed.");
+      LCA_LOG (DEBUG, "Send failed.");
     }
 
   return rsp;

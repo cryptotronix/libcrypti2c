@@ -24,8 +24,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define CI2C_CRC_16_LEN  2
-#define CI2C_POLYNOMIAL 0x8005
+#define LCA_CRC_16_LEN  2
+#define LCA_POLYNOMIAL 0x8005
 
 /**
  * Calculates a CRC16 and compares it to the specified CRC. Returns
@@ -37,7 +37,7 @@
  *
  * @return true if the CRC matches the calculated, otherwise false.
  */
-bool ci2c_is_crc_16_valid (const uint8_t *data, unsigned int data_len,
+bool lca_is_crc_16_valid (const uint8_t *data, unsigned int data_len,
                            const uint8_t *crc) __attribute__ ((pure));
 
 /**
@@ -48,7 +48,7 @@ bool ci2c_is_crc_16_valid (const uint8_t *data, unsigned int data_len,
  *
  * @return The CRC16 over the data.
  */
-uint16_t ci2c_calculate_crc16 (const uint8_t *p, unsigned int length)
+uint16_t lca_calculate_crc16 (const uint8_t *p, unsigned int length)
   __attribute__ ((pure));
 
 /* CRC Helper routines */

@@ -30,7 +30,7 @@
 /* Random Commands */
 
 struct Command_ATSHA204
-ci2c_build_random_cmd (bool update_seed);
+lca_build_random_cmd (bool update_seed);
 
 /**
  * Get 32 bytes of random data from the device
@@ -40,7 +40,7 @@ ci2c_build_random_cmd (bool update_seed);
  *
  * @return A malloc'ed buffer with random data.
  */
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_random (int fd, bool update_seed);
 
 
@@ -53,7 +53,7 @@ get_random (int fd, bool update_seed);
  * @return The populated command structure.
  */
 struct Command_ATSHA204
-ci2c_build_read4_cmd (enum DATA_ZONE zone, uint8_t addr);
+lca_build_read4_cmd (enum DATA_ZONE zone, uint8_t addr);
 
 /**
  * Read four bytes from the device.
@@ -80,7 +80,7 @@ read4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t *buf);
  * @return The populated command struct.
  */
 struct Command_ATSHA204
-ci2c_build_write4_cmd (enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
+lca_build_write4_cmd (enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
 
 /**
  * Write four bytes to the device
@@ -107,10 +107,10 @@ write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
  * @return The populated structure.
  */
 struct Command_ATSHA204
-ci2c_build_write32_cmd (const enum DATA_ZONE zone,
+lca_build_write32_cmd (const enum DATA_ZONE zone,
                         const uint8_t addr,
-                        const struct ci2c_octet_buffer buf,
-                        const struct ci2c_octet_buffer *mac);
+                        const struct lca_octet_buffer buf,
+                        const struct lca_octet_buffer *mac);
 
 /**
  * Write 32 bytes to the device.
@@ -124,11 +124,11 @@ ci2c_build_write32_cmd (const enum DATA_ZONE zone,
  * @return True if successful.
  */
 bool
-ci2c_write32_cmd (const int fd,
+lca_write32_cmd (const int fd,
                   const enum DATA_ZONE zone,
                   const uint8_t addr,
-                  const struct ci2c_octet_buffer buf,
-                  const struct ci2c_octet_buffer *mac);
+                  const struct lca_octet_buffer buf,
+                  const struct lca_octet_buffer *mac);
 
 /**
  * Performs the nonce operation on the device.  Depending on the data
@@ -143,8 +143,8 @@ ci2c_write32_cmd (const int fd,
  * @return If data is 32 bytes, it will return a buffer of size 1 with
  * a single 0 byte.  Otherwise, it returns a 32 byte random number.
  */
-struct ci2c_octet_buffer
-gen_nonce (int fd, struct ci2c_octet_buffer data);
+struct lca_octet_buffer
+gen_nonce (int fd, struct lca_octet_buffer data);
 
 /**
  * Generates a new nonce from the device.  This will combine the OTP
@@ -154,7 +154,7 @@ gen_nonce (int fd, struct ci2c_octet_buffer data);
  *
  * @return A 32 byte malloc'd buffer if successful.
  */
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_nonce (int fd);
 
 /**
@@ -178,7 +178,7 @@ set_config_zone (int fd);
  * @return True if the OTP zone has been written.
  */
 bool
-set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone);
+set_otp_zone (int fd, struct lca_octet_buffer *otp_zone);
 
 /**
  *
@@ -188,7 +188,7 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone);
  * @return True if the configuration zone is locked
  */
 bool
-ci2c_is_config_locked (int fd);
+lca_is_config_locked (int fd);
 
 /**
  *
@@ -198,7 +198,7 @@ ci2c_is_config_locked (int fd);
  * @return True if the data zone is locked
  */
 bool
-ci2c_is_data_locked (int fd);
+lca_is_data_locked (int fd);
 
 /**
  * Returns the entire configuration zone.
@@ -208,7 +208,7 @@ ci2c_is_data_locked (int fd);
  * @return A malloc'ed buffer containing the entire configuration
  * zone.
  */
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_config_zone (int fd);
 
 /**
@@ -218,7 +218,7 @@ get_config_zone (int fd);
  *
  * @return A malloc'ed buffer containing the entire OTP zone.
  */
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_otp_zone (int fd);
 
 /**
@@ -241,7 +241,7 @@ lock (int fd, enum DATA_ZONE zone, uint16_t crc);
  *
  * @return a malloc'd buffer with the serial number.
  */
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_serial_num (int fd);
 
 /**
@@ -253,7 +253,7 @@ get_serial_num (int fd);
  * @return The populated command structure.
  */
 struct Command_ATSHA204
-ci2c_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr);
+lca_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr);
 /**
  * Reads 32 Bytes from the address
  *
@@ -263,7 +263,7 @@ ci2c_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr);
  *
  * @return 32 bytes of data or buf.ptr will be null on an error
  */
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 read32 (int fd, enum DATA_ZONE zone, uint8_t addr);
 
 
@@ -285,7 +285,7 @@ enum DEVICE_STATE
  * @return The devie state
  */
 enum DEVICE_STATE
-ci2c_get_device_state (int fd);
+lca_get_device_state (int fd);
 
 /**
  * Converts the slot number to the correct address byte
@@ -301,7 +301,7 @@ slot_to_addr (enum DATA_ZONE zone, uint8_t slot);
 
 
 bool
-load_nonce (int fd, struct ci2c_octet_buffer data);
+load_nonce (int fd, struct lca_octet_buffer data);
 
 
 /**
@@ -313,7 +313,7 @@ load_nonce (int fd, struct ci2c_octet_buffer data);
  * @return True if locked.
  */
 bool
-ci2c_is_locked (int fd, enum DATA_ZONE zone);
+lca_is_locked (int fd, enum DATA_ZONE zone);
 
 /**
  * Returns true if the configuration zone is locked.
@@ -323,7 +323,7 @@ ci2c_is_locked (int fd, enum DATA_ZONE zone);
  * @return true or false.
  */
 bool
-ci2c_is_config_locked (int fd);
+lca_is_config_locked (int fd);
 
 /**
  * Returns true if the data section is locked.
@@ -333,7 +333,7 @@ ci2c_is_config_locked (int fd);
  * @return True if locked.
  */
 bool
-ci2c_is_data_locked (int fd);
+lca_is_data_locked (int fd);
 
 
 #endif /* COMMAND_H */

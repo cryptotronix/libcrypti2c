@@ -29,8 +29,8 @@
 #include "log.h"
 
 
-struct ci2c_octet_buffer
-ci2c_gen_ecc_key (int fd, uint8_t key_id, bool private)
+struct lca_octet_buffer
+lca_gen_ecc_key (int fd, uint8_t key_id, bool private)
 {
 
   assert (key_id <= 15);
@@ -49,7 +49,7 @@ ci2c_gen_ecc_key (int fd, uint8_t key_id, bool private)
       param1 = 0x00; /* Gen public key from private key in the slot */
     }
 
-  struct ci2c_octet_buffer pub_key = ci2c_make_buffer (64);
+  struct lca_octet_buffer pub_key = lca_make_buffer (64);
 
   struct Command_ATSHA204 c = make_command ();
 
@@ -59,14 +59,14 @@ ci2c_gen_ecc_key (int fd, uint8_t key_id, bool private)
   set_data (&c, NULL, 0);
   set_execution_time (&c, 0, GEN_KEY_AVG_EXEC);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, pub_key.ptr, pub_key.len))
+  if (RSP_SUCCESS == lca_process_command (fd, &c, pub_key.ptr, pub_key.len))
     {
-      CI2C_LOG (DEBUG, "Gen key success");
+      LCA_LOG (DEBUG, "Gen key success");
     }
   else
     {
-      CI2C_LOG (DEBUG, "Gen key failure");
-      ci2c_free_octet_buffer (pub_key);
+      LCA_LOG (DEBUG, "Gen key failure");
+      lca_free_octet_buffer (pub_key);
       pub_key.ptr = NULL;
     }
 
@@ -75,8 +75,8 @@ ci2c_gen_ecc_key (int fd, uint8_t key_id, bool private)
 }
 
 
-struct ci2c_octet_buffer
-ci2c_ecc_sign (int fd, uint8_t key_id)
+struct lca_octet_buffer
+lca_ecc_sign (int fd, uint8_t key_id)
 {
 
   assert (key_id <= 15);
@@ -86,7 +86,7 @@ ci2c_ecc_sign (int fd, uint8_t key_id)
 
   param2[0] = key_id;
 
-  struct ci2c_octet_buffer signature = ci2c_make_buffer (64);
+  struct lca_octet_buffer signature = lca_make_buffer (64);
 
   struct Command_ATSHA204 c = make_command ();
 
@@ -96,14 +96,14 @@ ci2c_ecc_sign (int fd, uint8_t key_id)
   set_data (&c, NULL, 0);
   set_execution_time (&c, 0, ECC_SIGN_MAX_EXEC);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, signature.ptr, signature.len))
+  if (RSP_SUCCESS == lca_process_command (fd, &c, signature.ptr, signature.len))
     {
-      CI2C_LOG (DEBUG, "Sign success");
+      LCA_LOG (DEBUG, "Sign success");
     }
   else
     {
-      CI2C_LOG (DEBUG, "Sign failure");
-      ci2c_free_octet_buffer (signature);
+      LCA_LOG (DEBUG, "Sign failure");
+      lca_free_octet_buffer (signature);
       signature.ptr = NULL;
     }
 
@@ -114,9 +114,9 @@ ci2c_ecc_sign (int fd, uint8_t key_id)
 
 
 bool
-ci2c_ecc_verify (int fd,
-                 struct ci2c_octet_buffer pub_key,
-                 struct ci2c_octet_buffer signature)
+lca_ecc_verify (int fd,
+                 struct lca_octet_buffer pub_key,
+                 struct lca_octet_buffer signature)
 {
 
   assert (NULL != signature.ptr);
@@ -130,8 +130,8 @@ ci2c_ecc_verify (int fd,
 
   param2[0] = 0x04; /* Currently only support P256 Keys */
 
-  struct ci2c_octet_buffer payload =
-    ci2c_make_buffer (signature.len + pub_key.len);
+  struct lca_octet_buffer payload =
+    lca_make_buffer (signature.len + pub_key.len);
 
   memcpy (payload.ptr, signature.ptr, signature.len);
   memcpy (payload.ptr + signature.len, pub_key.ptr, pub_key.len);
@@ -147,17 +147,17 @@ ci2c_ecc_verify (int fd,
   set_data (&c, payload.ptr, payload.len);
   set_execution_time (&c, 0, ECC_VERIFY_MAX_EXEC);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, &result, sizeof(result)))
+  if (RSP_SUCCESS == lca_process_command (fd, &c, &result, sizeof(result)))
     {
-      CI2C_LOG (DEBUG, "Verify success");
+      LCA_LOG (DEBUG, "Verify success");
       verified = true;
     }
   else
     {
-      CI2C_LOG (DEBUG, "Verify failure");
+      LCA_LOG (DEBUG, "Verify failure");
     }
 
-  ci2c_free_octet_buffer (payload);
+  lca_free_octet_buffer (payload);
 
   return verified;
 

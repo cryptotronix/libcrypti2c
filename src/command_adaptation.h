@@ -38,7 +38,7 @@ struct Command_ATSHA204
     struct timespec exec_time;
 };
 
-enum CI2C_STATUS_RESPONSE
+enum LCA_STATUS_RESPONSE
   {
     RSP_SUCCESS = 0,            /**< The command succeeded. */
     RSP_CHECKMAC_MISCOMPARE = 0x01, /**< The CHECKMAC Command failed */
@@ -55,14 +55,14 @@ enum CI2C_STATUS_RESPONSE
   };
 
 
-enum CI2C_STATUS_RESPONSE
-ci2c_process_command (int fd,
+enum LCA_STATUS_RESPONSE
+lca_process_command (int fd,
                       struct Command_ATSHA204 *c,
                       uint8_t* rec_buf,
                       unsigned int recv_len);
 
-enum CI2C_STATUS_RESPONSE
-ci2c_send_and_receive (int fd,
+enum LCA_STATUS_RESPONSE
+lca_send_and_receive (int fd,
                        const uint8_t *send_buf,
                        unsigned int send_buf_len,
                        uint8_t *recv_buf,
@@ -70,11 +70,11 @@ ci2c_send_and_receive (int fd,
                        struct timespec *wait_time);
 
 unsigned int
-ci2c_serialize_command (struct Command_ATSHA204 *c,
+lca_serialize_command (struct Command_ATSHA204 *c,
                         uint8_t **serialized);
 
-enum CI2C_STATUS_RESPONSE
-ci2c_read_and_validate (int fd,
+enum LCA_STATUS_RESPONSE
+lca_read_and_validate (int fd,
                         uint8_t *buf,
                         unsigned int len);
 
@@ -87,10 +87,10 @@ ci2c_read_and_validate (int fd,
  * @return A pointer to a static string.
  */
 const char*
-status_to_string (enum CI2C_STATUS_RESPONSE rsp) __attribute__ ((pure));
+status_to_string (enum LCA_STATUS_RESPONSE rsp) __attribute__ ((pure));
 
-struct ci2c_octet_buffer
-ci2c_send_and_get_rsp (int fd,
+struct lca_octet_buffer
+lca_send_and_get_rsp (int fd,
                        const uint8_t *send_buf,
                        const unsigned int send_buf_len,
                        struct timespec wait_time,

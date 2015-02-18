@@ -18,21 +18,36 @@
  *
  */
 
-#ifndef LIBCRYPTI2C_H_
-#define LIBCRYPTI2C_H_
+#ifndef LOG_H
+#define LOG_H
 
-//This is a main header - it includes everything else.
+#include <stdbool.h>
+#include <stdint.h>
 
-#include "crypti2c/util.h"
-#include "crypti2c/log.h"
-#include "crypti2c/crc.h"
-#include "crypti2c/command_adaptation.h"
-#include "crypti2c/hash.h"
-#include "crypti2c/i2c.h"
-#include "crypti2c/ecdsa.h"
-#include "crypti2c/atecc108_command.h"
-#include "crypti2c/atsha204_command.h"
-#include "crypti2c/command_util.h"
+enum LCA_LOG_LEVEL
+  {
+    SEVERE = 0,
+    WARNING,
+    INFO,
+    DEBUG
+  };
 
+void
+lca_set_log_level(enum LCA_LOG_LEVEL lvl);
 
-#endif // LIBCRYPTI2C_H_
+void
+LCA_LOG(enum LCA_LOG_LEVEL, const char *format, ...);
+
+void
+lca_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
+
+/**
+ * Returns true if debug (most verbose log level) is set.
+ *
+ *
+ * @return True if debug is enabled.
+ */
+bool
+lca_is_debug (void) __attribute__ ((pure));
+
+#endif /* LOG_H */

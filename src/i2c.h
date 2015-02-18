@@ -33,22 +33,22 @@
  * @return An open file descriptor or the program will exit.
  */
 int
-ci2c_setup (const char* bus);
+lca_setup (const char* bus);
 
 void
-ci2c_acquire_bus (int fd, int addr);
+lca_acquire_bus (int fd, int addr);
 
 bool
-ci2c_wakeup (int fd);
+lca_wakeup (int fd);
 
 int
-ci2c_sleep_device (int fd);
+lca_sleep_device (int fd);
 
 ssize_t
-ci2c_write(int fd, const unsigned char *buf, unsigned int len);
+lca_write(int fd, const unsigned char *buf, unsigned int len);
 
 ssize_t
-ci2c_read(int fd, unsigned char *buf, unsigned int len);
+lca_read(int fd, unsigned char *buf, unsigned int len);
 
 /**
  * Idle the device. It will only respond to a wakeup after
@@ -58,7 +58,7 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len);
  * @param fd The open file descriptor
  */
 bool
-ci2c_idle(int fd);
+lca_idle(int fd);
 
 /**
  * Sets up the device for communication.
@@ -69,7 +69,7 @@ ci2c_idle(int fd);
  * @return An open file descriptor or -1 on error
  */
 int
-ci2c_atmel_setup(const char *bus, unsigned int addr);
+lca_atmel_setup(const char *bus, unsigned int addr);
 
 /**
  * Sleeps the device and closes the file descriptor.
@@ -78,10 +78,10 @@ ci2c_atmel_setup(const char *bus, unsigned int addr);
  *
  */
 void
-ci2c_atmel_teardown(int fd);
+lca_atmel_teardown(int fd);
 
 ssize_t
-ci2c_read_sleep(int fd,
+lca_read_sleep(int fd,
                 unsigned char *buf,
                 unsigned int len,
                 struct timespec wait_time);

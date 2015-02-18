@@ -112,16 +112,16 @@ build_command (uint8_t opcode,
 }
 
 void
-ci2c_print_command (struct Command_ATSHA204 *c)
+lca_print_command (struct Command_ATSHA204 *c)
 {
   assert (NULL != c);
 
   const char* opcode = NULL;
 
-  CI2C_LOG (DEBUG, "*** Printing Command ***");
-  CI2C_LOG (DEBUG, "Command: 0x%02X", c->command);
-  CI2C_LOG (DEBUG, "Count: 0x%02X", c->count);
-  CI2C_LOG (DEBUG, "OpCode: 0x%02X", c->opcode);
+  LCA_LOG (DEBUG, "*** Printing Command ***");
+  LCA_LOG (DEBUG, "Command: 0x%02X", c->command);
+  LCA_LOG (DEBUG, "Count: 0x%02X", c->count);
+  LCA_LOG (DEBUG, "OpCode: 0x%02X", c->opcode);
 
   switch (c->opcode)
     {
@@ -176,30 +176,30 @@ ci2c_print_command (struct Command_ATSHA204 *c)
     default:
       assert (false);
     }
-  CI2C_LOG (DEBUG,"%s", opcode);
-  CI2C_LOG (DEBUG,"param1: 0x%02X", c->param1);
-  CI2C_LOG (DEBUG,"param2: 0x%02X 0x%02X", c->param2[0], c->param2[1]);
+  LCA_LOG (DEBUG,"%s", opcode);
+  LCA_LOG (DEBUG,"param1: 0x%02X", c->param1);
+  LCA_LOG (DEBUG,"param2: 0x%02X 0x%02X", c->param2[0], c->param2[1]);
   if (c->data_len > 0)
-    ci2c_print_hex_string ("Data", c->data, c->data_len);
-  CI2C_LOG (DEBUG,"CRC: 0x%02X 0x%02X", c->checksum[0], c->checksum[1]);
-  CI2C_LOG (DEBUG,"Wait time: %ld seconds %lu nanoseconds",
+    lca_print_hex_string ("Data", c->data, c->data_len);
+  LCA_LOG (DEBUG,"CRC: 0x%02X 0x%02X", c->checksum[0], c->checksum[1]);
+  LCA_LOG (DEBUG,"Wait time: %ld seconds %lu nanoseconds",
           c->exec_time.tv_sec, c->exec_time.tv_nsec);
 
 
 
 }
 
-enum CI2C_STATUS_RESPONSE
-ci2c_get_status_response(const uint8_t *rsp)
+enum LCA_STATUS_RESPONSE
+lca_get_status_response(const uint8_t *rsp)
 {
   const unsigned int OFFSET_TO_CRC = 2;
   const unsigned int OFFSET_TO_RSP = 1;
   const unsigned int STATUS_LENGTH = 4;
 
-  if (!ci2c_is_crc_16_valid (rsp, STATUS_LENGTH - CI2C_CRC_16_LEN,
+  if (!lca_is_crc_16_valid (rsp, STATUS_LENGTH - LCA_CRC_16_LEN,
                              rsp + OFFSET_TO_CRC))
     {
-      CI2C_LOG (DEBUG, "CRC Fail in status response");
+      LCA_LOG (DEBUG, "CRC Fail in status response");
       return RSP_COMM_ERROR;
     }
 

@@ -29,7 +29,7 @@
 
 
 struct Command_ATSHA204
-ci2c_build_random_cmd (bool update_seed)
+lca_build_random_cmd (bool update_seed)
 {
   uint8_t param2[2] = {0};
   uint8_t param1 = update_seed ? 0 : 1;
@@ -44,23 +44,23 @@ ci2c_build_random_cmd (bool update_seed)
   return c;
 }
 
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_random (int fd, bool update_seed)
 {
   uint8_t *random_buf = NULL;
-  struct ci2c_octet_buffer buf = {0, 0};
-  random_buf = ci2c_malloc_wipe (RANDOM_RSP_LENGTH);
+  struct lca_octet_buffer buf = {0, 0};
+  random_buf = lca_malloc_wipe (RANDOM_RSP_LENGTH);
 
-  struct Command_ATSHA204 c = ci2c_build_random_cmd (update_seed);
+  struct Command_ATSHA204 c = lca_build_random_cmd (update_seed);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, random_buf,
+  if (RSP_SUCCESS == lca_process_command (fd, &c, random_buf,
                                            RANDOM_RSP_LENGTH))
     {
       buf.ptr = random_buf;
       buf.len = RANDOM_RSP_LENGTH;
     }
   else
-    CI2C_LOG (DEBUG, "Random command failed");
+    LCA_LOG (DEBUG, "Random command failed");
 
   return buf;
 
@@ -69,7 +69,7 @@ get_random (int fd, bool update_seed)
 }
 
 struct Command_ATSHA204
-ci2c_build_read4_cmd (enum DATA_ZONE zone, uint8_t addr)
+lca_build_read4_cmd (enum DATA_ZONE zone, uint8_t addr)
 {
 
   uint8_t param2[2] = {0};
@@ -94,9 +94,9 @@ read4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t *buf)
   bool result = false;
   assert (NULL != buf);
 
-  struct Command_ATSHA204 c = ci2c_build_read4_cmd (zone, addr);
+  struct Command_ATSHA204 c = lca_build_read4_cmd (zone, addr);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd,
+  if (RSP_SUCCESS == lca_process_command (fd,
                                            &c,
                                            (uint8_t *)buf, sizeof (uint32_t)))
     {
@@ -107,7 +107,7 @@ read4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t *buf)
 }
 
 struct Command_ATSHA204
-ci2c_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr)
+lca_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr)
 {
   uint8_t param2[2] = {0};
   uint8_t param1 = set_zone_bits (zone);
@@ -129,18 +129,18 @@ ci2c_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr)
 
 }
 
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 read32 (int fd, enum DATA_ZONE zone, uint8_t addr)
 {
 
-  struct Command_ATSHA204 c = ci2c_build_read32_cmd (zone, addr);
+  struct Command_ATSHA204 c = lca_build_read32_cmd (zone, addr);
 
   const unsigned int LENGTH_OF_RESPONSE = 32;
-  struct ci2c_octet_buffer buf = ci2c_make_buffer (LENGTH_OF_RESPONSE);
+  struct lca_octet_buffer buf = lca_make_buffer (LENGTH_OF_RESPONSE);
 
-  if (RSP_SUCCESS != ci2c_process_command (fd, &c, buf.ptr, LENGTH_OF_RESPONSE))
+  if (RSP_SUCCESS != lca_process_command (fd, &c, buf.ptr, LENGTH_OF_RESPONSE))
     {
-      ci2c_free_wipe (buf.ptr, LENGTH_OF_RESPONSE);
+      lca_free_wipe (buf.ptr, LENGTH_OF_RESPONSE);
       buf.ptr = NULL;
       buf.len = 0;
     }
@@ -150,7 +150,7 @@ read32 (int fd, enum DATA_ZONE zone, uint8_t addr)
 
 
 struct Command_ATSHA204
-ci2c_build_write4_cmd (enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
+lca_build_write4_cmd (enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
 {
 
   uint8_t param2[2] = {0};
@@ -176,9 +176,9 @@ write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
   bool status = false;
   uint8_t recv = 0;
 
-  struct Command_ATSHA204 c = ci2c_build_write4_cmd (zone, addr, buf);
+  struct Command_ATSHA204 c = lca_build_write4_cmd (zone, addr, buf);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, &recv, sizeof (recv)))
+  if (RSP_SUCCESS == lca_process_command (fd, &c, &recv, sizeof (recv)))
   {
     if (0 == (int) recv)
       status = true;
@@ -189,10 +189,10 @@ write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
 }
 
 struct Command_ATSHA204
-ci2c_build_write32_cmd (const enum DATA_ZONE zone,
+lca_build_write32_cmd (const enum DATA_ZONE zone,
                         const uint8_t addr,
-                        const struct ci2c_octet_buffer buf,
-                        const struct ci2c_octet_buffer *mac)
+                        const struct lca_octet_buffer buf,
+                        const struct lca_octet_buffer *mac)
 {
 
   assert (NULL != buf.ptr);
@@ -203,12 +203,12 @@ ci2c_build_write32_cmd (const enum DATA_ZONE zone,
   uint8_t param2[2] = {0};
   uint8_t param1 = set_zone_bits (zone);
 
-  struct ci2c_octet_buffer data = {0,0};
+  struct lca_octet_buffer data = {0,0};
 
   if (NULL != mac)
-    data = ci2c_make_buffer (buf.len + mac->len);
+    data = lca_make_buffer (buf.len + mac->len);
   else
-    data = ci2c_make_buffer (buf.len);
+    data = lca_make_buffer (buf.len);
 
   memcpy (data.ptr, buf.ptr, buf.len);
   if (NULL != mac && mac->len > 0)
@@ -233,25 +233,25 @@ ci2c_build_write32_cmd (const enum DATA_ZONE zone,
 }
 
 bool
-ci2c_write32_cmd (const int fd,
+lca_write32_cmd (const int fd,
                   const enum DATA_ZONE zone,
                   const uint8_t addr,
-                  const struct ci2c_octet_buffer buf,
-                  const struct ci2c_octet_buffer *mac)
+                  const struct lca_octet_buffer buf,
+                  const struct lca_octet_buffer *mac)
 {
 
   bool status = false;
   uint8_t recv = 0;
 
   struct Command_ATSHA204 c =
-    ci2c_build_write32_cmd (zone,
+    lca_build_write32_cmd (zone,
                             addr,
                             buf,
                             mac);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, &recv, sizeof (recv)))
+  if (RSP_SUCCESS == lca_process_command (fd, &c, &recv, sizeof (recv)))
   {
-    CI2C_LOG (DEBUG, "Write 32 successful.");
+    LCA_LOG (DEBUG, "Write 32 successful.");
     if (0 == (int) recv)
       status = true;
   }
@@ -263,7 +263,7 @@ ci2c_write32_cmd (const int fd,
 }
 
 bool
-ci2c_is_locked (int fd, enum DATA_ZONE zone)
+lca_is_locked (int fd, enum DATA_ZONE zone)
 {
   const uint8_t config_addr = 0x10;
   const uint8_t UNLOCKED = 0x55;
@@ -287,7 +287,7 @@ ci2c_is_locked (int fd, enum DATA_ZONE zone)
 
     }
 
-  struct ci2c_octet_buffer config_data = read32 (fd, CONFIG_ZONE, config_addr);
+  struct lca_octet_buffer config_data = read32 (fd, CONFIG_ZONE, config_addr);
 
   if (config_data.ptr != NULL)
     {
@@ -297,32 +297,32 @@ ci2c_is_locked (int fd, enum DATA_ZONE zone)
       else
         result = true;
 
-      ci2c_free_octet_buffer (config_data);
+      lca_free_octet_buffer (config_data);
     }
 
   return result;
 }
 
 bool
-ci2c_is_config_locked (int fd)
+lca_is_config_locked (int fd)
 {
-  return ci2c_is_locked (fd, CONFIG_ZONE);
+  return lca_is_locked (fd, CONFIG_ZONE);
 }
 
 bool
-ci2c_is_data_locked (int fd)
+lca_is_data_locked (int fd)
 {
-  return ci2c_is_locked (fd, DATA_ZONE);
+  return lca_is_locked (fd, DATA_ZONE);
 }
 
 
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_config_zone (int fd)
 {
   const unsigned int SIZE_OF_CONFIG_ZONE = 128;
   const unsigned int NUM_OF_WORDS = SIZE_OF_CONFIG_ZONE / 4;
 
-  struct ci2c_octet_buffer buf = ci2c_make_buffer (SIZE_OF_CONFIG_ZONE);
+  struct lca_octet_buffer buf = lca_make_buffer (SIZE_OF_CONFIG_ZONE);
   uint8_t *write_loc = buf.ptr;
 
   unsigned int addr = 0;
@@ -338,7 +338,7 @@ get_config_zone (int fd)
   return buf;
 }
 
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_otp_zone (int fd)
 {
     const unsigned int SIZE_OF_OTP_ZONE = 64;
@@ -346,8 +346,8 @@ get_otp_zone (int fd)
     const unsigned int SIZE_OF_WORD = 4;
     const unsigned int SECOND_WORD = (SIZE_OF_READ / SIZE_OF_WORD);
 
-    struct ci2c_octet_buffer buf = ci2c_make_buffer (SIZE_OF_OTP_ZONE);
-    struct ci2c_octet_buffer half;
+    struct lca_octet_buffer buf = lca_make_buffer (SIZE_OF_OTP_ZONE);
+    struct lca_octet_buffer half;
 
     int x = 0;
 
@@ -360,11 +360,11 @@ get_otp_zone (int fd)
         if (NULL != half.ptr)
           {
             memcpy (buf.ptr + offset, half.ptr, SIZE_OF_READ);
-            ci2c_free_octet_buffer (half);
+            lca_free_octet_buffer (half);
           }
         else
           {
-            ci2c_free_octet_buffer (buf);
+            lca_free_octet_buffer (buf);
             buf.ptr = NULL;
             return buf;
           }
@@ -383,7 +383,7 @@ lock (int fd, enum DATA_ZONE zone, uint16_t crc)
   uint8_t response;
   bool result = false;
 
-  if (ci2c_is_locked (fd, zone))
+  if (lca_is_locked (fd, zone))
     return true;
 
   memcpy (param2, &crc, sizeof (param2));
@@ -416,16 +416,16 @@ lock (int fd, enum DATA_ZONE zone, uint16_t crc)
   set_data (&c, NULL, 0);
   set_execution_time (&c, 0, LOCK_AVG_EXEC);
 
-  if (RSP_SUCCESS == ci2c_process_command (fd, &c, &response, sizeof (response)))
+  if (RSP_SUCCESS == lca_process_command (fd, &c, &response, sizeof (response)))
     {
       if (0 == response)
         {
           result = true;
-          CI2C_LOG (DEBUG, "Lock Successful");
+          LCA_LOG (DEBUG, "Lock Successful");
         }
       else
         {
-          CI2C_LOG (DEBUG, "Lock Failed");
+          LCA_LOG (DEBUG, "Lock Failed");
         }
     }
 
@@ -453,7 +453,7 @@ is_otp_read_only_mode (int fd)
 
 
 bool
-set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
+set_otp_zone (int fd, struct lca_octet_buffer *otp_zone)
 {
 
   assert (NULL != otp_zone);
@@ -469,10 +469,10 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
   uint8_t nulls[SIZE_OF_WRITE];
   uint8_t part1[SIZE_OF_WRITE];
   uint8_t part2[SIZE_OF_WRITE];
-  struct ci2c_octet_buffer buf = {0,0};
-  ci2c_wipe (nulls, SIZE_OF_WRITE);
-  ci2c_wipe (part1, SIZE_OF_WRITE);
-  ci2c_wipe (part2, SIZE_OF_WRITE);
+  struct lca_octet_buffer buf = {0,0};
+  lca_wipe (nulls, SIZE_OF_WRITE);
+  lca_wipe (part1, SIZE_OF_WRITE);
+  lca_wipe (part2, SIZE_OF_WRITE);
 
   /* Simple check to make sure PACKAGE_VERSION isn't too long */
   assert (strlen (PACKAGE_VERSION) < 10);
@@ -487,21 +487,21 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
   buf.len = sizeof (nulls);
 
   /* Fill the OTP zone with blanks from their default FFFF */
-  success = ci2c_write32_cmd (fd, OTP_ZONE, 0, buf, NULL);
+  success = lca_write32_cmd (fd, OTP_ZONE, 0, buf, NULL);
 
   if (success)
-    success = ci2c_write32_cmd (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
+    success = lca_write32_cmd (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
                                 buf, NULL);
 
   /* Fill in the data */
   buf.ptr = part1;
-  CI2C_LOG (DEBUG, "Writing: %s", buf.ptr);
+  LCA_LOG (DEBUG, "Writing: %s", buf.ptr);
   if (success)
-    success = ci2c_write32_cmd (fd, OTP_ZONE, 0, buf, NULL);
+    success = lca_write32_cmd (fd, OTP_ZONE, 0, buf, NULL);
   buf.ptr = part2;
-  CI2C_LOG (DEBUG, "Writing: %s", buf.ptr);
+  LCA_LOG (DEBUG, "Writing: %s", buf.ptr);
   if (success)
-    success = ci2c_write32_cmd (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
+    success = lca_write32_cmd (fd, OTP_ZONE, SIZE_OF_WRITE / sizeof (uint32_t),
                                 buf, NULL);
 
   /* Lastly, copy the OTP zone into one contiguous buffer.
@@ -509,7 +509,7 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
   if (success)
     {
       otp_zone->len = SIZE_OF_WRITE * 2;
-      otp_zone->ptr = ci2c_malloc_wipe (otp_zone->len);
+      otp_zone->ptr = lca_malloc_wipe (otp_zone->len);
       memcpy (otp_zone->ptr, part1, SIZE_OF_WRITE);
       memcpy (otp_zone->ptr + SIZE_OF_WRITE, part2, SIZE_OF_WRITE);
     }
@@ -517,12 +517,12 @@ set_otp_zone (int fd, struct ci2c_octet_buffer *otp_zone)
 }
 
 
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_serial_num (int fd)
 {
-  struct ci2c_octet_buffer serial;
+  struct lca_octet_buffer serial;
   const unsigned int len = sizeof (uint32_t) * 2 + 1;
-  serial.ptr = ci2c_malloc_wipe (len);
+  serial.ptr = lca_malloc_wipe (len);
   serial.len = len;
 
   uint32_t word = 0;
@@ -549,14 +549,14 @@ get_serial_num (int fd)
 
 
 enum DEVICE_STATE
-ci2c_get_device_state (int fd)
+lca_get_device_state (int fd)
 {
   bool config_locked;
   bool data_locked;
   enum DEVICE_STATE state = STATE_FACTORY;
 
-  config_locked = ci2c_is_config_locked (fd);
-  data_locked = ci2c_is_data_locked (fd);
+  config_locked = lca_is_config_locked (fd);
+  data_locked = lca_is_data_locked (fd);
 
   if (!config_locked && !data_locked)
     state = STATE_FACTORY;
@@ -572,8 +572,8 @@ ci2c_get_device_state (int fd)
 }
 
 
-struct ci2c_octet_buffer
-gen_nonce (int fd, struct ci2c_octet_buffer data)
+struct lca_octet_buffer
+gen_nonce (int fd, struct lca_octet_buffer data)
 {
   const unsigned int EXTERNAL_INPUT_LEN = 32;
   const unsigned int NEW_NONCE_LEN = 20;
@@ -601,7 +601,7 @@ gen_nonce (int fd, struct ci2c_octet_buffer data)
       rsp_len = RSP_LENGTH;
     }
 
-  struct ci2c_octet_buffer buf = ci2c_make_buffer (rsp_len);
+  struct lca_octet_buffer buf = lca_make_buffer (rsp_len);
 
   struct Command_ATSHA204 c = make_command ();
 
@@ -611,10 +611,10 @@ gen_nonce (int fd, struct ci2c_octet_buffer data)
   set_data (&c, data.ptr, data.len);
   set_execution_time (&c, 0, NONCE_AVG_EXEC);
 
-  if (RSP_SUCCESS != ci2c_process_command (fd, &c, buf.ptr, buf.len))
+  if (RSP_SUCCESS != lca_process_command (fd, &c, buf.ptr, buf.len))
     {
-      CI2C_LOG (DEBUG, "Nonce command failed");
-      ci2c_free_octet_buffer (buf);
+      LCA_LOG (DEBUG, "Nonce command failed");
+      lca_free_octet_buffer (buf);
       buf.ptr = NULL;
     }
 
@@ -624,11 +624,11 @@ gen_nonce (int fd, struct ci2c_octet_buffer data)
 
 }
 
-struct ci2c_octet_buffer
+struct lca_octet_buffer
 get_nonce (int fd)
 {
-  struct ci2c_octet_buffer otp;
-  struct ci2c_octet_buffer nonce = {0, 0};
+  struct lca_octet_buffer otp;
+  struct lca_octet_buffer nonce = {0, 0};
   const unsigned int MIX_DATA_LEN = 20;
 
   otp = get_otp_zone (fd);
@@ -642,18 +642,18 @@ get_nonce (int fd)
 
     }
 
-  ci2c_free_octet_buffer (otp);
+  lca_free_octet_buffer (otp);
 
   return nonce;
 }
 
 
 bool
-load_nonce (int fd, struct ci2c_octet_buffer data)
+load_nonce (int fd, struct lca_octet_buffer data)
 {
   assert (data.ptr != NULL && data.len == 32);
 
-  struct ci2c_octet_buffer rsp = gen_nonce (fd, data);
+  struct lca_octet_buffer rsp = gen_nonce (fd, data);
 
   if (NULL == rsp.ptr || *rsp.ptr != 0)
     return false;

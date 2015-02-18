@@ -1,5 +1,5 @@
 #include <check.h>
-#include "../libcrypti2c.h"
+#include "../libcryptoauth.h"
 
 
 int fill_random(uint8_t *ptr, const int len)
@@ -35,9 +35,9 @@ START_TEST(test_hmac)
     uint8_t key [32];
     uint8_t challenge [32];
 
-    struct ci2c_octet_buffer k_buf;
-    struct ci2c_octet_buffer c_buf;
-    struct ci2c_octet_buffer result;
+    struct lca_octet_buffer k_buf;
+    struct lca_octet_buffer c_buf;
+    struct lca_octet_buffer result;
 
 
     ck_assert_int_eq(fill_random(key, sizeof(key)), sizeof(key));
@@ -54,20 +54,20 @@ START_TEST(test_hmac)
     ck_assert_int_eq(result.len, 32);
 
     // Verify the result
-    ck_assert(ci2c_verify_hmac_defaults(c_buf, result, k_buf, 0));
+    ck_assert(lca_verify_hmac_defaults(c_buf, result, k_buf, 0));
 
     // Try to verify the key, which should fail
-    ck_assert(!ci2c_verify_hmac_defaults(c_buf, c_buf, k_buf, 0));
+    ck_assert(!lca_verify_hmac_defaults(c_buf, c_buf, k_buf, 0));
 
     // Now let's sign the hmac
 
     gcry_sexp_t ecc;
 
-    ck_assert(ci2c_gen_soft_keypair (&ecc));
+    ck_assert(lca_gen_soft_keypair (&ecc));
 
-    struct ci2c_octet_buffer signature;
+    struct lca_octet_buffer signature;
 
-    signature = ci2c_soft_sign(&ecc, result);
+    signature = lca_soft_sign(&ecc, result);
 
 
 

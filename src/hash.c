@@ -24,11 +24,11 @@
 #include <gcrypt.h>
 #include "hash.h"
 
-struct ci2c_octet_buffer
-ci2c_sha256 (FILE *fp)
+struct lca_octet_buffer
+lca_sha256 (FILE *fp)
 {
 
-  struct ci2c_octet_buffer digest;
+  struct lca_octet_buffer digest;
 
   assert (NULL != fp);
   /* Init gcrypt */
@@ -53,7 +53,7 @@ ci2c_sha256 (FILE *fp)
 
   /* copy over to the digest */
   const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
-  digest = ci2c_make_buffer (DLEN);
+  digest = lca_make_buffer (DLEN);
   memcpy (digest.ptr, result, DLEN);
 
   gcry_md_close (hd);
@@ -61,17 +61,17 @@ ci2c_sha256 (FILE *fp)
   return digest;
 }
 
-struct ci2c_octet_buffer
-ci2c_sha256_buffer (struct ci2c_octet_buffer data)
+struct lca_octet_buffer
+lca_sha256_buffer (struct lca_octet_buffer data)
   {
-    struct ci2c_octet_buffer digest;
+    struct lca_octet_buffer digest;
     const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
 
     assert (NULL != data.ptr);
     /* Init gcrypt */
     assert (NULL != gcry_check_version (NULL));
 
-    digest = ci2c_make_buffer (DLEN);
+    digest = lca_make_buffer (DLEN);
 
     gcry_md_hash_buffer (GCRY_MD_SHA256, digest.ptr, data.ptr, data.len);
 
@@ -87,14 +87,14 @@ copy_over (uint8_t *dst, const uint8_t *src, unsigned int src_len,
 }
 
 
-struct ci2c_octet_buffer
-perform_hash(struct ci2c_octet_buffer challenge,
-             struct ci2c_octet_buffer key,
+struct lca_octet_buffer
+perform_hash(struct lca_octet_buffer challenge,
+             struct lca_octet_buffer key,
              uint8_t mode, uint16_t param2,
-             struct ci2c_octet_buffer otp8,
-             struct ci2c_octet_buffer otp3,
-             struct ci2c_octet_buffer sn4,
-             struct ci2c_octet_buffer sn23)
+             struct lca_octet_buffer otp8,
+             struct lca_octet_buffer otp3,
+             struct lca_octet_buffer sn4,
+             struct lca_octet_buffer sn23)
 {
 
   assert (NULL != challenge.ptr); assert (32 == challenge.len);
@@ -112,7 +112,7 @@ perform_hash(struct ci2c_octet_buffer challenge,
     + sizeof(param2) + otp8.len + otp3.len + sizeof(sn)  + sn4.len
     + sizeof(sn2) + sn23.len;
 
-  uint8_t *buf = ci2c_malloc_wipe(len);
+  uint8_t *buf = lca_malloc_wipe(len);
 
   unsigned int offset = 0;
   offset = copy_over (buf, key.ptr, key.len, offset);
@@ -127,12 +127,12 @@ perform_hash(struct ci2c_octet_buffer challenge,
   offset = copy_over (buf, sn2, sizeof (sn2), offset);
   offset = copy_over (buf, sn23.ptr, sn23.len, offset);
 
-  ci2c_print_hex_string("Data to hash", buf, len);
-  struct ci2c_octet_buffer data_to_hash = {buf, len};
-  struct ci2c_octet_buffer digest;
-  digest = ci2c_sha256_buffer (data_to_hash);
+  lca_print_hex_string("Data to hash", buf, len);
+  struct lca_octet_buffer data_to_hash = {buf, len};
+  struct lca_octet_buffer digest;
+  digest = lca_sha256_buffer (data_to_hash);
 
-  ci2c_print_hex_string ("Result hash", digest.ptr, digest.len);
+  lca_print_hex_string ("Result hash", digest.ptr, digest.len);
 
   free(buf);
 
@@ -140,19 +140,19 @@ perform_hash(struct ci2c_octet_buffer challenge,
 }
 
 bool
-ci2c_verify_hash_defaults (struct ci2c_octet_buffer challenge,
-                           struct ci2c_octet_buffer challenge_rsp,
-                           struct ci2c_octet_buffer key, unsigned int key_slot)
+lca_verify_hash_defaults (struct lca_octet_buffer challenge,
+                           struct lca_octet_buffer challenge_rsp,
+                           struct lca_octet_buffer key, unsigned int key_slot)
 {
 
   bool result = false;
 
   const uint8_t MAX_NUM_DATA_SLOTS = 16;
 
-  struct ci2c_octet_buffer otp8 = ci2c_make_buffer (8);
-  struct ci2c_octet_buffer otp3 = ci2c_make_buffer (3);
-  struct ci2c_octet_buffer sn4 = ci2c_make_buffer (4);
-  struct ci2c_octet_buffer sn23 = ci2c_make_buffer (2);
+  struct lca_octet_buffer otp8 = lca_make_buffer (8);
+  struct lca_octet_buffer otp3 = lca_make_buffer (3);
+  struct lca_octet_buffer sn4 = lca_make_buffer (4);
+  struct lca_octet_buffer sn23 = lca_make_buffer (2);
   uint8_t mode = 0;
   uint16_t param2 = 0;
 
@@ -161,26 +161,26 @@ ci2c_verify_hash_defaults (struct ci2c_octet_buffer challenge,
   *p = key_slot;
 
 
-  struct ci2c_octet_buffer digest;
+  struct lca_octet_buffer digest;
   digest = perform_hash (challenge, key, mode, param2, otp8, otp3, sn4, sn23);
 
-  ci2c_free_octet_buffer (otp8);
-  ci2c_free_octet_buffer (otp3);
-  ci2c_free_octet_buffer (sn4);
-  ci2c_free_octet_buffer (sn23);
+  lca_free_octet_buffer (otp8);
+  lca_free_octet_buffer (otp3);
+  lca_free_octet_buffer (sn4);
+  lca_free_octet_buffer (sn23);
 
-  result = ci2c_memcmp_octet_buffer (digest, challenge_rsp);
+  result = lca_memcmp_octet_buffer (digest, challenge_rsp);
 
-  ci2c_free_octet_buffer (digest);
+  lca_free_octet_buffer (digest);
 
   return result;
 
 }
 
-struct ci2c_octet_buffer hmac_buffer (struct ci2c_octet_buffer data_to_hash,
-                                 struct ci2c_octet_buffer key)
+struct lca_octet_buffer hmac_buffer (struct lca_octet_buffer data_to_hash,
+                                 struct lca_octet_buffer key)
 {
-  struct ci2c_octet_buffer digest;
+  struct lca_octet_buffer digest;
   const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
 
   assert (NULL != data_to_hash.ptr);
@@ -189,7 +189,7 @@ struct ci2c_octet_buffer hmac_buffer (struct ci2c_octet_buffer data_to_hash,
   /* Init gcrypt */
   assert (NULL != gcry_check_version (NULL));
 
-  digest = ci2c_make_buffer (DLEN);
+  digest = lca_make_buffer (DLEN);
 
   gcry_md_hd_t hd;
 
@@ -212,13 +212,13 @@ struct ci2c_octet_buffer hmac_buffer (struct ci2c_octet_buffer data_to_hash,
   return digest;
 }
 
-struct ci2c_octet_buffer perform_hmac_256(struct ci2c_octet_buffer challenge,
-                                     struct ci2c_octet_buffer key,
+struct lca_octet_buffer perform_hmac_256(struct lca_octet_buffer challenge,
+                                     struct lca_octet_buffer key,
                                      uint8_t mode, uint16_t param2,
-                                     struct ci2c_octet_buffer otp8,
-                                     struct ci2c_octet_buffer otp3,
-                                     struct ci2c_octet_buffer sn4,
-                                     struct ci2c_octet_buffer sn23)
+                                     struct lca_octet_buffer otp8,
+                                     struct lca_octet_buffer otp3,
+                                     struct lca_octet_buffer sn4,
+                                     struct lca_octet_buffer sn23)
 {
 
   assert (NULL != challenge.ptr); assert (32 == challenge.len);
@@ -228,7 +228,7 @@ struct ci2c_octet_buffer perform_hmac_256(struct ci2c_octet_buffer challenge,
   assert (NULL != sn4.ptr); assert (4 == sn4.len);
   assert (NULL != sn23.ptr); assert (2 == sn23.len);
 
-  struct ci2c_octet_buffer zeros = ci2c_make_buffer (32);
+  struct lca_octet_buffer zeros = lca_make_buffer (32);
 
   const uint8_t opcode = {0x11};
   const uint8_t sn = 0xEE;
@@ -248,7 +248,7 @@ struct ci2c_octet_buffer perform_hmac_256(struct ci2c_octet_buffer challenge,
 
   assert (88 == len);
 
-  uint8_t *buf = ci2c_malloc_wipe(len);
+  uint8_t *buf = lca_malloc_wipe(len);
 
   unsigned int offset = 0;
   offset = copy_over(buf, zeros.ptr, zeros.len, offset);
@@ -263,55 +263,55 @@ struct ci2c_octet_buffer perform_hmac_256(struct ci2c_octet_buffer challenge,
   offset = copy_over(buf, sn2, sizeof (sn2), offset);
   offset = copy_over(buf, sn23.ptr, sn23.len, offset);
 
-  ci2c_print_hex_string("Data to hmac", buf, len);
-  struct ci2c_octet_buffer data_to_hash = {buf, len};
-  struct ci2c_octet_buffer digest;
+  lca_print_hex_string("Data to hmac", buf, len);
+  struct lca_octet_buffer data_to_hash = {buf, len};
+  struct lca_octet_buffer digest;
   digest = hmac_buffer (data_to_hash, key);
 
-  ci2c_print_hex_string("Result hash", digest.ptr, digest.len);
+  lca_print_hex_string("Result hash", digest.ptr, digest.len);
 
   free(buf);
 
   return digest;
 }
 
-struct ci2c_octet_buffer
-perform_soft_hmac_256_defaults(struct ci2c_octet_buffer challenge,
-                               struct ci2c_octet_buffer key)
+struct lca_octet_buffer
+perform_soft_hmac_256_defaults(struct lca_octet_buffer challenge,
+                               struct lca_octet_buffer key)
 {
-  struct ci2c_octet_buffer otp8 = ci2c_make_buffer (8);
-  struct ci2c_octet_buffer otp3 = ci2c_make_buffer (3);
-  struct ci2c_octet_buffer sn4 = ci2c_make_buffer (4);
-  struct ci2c_octet_buffer sn23 = ci2c_make_buffer (2);
+  struct lca_octet_buffer otp8 = lca_make_buffer (8);
+  struct lca_octet_buffer otp3 = lca_make_buffer (3);
+  struct lca_octet_buffer sn4 = lca_make_buffer (4);
+  struct lca_octet_buffer sn23 = lca_make_buffer (2);
   uint8_t mode = 0x04;
   uint16_t param2 = 0;
 
-  struct ci2c_octet_buffer digest;
+  struct lca_octet_buffer digest;
   digest = perform_hmac_256 (challenge, key, mode, param2,
                              otp8, otp3, sn4, sn23);
 
-  ci2c_free_octet_buffer (otp8);
-  ci2c_free_octet_buffer (otp3);
-  ci2c_free_octet_buffer (sn4);
-  ci2c_free_octet_buffer (sn23);
+  lca_free_octet_buffer (otp8);
+  lca_free_octet_buffer (otp3);
+  lca_free_octet_buffer (sn4);
+  lca_free_octet_buffer (sn23);
 
   return digest;
 
 }
 
 bool
-ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
-                           struct ci2c_octet_buffer challenge_rsp,
-                           struct ci2c_octet_buffer key, unsigned int key_slot)
+lca_verify_hmac_defaults (struct lca_octet_buffer challenge,
+                           struct lca_octet_buffer challenge_rsp,
+                           struct lca_octet_buffer key, unsigned int key_slot)
 {
 
   bool result = false;
   const uint8_t MAX_NUM_DATA_SLOTS = 16;
 
-  struct ci2c_octet_buffer otp8 = ci2c_make_buffer (8);
-  struct ci2c_octet_buffer otp3 = ci2c_make_buffer (3);
-  struct ci2c_octet_buffer sn4 = ci2c_make_buffer (4);
-  struct ci2c_octet_buffer sn23 = ci2c_make_buffer (2);
+  struct lca_octet_buffer otp8 = lca_make_buffer (8);
+  struct lca_octet_buffer otp3 = lca_make_buffer (3);
+  struct lca_octet_buffer sn4 = lca_make_buffer (4);
+  struct lca_octet_buffer sn23 = lca_make_buffer (2);
   uint8_t mode = 0x04;
   uint16_t param2 = 0;
 
@@ -319,18 +319,18 @@ ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
   assert (key_slot < MAX_NUM_DATA_SLOTS);
   *p = key_slot;
 
-  struct ci2c_octet_buffer digest;
+  struct lca_octet_buffer digest;
   digest = perform_hmac_256 (challenge, key, mode, param2,
                              otp8, otp3, sn4, sn23);
 
-  ci2c_free_octet_buffer (otp8);
-  ci2c_free_octet_buffer (otp3);
-  ci2c_free_octet_buffer (sn4);
-  ci2c_free_octet_buffer (sn23);
+  lca_free_octet_buffer (otp8);
+  lca_free_octet_buffer (otp3);
+  lca_free_octet_buffer (sn4);
+  lca_free_octet_buffer (sn23);
 
-  result = ci2c_memcmp_octet_buffer (digest, challenge_rsp);
+  result = lca_memcmp_octet_buffer (digest, challenge_rsp);
 
-  ci2c_free_octet_buffer (digest);
+  lca_free_octet_buffer (digest);
 
   return result;
 

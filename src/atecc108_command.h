@@ -34,8 +34,8 @@
  * @return In either case, this will return the *public* key of the
  * specified key slot. The caller should check if the pointer is null,
  * which signifies an error.
- */struct ci2c_octet_buffer
-ci2c_gen_ecc_key (int fd,
+ */struct lca_octet_buffer
+lca_gen_ecc_key (int fd,
                       uint8_t key_id,
                       bool private);
 
@@ -49,8 +49,8 @@ ci2c_gen_ecc_key (int fd,
  *
  * @return The signature as one buffer: R + S.
  */
-struct ci2c_octet_buffer
-ci2c_ecc_sign (int fd,
+struct lca_octet_buffer
+lca_ecc_sign (int fd,
                    uint8_t key_id);
 
 /**
@@ -65,9 +65,9 @@ ci2c_ecc_sign (int fd,
  * @return True if the signature is valid otherwise false
  */
 bool
-ci2c_ecc_verify (int fd,
-                     struct ci2c_octet_buffer pub_key,
-                     struct ci2c_octet_buffer signature);
+lca_ecc_verify (int fd,
+                     struct lca_octet_buffer pub_key,
+                     struct lca_octet_buffer signature);
 
 
 #endif

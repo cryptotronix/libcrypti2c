@@ -33,8 +33,8 @@
  * @return A malloc'd buffer of 32 bytes containing the digest.
  * buf.ptr will be null on error
  */
-struct ci2c_octet_buffer
-ci2c_sha256 (FILE *fp);
+struct lca_octet_buffer
+lca_sha256 (FILE *fp);
 
 /**
  * Perform a SHA 256 on a fixed data block
@@ -43,8 +43,8 @@ ci2c_sha256 (FILE *fp);
  *
  * @return The digest
  */
-struct ci2c_octet_buffer
-ci2c_sha256_buffer (struct ci2c_octet_buffer data);
+struct lca_octet_buffer
+lca_sha256_buffer (struct lca_octet_buffer data);
 
 /**
  * Performs an offline verification of a MAC using the default settings.
@@ -57,9 +57,9 @@ ci2c_sha256_buffer (struct ci2c_octet_buffer data);
  * @return True if matched, otherwise false
  */
 bool
-ci2c_verify_hash_defaults (struct ci2c_octet_buffer challenge,
-                           struct ci2c_octet_buffer challenge_rsp,
-                           struct ci2c_octet_buffer key,
+lca_verify_hash_defaults (struct lca_octet_buffer challenge,
+                           struct lca_octet_buffer challenge_rsp,
+                           struct lca_octet_buffer key,
                            unsigned int key_slot);
 
 /**
@@ -88,9 +88,9 @@ copy_over (uint8_t *dst, const uint8_t *src, unsigned int src_len,
  * @return True if matched, otherwise false
  */
 bool
-ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
-                           struct ci2c_octet_buffer challenge_rsp,
-                           struct ci2c_octet_buffer key, unsigned int key_slot);
+lca_verify_hmac_defaults (struct lca_octet_buffer challenge,
+                           struct lca_octet_buffer challenge_rsp,
+                           struct lca_octet_buffer key, unsigned int key_slot);
 
 
 /**
@@ -102,8 +102,8 @@ ci2c_verify_hmac_defaults (struct ci2c_octet_buffer challenge,
  *
  * @return A buffer containing the digest
  */
-struct ci2c_octet_buffer
-perform_soft_hmac_256_defaults(struct ci2c_octet_buffer challenge,
-                               struct ci2c_octet_buffer key);
+struct lca_octet_buffer
+perform_soft_hmac_256_defaults(struct lca_octet_buffer challenge,
+                               struct lca_octet_buffer key);
 
 #endif /* HASH_H */

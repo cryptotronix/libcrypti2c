@@ -25,9 +25,9 @@
 #include "log.h"
 
 void
-ci2c_print_sexp (gcry_sexp_t to_print) {
+lca_print_sexp (gcry_sexp_t to_print) {
 
-  if (!ci2c_is_debug())
+  if (!lca_is_debug())
     return;
 
   const int DEBUG_MAX_SIZE = 1024;
@@ -37,27 +37,27 @@ ci2c_print_sexp (gcry_sexp_t to_print) {
                                 GCRYSEXP_FMT_ADVANCED,
                                 debug,
                                 DEBUG_MAX_SIZE);
-  CI2C_LOG (DEBUG, "%s", debug);
+  LCA_LOG (DEBUG, "%s", debug);
   free (debug);
 }
 
 bool
-ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
-                        struct ci2c_octet_buffer signature,
-                        struct ci2c_octet_buffer sha256_digest)
+lca_ecdsa_p256_verify (struct lca_octet_buffer pub_key,
+                        struct lca_octet_buffer signature,
+                        struct lca_octet_buffer sha256_digest)
 {
   assert (NULL != gcry_check_version (NULL));
 
   gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
 
-  if (ci2c_is_debug())
+  if (lca_is_debug())
     gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1u , 0);
 
   assert (65 == pub_key.len); /* +1 for uncompressed point tag */
   assert (64 == signature.len);
   assert (32 == sha256_digest.len);
 
-  CI2C_LOG (DEBUG, "Gcrypt init");
+  LCA_LOG (DEBUG, "Gcrypt init");
 
   gcry_sexp_t g_pub_key;
   gcry_sexp_t g_digest;
@@ -71,7 +71,7 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
                         "  (q %b)"
                         "))", pub_key.len, pub_key);
 
-  ci2c_print_sexp (g_pub_key);
+  lca_print_sexp (g_pub_key);
 
   assert (0 == rc);
 
@@ -82,7 +82,7 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
 
   assert (0 == rc);
 
-  ci2c_print_sexp (g_digest);
+  lca_print_sexp (g_digest);
 
   rc = gcry_sexp_build (&g_sig, NULL,
                         "(sig-val(ecdsa(r %b)(s %b)))",
@@ -91,14 +91,14 @@ ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
 
   assert (0 == rc);
 
-  ci2c_print_sexp( g_sig );
+  lca_print_sexp( g_sig );
 
   rc = gcry_pk_verify (g_sig, g_digest, g_pub_key);
-  CI2C_LOG (DEBUG, "verify complete");
+  LCA_LOG (DEBUG, "verify complete");
   if (0 != rc)
-    CI2C_LOG (DEBUG, "gcry_pk_verify failed: %s", gpg_strerror (rc));
+    LCA_LOG (DEBUG, "gcry_pk_verify failed: %s", gpg_strerror (rc));
   else
-    CI2C_LOG (DEBUG, "gcry_pk_verify success");
+    LCA_LOG (DEBUG, "gcry_pk_verify success");
 
   gcry_sexp_release (g_sig);
   gcry_sexp_release (g_digest);
@@ -120,7 +120,7 @@ die (const char *format, ...)
   exit (1);
 }
 
-void ci2c_ecda_test (void)
+void lca_ecda_test (void)
 {
 
   assert (NULL != gcry_check_version (NULL));
@@ -185,7 +185,7 @@ void ci2c_ecda_test (void)
   if ((err = gcry_sexp_new (&hash, my_string, 0, 1)))
     die ("line %d: %s", __LINE__, gpg_strerror (err));
 
-  ci2c_print_sexp (hash);
+  lca_print_sexp (hash);
   if ((err = gcry_sexp_new (&hash2, hash2_string, 0, 1)))
     die ("line %d: %s", __LINE__, gpg_strerror (err));
 
@@ -195,20 +195,20 @@ void ci2c_ecda_test (void)
   if ((err = gcry_sexp_new (&key, ecc_private_key, 0, 1)))
     die ("line %d: %s", __LINE__, gpg_strerror (err));
 
-  ci2c_print_sexp (key);
+  lca_print_sexp (key);
 
   if ((err = gcry_pk_sign (&sig, hash, key)))
     die ("gcry_pk_sign failed: %s", gpg_strerror (err));
 
-  CI2C_LOG (DEBUG, "Sign done");
+  LCA_LOG (DEBUG, "Sign done");
 
-  ci2c_print_sexp (sig);
+  lca_print_sexp (sig);
 
   gcry_sexp_release (key);
   if ((err = gcry_sexp_new (&key, ecc_public_key, 0, 1)))
     die ("line %d: %s", __LINE__, gpg_strerror (err));
 
-  ci2c_print_sexp (key);
+  lca_print_sexp (key);
 
   if ((err = gcry_pk_verify (sig, hash, key)))
     die ("gcry_pk_verify failed: %s", gpg_strerror (err));
@@ -234,7 +234,7 @@ void ci2c_ecda_test (void)
 }
 
 
-void ci2c_hard_coded(void)
+void lca_hard_coded(void)
 {
 
   assert (NULL != gcry_check_version (NULL));
@@ -271,16 +271,16 @@ void ci2c_hard_coded(void)
   if ((err = gcry_sexp_new (&hash, my_string, 0, 1)))
     die ("line %d: %s", __LINE__, gpg_strerror (err));
 
-  ci2c_print_sexp (hash);
+  lca_print_sexp (hash);
   if ((err = gcry_sexp_new (&key, ecc_public_key, 0, 1)))
     die ("line %d: %s", __LINE__, gpg_strerror (err));
 
-  ci2c_print_sexp (key);
+  lca_print_sexp (key);
 
   if ((err = gcry_sexp_new (&sig, sig_stuff, 0, 1)))
     die ("line %d: %s", __LINE__, gpg_strerror (err));
 
-  ci2c_print_sexp (sig);
+  lca_print_sexp (sig);
 
   if ((err = gcry_pk_verify (sig, hash, key)))
     die ("gcry_pk_verify failed: %s", gpg_strerror (err));
@@ -292,26 +292,26 @@ void ci2c_hard_coded(void)
 
 }
 
-struct ci2c_octet_buffer
-ci2c_add_uncompressed_point_tag (struct ci2c_octet_buffer q)
+struct lca_octet_buffer
+lca_add_uncompressed_point_tag (struct lca_octet_buffer q)
 {
   assert (NULL != q.ptr);
   assert (64 == q.len); /* only support P256 now */
 
-  struct ci2c_octet_buffer new_q = ci2c_make_buffer (65);
+  struct lca_octet_buffer new_q = lca_make_buffer (65);
 
   new_q.ptr[0] = 0x04;
 
   memcpy (new_q.ptr + 1, q.ptr, q.len);
 
-  ci2c_free_octet_buffer (q);
+  lca_free_octet_buffer (q);
 
   return new_q;
 
 }
 
 int
-ci2c_gen_soft_keypair (gcry_sexp_t *key)
+lca_gen_soft_keypair (gcry_sexp_t *key)
 {
   static const char key_param[]=
     "(genkey\n"
@@ -337,8 +337,8 @@ ci2c_gen_soft_keypair (gcry_sexp_t *key)
 }
 
 
-struct ci2c_octet_buffer
-ci2c_soft_sign (gcry_sexp_t *key_pair, struct ci2c_octet_buffer hash)
+struct lca_octet_buffer
+lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash)
 {
 
 }

@@ -34,7 +34,7 @@
 #include "log.h"
 
 int
-ci2c_setup(const char* bus)
+lca_setup(const char* bus)
 {
   assert(NULL != bus);
 
@@ -51,7 +51,7 @@ ci2c_setup(const char* bus)
 }
 
 void
-ci2c_acquire_bus(int fd, int addr)
+lca_acquire_bus(int fd, int addr)
 {
   if (ioctl(fd, I2C_SLAVE, addr) < 0)
     {
@@ -65,7 +65,7 @@ ci2c_acquire_bus(int fd, int addr)
 
 
 bool
-ci2c_wakeup(int fd)
+lca_wakeup(int fd)
 {
 
   uint8_t wup[] = {0, 0};
@@ -88,7 +88,7 @@ ci2c_wakeup(int fd)
       if (write(fd,&wup,sizeof(wup)) > 1)
         {
 
-          CI2C_LOG(DEBUG, "%s", "Device is awake.");
+          LCA_LOG(DEBUG, "%s", "Device is awake.");
           // Using I2C Read
           if (read(fd,buf,sizeof(buf)) != 4)
             {
@@ -97,7 +97,7 @@ ci2c_wakeup(int fd)
             }
           else
             {
-              assert(ci2c_is_crc_16_valid(buf, 2, buf+2));
+              assert(lca_is_crc_16_valid(buf, 2, buf+2));
               awake = true;
             }
         }
@@ -108,7 +108,7 @@ ci2c_wakeup(int fd)
 }
 
 int
-ci2c_sleep_device(int fd)
+lca_sleep_device(int fd)
 {
 
   unsigned char sleep_byte[] = {0x01};
@@ -119,7 +119,7 @@ ci2c_sleep_device(int fd)
 }
 
 bool
-ci2c_idle(int fd)
+lca_idle(int fd)
 {
 
   bool result = false;
@@ -136,7 +136,7 @@ ci2c_idle(int fd)
 }
 
 ssize_t
-ci2c_write(int fd, const unsigned char *buf, unsigned int len)
+lca_write(int fd, const unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);
 
@@ -145,7 +145,7 @@ ci2c_write(int fd, const unsigned char *buf, unsigned int len)
 }
 
 ssize_t
-ci2c_read(int fd, unsigned char *buf, unsigned int len)
+lca_read(int fd, unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);
 
@@ -155,7 +155,7 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len)
 }
 
 ssize_t
-ci2c_read_sleep(int fd,
+lca_read_sleep(int fd,
                 unsigned char *buf,
                 unsigned int len,
                 struct timespec wait_time)
@@ -171,10 +171,10 @@ ci2c_read_sleep(int fd,
     {
       if (0 > (bytes = read(fd, buf, len)))
         {
-          CI2C_LOG (DEBUG, "ci2c_read_sleep failed, retrying");
+          LCA_LOG (DEBUG, "lca_read_sleep failed, retrying");
           if (0 != nanosleep (&wait_time , &tim_rem))
             {
-              CI2C_LOG (DEBUG, "Irritably woken from peaceful slumber.");
+              LCA_LOG (DEBUG, "Irritably woken from peaceful slumber.");
             }
         }
 
@@ -184,22 +184,22 @@ ci2c_read_sleep(int fd,
 }
 
 int
-ci2c_atmel_setup(const char *bus, unsigned int addr)
+lca_atmel_setup(const char *bus, unsigned int addr)
 {
-    int fd = ci2c_setup(bus);
+    int fd = lca_setup(bus);
 
-    ci2c_acquire_bus(fd, addr);
+    lca_acquire_bus(fd, addr);
 
-    ci2c_wakeup(fd);
+    lca_wakeup(fd);
 
     return fd;
 
 }
 
 void
-ci2c_atmel_teardown(int fd)
+lca_atmel_teardown(int fd)
 {
-    ci2c_sleep_device(fd);
+    lca_sleep_device(fd);
 
     close(fd);
 

@@ -28,13 +28,13 @@
 
 
 bool
-ci2c_ecdsa_p256_verify (struct ci2c_octet_buffer pub_key,
-                        struct ci2c_octet_buffer signature,
-                        struct ci2c_octet_buffer sha256_digest);
+lca_ecdsa_p256_verify (struct lca_octet_buffer pub_key,
+                        struct lca_octet_buffer signature,
+                        struct lca_octet_buffer sha256_digest);
 
-void ci2c_ecda_test(void);
+void lca_ecda_test(void);
 
-void ci2c_hard_coded(void);
+void lca_hard_coded(void);
 
 /**
  * Adds the uncompressed point format tag (0x04) to the Public Key
@@ -44,8 +44,8 @@ void ci2c_hard_coded(void);
  * @return A new malloc'd buffer with 65 bytes, starting with
  * 0x04. The original buffer will be free'd
  */
-struct ci2c_octet_buffer
-ci2c_add_uncompressed_point_tag (struct ci2c_octet_buffer q);
+struct lca_octet_buffer
+lca_add_uncompressed_point_tag (struct lca_octet_buffer q);
 
 /**
  * Prints out the sexp to the logging facility.
@@ -53,7 +53,7 @@ ci2c_add_uncompressed_point_tag (struct ci2c_octet_buffer q);
  * @param to_print The sexp to print.
  */
 void
-ci2c_print_sexp (gcry_sexp_t to_print);
+lca_print_sexp (gcry_sexp_t to_print);
 
 /**
  * Creates an ECDSA P256 Key pair in software.
@@ -63,8 +63,8 @@ ci2c_print_sexp (gcry_sexp_t to_print);
  * @return libgcrypt result code
  */
 int
-ci2c_gen_soft_keypair (gcry_sexp_t *key);
+lca_gen_soft_keypair (gcry_sexp_t *key);
 
-struct ci2c_octet_buffer
-ci2c_soft_sign (gcry_sexp_t *key_pair, struct ci2c_octet_buffer hash);
+struct lca_octet_buffer
+lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash);
 #endif /* ECDSA_H */

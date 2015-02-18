@@ -18,36 +18,21 @@
  *
  */
 
-#ifndef LOG_H
-#define LOG_H
+#ifndef LIBCRYPTI2C_H_
+#define LIBCRYPTI2C_H_
 
-#include <stdbool.h>
-#include <stdint.h>
+//This is a main header - it includes everything else.
 
-enum CI2C_LOG_LEVEL
-  {
-    SEVERE = 0,
-    WARNING,
-    INFO,
-    DEBUG
-  };
+#include "src/util.h"
+#include "src/log.h"
+#include "src/crc.h"
+#include "src/command_adaptation.h"
+#include "src/hash.h"
+#include "src/i2c.h"
+#include "src/ecdsa.h"
+#include "src/atecc108_command.h"
+#include "src/atsha204_command.h"
+#include "src/command_util.h"
 
-void
-ci2c_set_log_level(enum CI2C_LOG_LEVEL lvl);
 
-void
-CI2C_LOG(enum CI2C_LOG_LEVEL, const char *format, ...);
-
-void
-ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
-
-/**
- * Returns true if debug (most verbose log level) is set.
- *
- *
- * @return True if debug is enabled.
- */
-bool
-ci2c_is_debug (void) __attribute__ ((pure));
-
-#endif /* LOG_H */
+#endif // LIBCRYPTI2C_H_
