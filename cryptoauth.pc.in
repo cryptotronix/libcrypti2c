@@ -4,7 +4,7 @@ libdir=@libdir@
 includedir=@includedir@
 
 Name: @PACKAGE_NAME@
-Description: Library for communicating Atmel's CryptoAuthentication devices..
+Description: Library for communicating Atmel's CryptoAuthentication devices.
 Version: @PACKAGE_VERSION@
 Libs.private: -lgcrypt
 URL: @PACKAGE_URL@
