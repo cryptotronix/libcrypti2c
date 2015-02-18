@@ -9,4 +9,4 @@ Version: @PACKAGE_VERSION@
 Libs.private: -lgcrypt
 URL: @PACKAGE_URL@
 Libs: -L${libdir} -lcryptoauth-@CRYPTOAUTH_API_VERSION@
-Cflags: -I${includedir}/cryptoauth-@CRYPTOAUTH_API_VERSION@ -I${libdir}/cryptoauth-@CRYPTAUTH_API_VERSION@/include
+Cflags: -I${includedir}/cryptoauth-@CRYPTOAUTH_API_VERSION@ -I${libdir}/cryptoauth-@CRYPTOAUTH_API_VERSION@/include
