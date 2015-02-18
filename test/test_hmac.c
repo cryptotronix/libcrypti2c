@@ -32,7 +32,6 @@ int fill_random(uint8_t *ptr, const int len)
 START_TEST(test_hmac)
 {
 
-
     uint8_t key [32];
     uint8_t challenge [32];
 
@@ -53,6 +52,24 @@ START_TEST(test_hmac)
     result = perform_soft_hmac_256_defaults(c_buf, k_buf);
 
     ck_assert_int_eq(result.len, 32);
+
+    // Verify the result
+    ck_assert(ci2c_verify_hmac_defaults(c_buf, result, k_buf, 0));
+
+    // Try to verify the key, which should fail
+    ck_assert(!ci2c_verify_hmac_defaults(c_buf, c_buf, k_buf, 0));
+
+    // Now let's sign the hmac
+
+    gcry_sexp_t ecc;
+
+    ck_assert(ci2c_gen_soft_keypair (&ecc));
+
+    struct ci2c_octet_buffer signature;
+
+    signature = ci2c_soft_sign(&ecc, result);
+
+
 
 
 }
