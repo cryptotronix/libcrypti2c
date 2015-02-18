@@ -49,7 +49,7 @@ START_TEST(test_hmac)
     c_buf.ptr = challenge;
     c_buf.len = sizeof(challenge);
 
-    result = perform_soft_hmac_256_defaults(c_buf, k_buf);
+    result = perform_soft_hmac_256_defaults(c_buf, k_buf, 0);
 
     ck_assert_int_eq(result.len, 32);
 
@@ -75,6 +75,45 @@ START_TEST(test_hmac)
 }
 END_TEST
 
+START_TEST(test_hmac_key_slot)
+{
+
+    uint8_t key [32];
+    uint8_t challenge [32];
+    int i, z;
+
+    struct lca_octet_buffer k_buf;
+    struct lca_octet_buffer c_buf;
+    struct lca_octet_buffer result;
+
+
+    ck_assert_int_eq(fill_random(key, sizeof(key)), sizeof(key));
+    ck_assert_int_eq(fill_random(challenge, sizeof(challenge)), sizeof(challenge));
+
+    k_buf.ptr = key;
+    k_buf.len = sizeof(key);
+
+    c_buf.ptr = challenge;
+    c_buf.len = sizeof(challenge);
+
+    for (i=0; i < 16; i++)
+    {
+        result = perform_soft_hmac_256_defaults(c_buf, k_buf, i);
+
+        ck_assert_int_eq(result.len, 32);
+
+        // Verify the result
+        ck_assert(lca_verify_hmac_defaults(c_buf, result, k_buf, i));
+
+        // Try to verify the key, which should fail
+        if (i == 0)
+            z = 15;
+        else
+            z = i - 1;
+        ck_assert(!lca_verify_hmac_defaults(c_buf, result, k_buf, z));
+    }
+}
+END_TEST
 
 Suite * hmac_suite(void)
 {
@@ -87,6 +126,7 @@ Suite * hmac_suite(void)
     tc_core = tcase_create("Core");
 
     tcase_add_test(tc_core, test_hmac);
+    tcase_add_test(tc_core, test_hmac_key_slot);
     suite_add_tcase(s, tc_core);
 
     return s;

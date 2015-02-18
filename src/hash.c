@@ -212,21 +212,29 @@ struct lca_octet_buffer hmac_buffer (struct lca_octet_buffer data_to_hash,
   return digest;
 }
 
-struct lca_octet_buffer perform_hmac_256(struct lca_octet_buffer challenge,
-                                     struct lca_octet_buffer key,
-                                     uint8_t mode, uint16_t param2,
-                                     struct lca_octet_buffer otp8,
-                                     struct lca_octet_buffer otp3,
-                                     struct lca_octet_buffer sn4,
-                                     struct lca_octet_buffer sn23)
+struct lca_octet_buffer
+prepare_hmac_buffer(struct lca_octet_buffer challenge,
+                    struct lca_octet_buffer key,
+                    uint8_t mode,
+                    uint8_t key_slot,
+                    struct lca_octet_buffer otp8,
+                    struct lca_octet_buffer otp3,
+                    struct lca_octet_buffer sn4,
+                    struct lca_octet_buffer sn23)
 {
-
   assert (NULL != challenge.ptr); assert (32 == challenge.len);
   assert (NULL != key.ptr); assert (32 == key.len);
   assert (NULL != otp8.ptr); assert (8 == otp8.len);
   assert (NULL != otp3.ptr); assert (3 == otp3.len);
   assert (NULL != sn4.ptr); assert (4 == sn4.len);
   assert (NULL != sn23.ptr); assert (2 == sn23.len);
+
+  const uint8_t MAX_NUM_DATA_SLOTS = 16;
+  uint16_t param2 = 0;
+
+  uint8_t *p = (uint8_t *)&param2;
+  assert (key_slot < MAX_NUM_DATA_SLOTS);
+  *p = key_slot;
 
   struct lca_octet_buffer zeros = lca_make_buffer (32);
 
@@ -264,30 +272,50 @@ struct lca_octet_buffer perform_hmac_256(struct lca_octet_buffer challenge,
   offset = copy_over(buf, sn23.ptr, sn23.len, offset);
 
   lca_print_hex_string("Data to hmac", buf, len);
-  struct lca_octet_buffer data_to_hash = {buf, len};
+
+  struct lca_octet_buffer result = {buf, len};
+
+  return result;
+}
+
+struct lca_octet_buffer
+perform_hmac_256(struct lca_octet_buffer challenge,
+                 struct lca_octet_buffer key,
+                 uint8_t mode,
+                 uint8_t key_slot,
+                 struct lca_octet_buffer otp8,
+                 struct lca_octet_buffer otp3,
+                 struct lca_octet_buffer sn4,
+                 struct lca_octet_buffer sn23)
+{
+
+  struct lca_octet_buffer data_to_hmac =
+    prepare_hmac_buffer(challenge, key, mode, key_slot,
+                        otp8, otp3, sn4, sn23);
+
   struct lca_octet_buffer digest;
-  digest = hmac_buffer (data_to_hash, key);
+  digest = hmac_buffer (data_to_hmac, key);
 
   lca_print_hex_string("Result hash", digest.ptr, digest.len);
 
-  free(buf);
+  lca_free_octet_buffer(data_to_hmac);
 
   return digest;
 }
 
 struct lca_octet_buffer
 perform_soft_hmac_256_defaults(struct lca_octet_buffer challenge,
-                               struct lca_octet_buffer key)
+                               struct lca_octet_buffer key,
+                               uint8_t key_slot)
 {
   struct lca_octet_buffer otp8 = lca_make_buffer (8);
   struct lca_octet_buffer otp3 = lca_make_buffer (3);
   struct lca_octet_buffer sn4 = lca_make_buffer (4);
   struct lca_octet_buffer sn23 = lca_make_buffer (2);
   uint8_t mode = 0x04;
-  uint16_t param2 = 0;
 
   struct lca_octet_buffer digest;
-  digest = perform_hmac_256 (challenge, key, mode, param2,
+  digest = perform_hmac_256 (challenge, key, mode, key_slot,
                              otp8, otp3, sn4, sn23);
 
   lca_free_octet_buffer (otp8);
@@ -313,14 +341,9 @@ lca_verify_hmac_defaults (struct lca_octet_buffer challenge,
   struct lca_octet_buffer sn4 = lca_make_buffer (4);
   struct lca_octet_buffer sn23 = lca_make_buffer (2);
   uint8_t mode = 0x04;
-  uint16_t param2 = 0;
-
-  uint8_t *p = (uint8_t *)&param2;
-  assert (key_slot < MAX_NUM_DATA_SLOTS);
-  *p = key_slot;
 
   struct lca_octet_buffer digest;
-  digest = perform_hmac_256 (challenge, key, mode, param2,
+  digest = perform_hmac_256 (challenge, key, mode, key_slot,
                              otp8, otp3, sn4, sn23);
 
   lca_free_octet_buffer (otp8);

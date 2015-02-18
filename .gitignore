@@ -54,3 +54,5 @@ m4/
 /test/check_libcrypti2c
 /ar-lib
 /config.rpath
+/test/TAGS
+/test/check_libcryptoauth

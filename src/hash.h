@@ -99,11 +99,13 @@ lca_verify_hmac_defaults (struct lca_octet_buffer challenge,
  *
  * @param challenge The 32 byte challenge to HMAC.
  * @param key The HMAC 256 key.
+ * @param key_slot the key_slot to use (0-15).
  *
  * @return A buffer containing the digest
  */
 struct lca_octet_buffer
 perform_soft_hmac_256_defaults(struct lca_octet_buffer challenge,
-                               struct lca_octet_buffer key);
+                               struct lca_octet_buffer key,
+                               uint8_t key_slot);
 
 #endif /* HASH_H */
