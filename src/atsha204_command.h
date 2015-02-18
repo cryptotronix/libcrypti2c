@@ -41,7 +41,7 @@ lca_build_random_cmd (bool update_seed);
  * @return A malloc'ed buffer with random data.
  */
 struct lca_octet_buffer
-get_random (int fd, bool update_seed);
+lca_get_random (int fd, bool update_seed);
 
 
 /**

@@ -49,7 +49,7 @@ START_TEST(test_hmac)
     c_buf.ptr = challenge;
     c_buf.len = sizeof(challenge);
 
-    result = perform_soft_hmac_256_defaults(c_buf, k_buf, 0);
+    result = lca_soft_hmac256_defaults(c_buf, k_buf, 0);
 
     ck_assert_int_eq(result.len, 32);
 
@@ -98,7 +98,7 @@ START_TEST(test_hmac_key_slot)
 
     for (i=0; i < 16; i++)
     {
-        result = perform_soft_hmac_256_defaults(c_buf, k_buf, i);
+        result = lca_soft_hmac256_defaults(c_buf, k_buf, i);
 
         ck_assert_int_eq(result.len, 32);
 

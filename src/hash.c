@@ -304,9 +304,9 @@ perform_hmac_256(struct lca_octet_buffer challenge,
 }
 
 struct lca_octet_buffer
-perform_soft_hmac_256_defaults(struct lca_octet_buffer challenge,
-                               struct lca_octet_buffer key,
-                               uint8_t key_slot)
+lca_soft_hmac256_defaults(struct lca_octet_buffer challenge,
+                          struct lca_octet_buffer key,
+                          uint8_t key_slot)
 {
   struct lca_octet_buffer otp8 = lca_make_buffer (8);
   struct lca_octet_buffer otp3 = lca_make_buffer (3);
