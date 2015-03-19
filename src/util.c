@@ -230,3 +230,35 @@ lca_xor_buffers (const struct lca_octet_buffer lhs,
   return buf;
 
 }
+
+void *
+smemset(void *s, int c, size_t n)
+{
+  volatile char *p=s;
+  while (n--)
+    *p++=c;
+  return s;
+}
+
+/* Adapted from
+   http://jansson.readthedocs.org/en/latest/apiref.html#library-version
+*/
+
+static void *secure_malloc(size_t size)
+{
+  /* Store the memory area size in the beginning of the block */
+  void *ptr = malloc(size + 8);
+  *((size_t *)ptr) = size;
+  return ptr + 8;
+}
+
+static void secure_free(void *ptr)
+{
+  size_t size;
+
+  ptr -= 8;
+  size = *((size_t *)ptr);
+
+  smemset(ptr, 0, size + 8);
+  free(ptr);
+}

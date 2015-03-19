@@ -24,6 +24,7 @@
 #include <stdint.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include <stddef.h>
 
 struct lca_octet_buffer
 {
@@ -174,4 +175,18 @@ lca_xor_buffers (const struct lca_octet_buffer lhs,
  */
 unsigned int
 lca_c2b (char c) __attribute__ ((const));
+
+/**
+ * Guaranteed memset function. Adapted from:
+ * www.dwheeler.com/secure-programs/Secure-Programs-HOWTO/protect-secrets.html
+ *
+ * @param v The start of the buffer to set
+ * @param c Constant byte c
+ * @param n fills n bytes
+ *
+ * @return Returns s
+ */
+void *
+smemset(void *s, int c, size_t n);
+
 #endif /* UTIL_H */
