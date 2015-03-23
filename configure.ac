@@ -40,6 +40,7 @@ PKG_CHECK_MODULES([CHECK], [check >= 0.9.8])
 #Check for lgcrypt
 have_gcrypt=no
 AC_SEARCH_LIBS([gcry_md_open], [gcrypt], [have_gcrypt=yes])
+AM_PATH_LIBGCRYPT
 
 if test "x${have_gcrypt}" = xno; then
 AC_MSG_ERROR([

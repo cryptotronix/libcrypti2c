@@ -32,8 +32,8 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 #libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_CPPFLAGS = $(GUILE_CFLAGS)
 #libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_LIBADD = $(GUILE_LIBS)
 
-libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_CPPFLAGS = $(XML_CFLAGS) $(LIBGCRYPT_CFLAGS)
-libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_LIBADD = $(XML_LIBS) $(LIBGCRYPT_LIBS)
+libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_CPPFLAGS = $(XML_CFLAGS)
+libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_LIBADD = $(XML_LIBS)
 
 ## Define a libtool archive target "libcryptoauth-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTOAUTH_API_VERSION@ substituted into the generated Makefile at configure
