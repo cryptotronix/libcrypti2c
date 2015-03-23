@@ -18,4 +18,4 @@ TESTS = check_libcryptoauth
 check_PROGRAMS = check_libcryptoauth
 check_libcryptoauth_SOURCES = test_hmac.c $(top_builddir)/libcryptoauth.h
 check_libcryptoauth_CFLAGS = @CHECK_CFLAGS@
-check_libcryptoauth_LDADD = ../libcryptoauth-0.1.la @CHECK_LIBS@
+check_libcryptoauth_LDADD = ../libcryptoauth-0.1.la @CHECK_LIBS@ -lgpg-error
