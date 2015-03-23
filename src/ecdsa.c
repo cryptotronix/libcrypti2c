@@ -107,190 +107,7 @@ lca_ecdsa_p256_verify (struct lca_octet_buffer pub_key,
   return (rc == 0) ? true : false;
 }
 
-static void
-die (const char *format, ...)
-{
-  va_list arg_ptr ;
 
-  va_start( arg_ptr, format ) ;
-  vfprintf (stderr, format, arg_ptr );
-  va_end(arg_ptr);
-  if (*format && format[strlen(format)-1] != '\n')
-    putc ('\n', stderr);
-  exit (1);
-}
-
-void lca_ecda_test (void)
-{
-
-  assert (NULL != gcry_check_version (NULL));
-
-  gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
-
-  gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1u , 0);
-
-    static const char ecc_private_key[] =
-    "(private-key\n"
-    " (ecdsa\n"
-    "  (curve \"NIST P-256\")\n"
-    "  (q #04D4F6A6738D9B8D3A7075C1E4EE95015FC0C9B7E4272D2BEB6644D3609FC781"
-    "B71F9A8072F58CB66AE2F89BB12451873ABF7D91F9E1FBF96BF2F70E73AAC9A283#)\n"
-    "  (d #5A1EF0035118F19F3110FB81813D3547BCE1E5BCE77D1F744715E1D5BBE70378#)"
-    "))";
-  static const char ecc_private_key_wo_q[] =
-    "(private-key\n"
-    " (ecdsa\n"
-    "  (curve \"NIST P-256\")\n"
-    "  (d #5A1EF0035118F19F3110FB81813D3547BCE1E5BCE77D1F744715E1D5BBE70378#)"
-    "))";
-  static const char ecc_public_key[] =
-    "(public-key\n"
-    " (ecdsa\n"
-    "  (curve \"NIST P-256\")\n"
-    "  (q #04D4F6A6738D9B8D3A7075C1E4EE95015FC0C9B7E4272D2BEB6644D3609FC781"
-    "B71F9A8072F58CB66AE2F89BB12451873ABF7D91F9E1FBF96BF2F70E73AAC9A283#)"
-    "))";
-  static const char hash_string[] =
-    "(data (flags raw)\n"
-    " (value #00112233445566778899AABBCCDDEEFF"
-    /* */    "000102030405060708090A0B0C0D0E0F#))";
-  static const char my_string[] =
-    "(data (flags raw)\n"
-    " (value #84D96682895B83EB1E5FEB085D67842D"
-             "23C6150A85AC637F3090772CFAD3E6BE#))";
-
-  static const char hash2_string[] =
-    "(data (flags raw)\n"
-    " (hash sha1 #00112233445566778899AABBCCDDEEFF"
-    /* */    "000102030405060708090A0B0C0D0E0F"
-    /* */    "000102030405060708090A0B0C0D0E0F"
-    /* */    "00112233445566778899AABBCCDDEEFF#))";
-  /* hash2, but longer than curve length, so it will be truncated */
-  static const char hash3_string[] =
-    "(data (flags raw)\n"
-    " (hash sha1 #00112233445566778899AABBCCDDEEFF"
-    /* */    "000102030405060708090A0B0C0D0E0F"
-    /* */    "000102030405060708090A0B0C0D0E0F"
-    /* */    "00112233445566778899AABBCCDDEEFF"
-    /* */    "000102030405060708090A0B0C0D0E0F#))";
-
-  gpg_error_t err;
-  gcry_sexp_t key, hash, hash2, hash3, sig, sig2;
-
-  static bool verbose = true;
-
-  if (verbose)
-    fprintf (stderr, "Checking sample ECC key.\n");
-
-  if ((err = gcry_sexp_new (&hash, my_string, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  lca_print_sexp (hash);
-  if ((err = gcry_sexp_new (&hash2, hash2_string, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  if ((err = gcry_sexp_new (&hash3, hash3_string, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  if ((err = gcry_sexp_new (&key, ecc_private_key, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  lca_print_sexp (key);
-
-  if ((err = gcry_pk_sign (&sig, hash, key)))
-    die ("gcry_pk_sign failed: %s", gpg_strerror (err));
-
-  LCA_LOG (DEBUG, "Sign done");
-
-  lca_print_sexp (sig);
-
-  gcry_sexp_release (key);
-  if ((err = gcry_sexp_new (&key, ecc_public_key, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  lca_print_sexp (key);
-
-  if ((err = gcry_pk_verify (sig, hash, key)))
-    die ("gcry_pk_verify failed: %s", gpg_strerror (err));
-
-
-  gcry_sexp_release (key);
-  /* if ((err = gcry_sexp_new (&key, ecc_private_key, 0, 1))) */
-  /*   die ("line %d: %s", __LINE__, gpg_strerror (err)); */
-
-  /* if ((err = gcry_pk_sign (&sig2, hash2, key))) */
-  /*   die ("gcry_pk_sign failed: %s", gpg_strerror (err)); */
-
-  /* if ((err = gcry_pk_verify (sig2, hash3, key))) */
-  /*   die ("gcry_pk_verify failed: %s", gpg_strerror (err)); */
-
-  gcry_sexp_release (sig);
-  gcry_sexp_release (sig2);
-  gcry_sexp_release (hash);
-  gcry_sexp_release (hash2);
-  gcry_sexp_release (hash3);
-
-
-}
-
-
-void lca_hard_coded(void)
-{
-
-  assert (NULL != gcry_check_version (NULL));
-
-  gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
-
-  gcry_control (GCRYCTL_SET_DEBUG_FLAGS, 1u , 0);
-
-    static const char ecc_public_key[] =
-    "(public-key\n"
-    " (ecdsa\n"
-    "  (curve \"NIST P-256\")\n"
-      "  (q #049B4A517704E16F3C99C6973E29F882EAF840DCD125C725C9552148A74349EB77BECB37AA2DB8056BAF0E236F6DCFEC2C5A9A0F23CEFD8A9DC1F4693718E725D2#)\n"
-    "))";
-  static const char my_string[] =
-    "(data (flags raw)\n"
-    " (value #84D96682895B83EB1E5FEB085D67842D"
-             "23C6150A85AC637F3090772CFAD3E6BE#))";
-
-  static const char sig_stuff[]=
-    "(sig-val\n"
-    "(ecdsa\n"
-    "(r #143D855553442E87D96FEF4046F07EEB8E754D4C338C007BBDC492382018ED03#)\n"
-    "(s #15C2AED254A521DEE0072DE8F7485FC25806692355329CF878771DEFC6E61702#)))";
-
-  gpg_error_t err;
-  gcry_sexp_t key, hash, sig, sig2;
-
-  static bool verbose = true;
-
-  if (verbose)
-    fprintf (stderr, "Checking hard coded ECC key.\n");
-
-  if ((err = gcry_sexp_new (&hash, my_string, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  lca_print_sexp (hash);
-  if ((err = gcry_sexp_new (&key, ecc_public_key, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  lca_print_sexp (key);
-
-  if ((err = gcry_sexp_new (&sig, sig_stuff, 0, 1)))
-    die ("line %d: %s", __LINE__, gpg_strerror (err));
-
-  lca_print_sexp (sig);
-
-  if ((err = gcry_pk_verify (sig, hash, key)))
-    die ("gcry_pk_verify failed: %s", gpg_strerror (err));
-
-
-  gcry_sexp_release (key);
-  gcry_sexp_release (sig);
-  gcry_sexp_release (hash);
-
-}
 
 struct lca_octet_buffer
 lca_add_uncompressed_point_tag (struct lca_octet_buffer q)
@@ -315,8 +132,8 @@ lca_gen_soft_keypair (gcry_sexp_t *key)
 {
   static const char key_param[]=
     "(genkey\n"
-    "(ecc\n"
-    "(curve NIST P-256)\n"
+    "(ecdsa\n"
+    "(curve \"NIST P-256\")\n"
     "(flags param)))";
 
   assert (NULL != key);
@@ -326,9 +143,21 @@ lca_gen_soft_keypair (gcry_sexp_t *key)
 
   rc = gcry_sexp_build (&keyparam, NULL, key_param);
 
+
+  lca_print_sexp (keyparam);
+
   if (0 == rc)
     {
-      rc = gcry_pk_genkey (key, keyparam);
+      if (rc = gcry_pk_genkey (key, keyparam))
+        {
+          LCA_LOG (DEBUG, "gcry_pk_genkey failed: %s", gpg_strerror (rc));
+        }
+      else
+        {
+          printf ("Here's the key!\n");
+          lca_print_sexp (*key);
+        }
+
       gcry_sexp_release (keyparam);
     }
 
@@ -336,9 +165,117 @@ lca_gen_soft_keypair (gcry_sexp_t *key)
 
 }
 
-
-struct lca_octet_buffer
-lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash)
+int
+lca_ssig2buffer (gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
+                 struct lca_octet_buffer *s_out)
 {
+  assert (NULL != sig);
+
+  gcry_error_t  rc = -1;
+  gcry_sexp_t sexp_r, sexp_s;
+  gcry_mpi_t mpi_r, mpi_s;
+  unsigned char *raw_r, *raw_s;
+  size_t size_r, size_s;
+
+
+  if (NULL == (sexp_r = gcry_sexp_find_token(*sig, "r", 0)))
+    goto OUT;
+
+  if (NULL == (sexp_s = gcry_sexp_find_token(*sig, "s", 0)))
+    goto FREE_R;
+
+  lca_print_sexp (*sig);
+
+  if (NULL == (mpi_r = gcry_sexp_nth_mpi (sexp_r, 1, GCRYMPI_FMT_USG)))
+    goto FREE_S;
+
+  if (NULL == (mpi_s = gcry_sexp_nth_mpi (sexp_s, 1, GCRYMPI_FMT_USG)))
+    goto FREE_MPI_R;
+
+  if (rc = gcry_mpi_aprint(GCRYMPI_FMT_USG, &raw_r, &size_r, mpi_r))
+    goto FREE_MPI_S;
+
+  if (rc = gcry_mpi_aprint(GCRYMPI_FMT_USG, &raw_s, &size_s, mpi_s))
+    goto FREE_RAW_R;
+
+  *r_out = lca_make_buffer(size_r);
+  memcpy (r_out->ptr, raw_r, size_r);
+
+  *s_out = lca_make_buffer(size_s);
+  memcpy (s_out->ptr, raw_s, size_s);
+
+  rc = 0;
+
+  unsigned char *pc, *xp;
+  gcry_mpi_aprint(GCRYMPI_FMT_HEX, &pc, NULL, mpi_r);
+  printf("Hex dumpy R :\n%s\n", pc);
+
+  gcry_mpi_aprint(GCRYMPI_FMT_HEX, &xp, NULL, mpi_s);
+  printf("Hex dumpy S :\n%s\n", xp);
+
+  lca_print_hex_string("AMIRIGHT?: ", r_out->ptr, r_out->len);
+  lca_print_hex_string("AMIRIGHT?: ", s_out->ptr, s_out->len);
+
+ FREE_RAW_S:
+  gcry_free (raw_s);
+ FREE_RAW_R:
+  gcry_free (raw_r);
+ FREE_MPI_S:
+  gcry_mpi_release (mpi_s);
+ FREE_MPI_R:
+  gcry_mpi_release (mpi_r);
+ FREE_S:
+  gcry_sexp_release (sexp_s);
+ FREE_R:
+  gcry_sexp_release (sexp_r);
+ OUT:
+  return rc;
+}
+
+int
+lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash,
+               gcry_sexp_t *sig_out)
+{
+  gcry_sexp_t digest, key;
+  gpg_error_t err;
+  struct lca_octet_buffer rsp;
+  int result = -1;
+  gcry_mpi_t mpi_r,mpi_s;
+
+  assert (NULL != key_pair);
+
+  static const char my_string[] =
+    "(data (flags raw)\n"
+    " (value #84D96682895B83EB1E5FEB085D67842D"
+    "23C6150A85AC637F3090772CFAD3E6BE#))";
+
+  static const char zzz[] =
+    "(data (flags raw)\n"
+    " (value %b))";
+
+  lca_set_log_level(DEBUG);
+  printf ("Here's the key!\n");
+  //  lca_print_sexp (key);
+  lca_print_sexp (*key_pair);
+
+  if ((err = gcry_sexp_build (&digest, NULL, zzz, hash.len, hash.ptr)))
+    {
+      printf ("line %d: %s", __LINE__, gpg_strerror (err));
+      return err;
+    }
+
+  /* if ((err = gcry_sexp_new (&digest, my_string, 0, 1))) */
+  /*   { */
+  /*     printf ("line %d: %s", __LINE__, gpg_strerror (err)); */
+  /*     return err; */
+  /*   } */
+
+  if ((err = gcry_pk_sign (sig_out, digest, *key_pair)))
+    {
+      printf ("line %d: %s", __LINE__, gpg_strerror (err));
+      return err;
+    }
+
+  return 0;
 
 }

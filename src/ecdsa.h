@@ -32,10 +32,6 @@ lca_ecdsa_p256_verify (struct lca_octet_buffer pub_key,
                         struct lca_octet_buffer signature,
                         struct lca_octet_buffer sha256_digest);
 
-void lca_ecda_test(void);
-
-void lca_hard_coded(void);
-
 /**
  * Adds the uncompressed point format tag (0x04) to the Public Key
  *
@@ -65,6 +61,7 @@ lca_print_sexp (gcry_sexp_t to_print);
 int
 lca_gen_soft_keypair (gcry_sexp_t *key);
 
-struct lca_octet_buffer
-lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash);
+int
+lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash,
+               gcry_sexp_t  *sig_out);
 #endif /* ECDSA_H */
