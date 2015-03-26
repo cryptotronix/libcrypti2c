@@ -56,3 +56,6 @@ m4/
 /config.rpath
 /test/TAGS
 /test/check_libcryptoauth
+/test/csu
+/test/check_libcryptoauth.trs
+/test-driver
