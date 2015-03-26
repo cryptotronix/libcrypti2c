@@ -30,7 +30,7 @@ lca_print_sexp (gcry_sexp_t to_print) {
   if (!lca_is_debug())
     return;
 
-  const int DEBUG_MAX_SIZE = 1024;
+  const int DEBUG_MAX_SIZE = 2048;
   char * debug = malloc (DEBUG_MAX_SIZE);
   memset (debug, 0, DEBUG_MAX_SIZE);
   int bytes = gcry_sexp_sprint (to_print,
