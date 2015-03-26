@@ -101,7 +101,7 @@ END_TEST
 
 START_TEST(ecdsa_soft_key_pair)
 {
-    gcry_sexp_t ecc, sig;
+    gcry_sexp_t ecc, sig, g_digest;
     struct lca_octet_buffer result, signature;
 
     ck_assert(0 == lca_gen_soft_keypair (&ecc));
@@ -118,6 +118,14 @@ START_TEST(ecdsa_soft_key_pair)
     ck_assert (0 == lca_soft_sign(&ecc, result, &sig));
 
     lca_print_sexp (sig);
+
+    // Verify the sig
+    gcry_sexp_build (&g_digest, NULL,
+                     "(data (flags raw)\n"
+                     " (value %b))",
+                     result.len, result.ptr);
+
+    ck_assert (0 ==  gcry_pk_verify (sig, g_digest, ecc));
 
 }
 END_TEST
