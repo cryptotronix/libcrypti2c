@@ -34,5 +34,11 @@
 #include "src/atsha204_command.h"
 #include "src/command_util.h"
 
+void
+lca_init (void);
+
+void
+lca_init_and_debug (enum LCA_LOG_LEVEL lvl);
+
 
 #endif // LIBCRYPTOAUTH_H_

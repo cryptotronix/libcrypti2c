@@ -61,7 +61,8 @@ libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_SOURCES =	src/util.c \
                                                 src/command_util.c \
                                                 src/atsha204_command.c \
                                                 src/atecc108_command.c \
-						src/configfile.c
+						src/configfile.c \
+						src/init.c
 
 
 ## Instruct libtool to include ABI version information in the generated shared
