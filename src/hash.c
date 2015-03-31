@@ -41,14 +41,11 @@ lca_sha256 (FILE *fp)
 
   int c;
 
-  printf ("before hash: \n");
   /* Perform the hash */
   while ((c = getc (fp)) != EOF)
     {
-      printf("0x%02X ", c);
       gcry_md_putc (hd, c);
     }
-  printf ("\nafter hash \n");
 
   unsigned char *result;
 

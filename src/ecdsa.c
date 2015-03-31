@@ -154,7 +154,6 @@ lca_gen_soft_keypair (gcry_sexp_t *key)
         }
       else
         {
-          printf ("Here's the key!\n");
           lca_print_sexp (*key);
         }
 
@@ -210,13 +209,10 @@ lca_ssig2buffer (const gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
 
   unsigned char *pc, *xp;
   gcry_mpi_aprint(GCRYMPI_FMT_HEX, &pc, NULL, mpi_r);
-  printf("Hex dumpy R :\n%s\n", pc);
-
   gcry_mpi_aprint(GCRYMPI_FMT_HEX, &xp, NULL, mpi_s);
-  printf("Hex dumpy S :\n%s\n", xp);
 
-  lca_print_hex_string("AMIRIGHT?: ", r_out->ptr, r_out->len);
-  lca_print_hex_string("AMIRIGHT?: ", s_out->ptr, s_out->len);
+  lca_print_hex_string("R: ", r_out->ptr, r_out->len);
+  lca_print_hex_string("S: ", s_out->ptr, s_out->len);
 
  FREE_RAW_S:
   gcry_free (raw_s);
@@ -284,7 +280,6 @@ lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash,
     " (value %b))";
 
   lca_set_log_level(DEBUG);
-  printf ("Here's the key!\n");
   //  lca_print_sexp (key);
   lca_print_sexp (*key_pair);
 
