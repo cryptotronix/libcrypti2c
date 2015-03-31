@@ -24,6 +24,9 @@ static struct argp_option options[] = {
   {"verbose",  'v', 0,      0,  "Produce verbose output" },
   {"quiet",    'q', 0,      0,  "Don't produce any output" },
   {"silent",   's', 0,      OPTION_ALIAS },
+  {"hash",     'h', 0,      0,  "Show intermediate hash output" },
+  {"display",  'd', "DISPLAY", 0,
+   "DISPLAY option for the result" },
   {"file",     'f', "FILE", 0,
    "FILE to hash and sign instead of stdin" },
   { 0 }
@@ -33,8 +36,9 @@ static struct argp_option options[] = {
 struct arguments
 {
   char *args[NUM_ARGS];                /* arg1 & arg2 */
-  int silent, verbose;
+  int silent, verbose, hash;
   char *input_file;
+  char *display;
 };
 
 /* Parse a single option. */
@@ -53,8 +57,14 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'v':
       arguments->verbose = 1;
       break;
+    case 'h':
+      arguments->hash = 1;
+      break;
     case 'f':
       arguments->input_file = arg;
+      break;
+    case 'd':
+      arguments->display = arg;
       break;
 
     case ARGP_KEY_ARG:
@@ -81,83 +91,68 @@ parse_opt (int key, char *arg, struct argp_state *state)
 /* Our argp parser. */
 static struct argp argp = { options, parse_opt, args_doc, doc };
 
-int
-load_signing_key (const char *keyfile, gcry_sexp_t *key)
+
+void
+display_sig (const gcry_sexp_t* sig, const char *d_opt)
 {
-    assert (NULL != keyfile);
-    assert (NULL != key);
+    assert (NULL != d_opt);
 
-    FILE *fp;
-    char *k_str;
-    int rc = -1;
-    size_t MAX = 2048;
-    size_t k_str_len;
+    if (0 == strcmp (d_opt, "sexp"))
+    {
+        lca_set_log_level (DEBUG);
+        lca_print_sexp (*sig);
+        lca_set_log_level (INFO);
+    }
+    else if (0 == strcmp (d_opt, "hex"))
+    {
+        struct lca_octet_buffer r;
+        struct lca_octet_buffer s;
 
-    if (NULL == (fp = fopen (keyfile, "rb")))
-        return rc;
+        if (0 == lca_ssig2buffer (sig, &r, &s))
+        {
+            int i;
+            for (i = 0; i < r.len; i++)
+            {
+                if (i > 0) printf(" ");
+                printf("0x%02X", r.ptr[i]);
+            }
 
-    k_str = (char *) malloc (MAX);
-    assert (NULL != k_str);
-    memset (k_str, 0, MAX);
+            for (i = 0; i < s.len; i++)
+            {
+                if (i > 0) printf(" ");
+                printf("0x%02X", s.ptr[i]);
+            }
+        }
 
-    k_str_len = fread(k_str, 1, MAX, fp);
+        printf("\n");
 
-    assert (k_str_len > 0);
 
-    rc = gcry_sexp_build (key, NULL, k_str);
-
-    free (k_str);
-
-    return rc;
-
+    }
 }
 
 int
-hash_file (FILE *fp, gcry_sexp_t *digest)
-{
-    assert (NULL != fp);
-    assert (NULL != digest);
-
-    struct lca_octet_buffer result;
-    int rc = -1;
-
-    result = lca_sha256 (fp);
-
-    if (NULL == result.ptr)
-        return -2;
-
-    rc = gcry_sexp_build (digest, NULL,
-                          "(data (flags raw)\n"
-                          " (value %b))",
-                          result.len, result.ptr);
-
-    free (result.ptr);
-
-    return rc;
-
-}
-
-int
-sign_file (const char *key_f, FILE *fp)
+sign_file (const char *key_f, FILE *fp, gcry_sexp_t *sig, int show_digest)
 {
     int rc = -1;
 
-    gcry_sexp_t key, digest, sig;
+    gcry_sexp_t key, digest;
 
-    if (rc = load_signing_key (key_f, &key))
+    if (rc = lca_load_signing_key (key_f, &key))
         goto OUT;
 
-    if (rc = hash_file (fp, &digest))
+    if (rc = lca_hash_file (fp, &digest))
         goto KEY;
 
-    if (rc = gcry_pk_sign (&sig, digest, key))
+    if (show_digest)
+    {
+        lca_set_log_level (DEBUG);
+        lca_print_sexp (digest);
+        lca_set_log_level (INFO);
+    }
+
+
+    if (rc = gcry_pk_sign (sig, digest, key))
         goto DIG;
-
-    lca_set_log_level (DEBUG);
-    lca_print_sexp (sig);
-    lca_set_log_level (INFO);
-
-    gcry_free (sig);
 
 DIG:
     gcry_free (digest);
@@ -171,11 +166,14 @@ main (int argc, char **argv)
 {
   struct arguments arguments;
   int rc = -1;
+  gcry_sexp_t sig;
 
   /* Default values. */
   arguments.silent = 0;
   arguments.verbose = 0;
+  arguments.hash = 0;
   arguments.input_file = NULL;
+  arguments.display = "sexp";
 
   /* Parse our arguments; every option seen by parse_opt will
      be reflected in arguments. */
@@ -189,7 +187,12 @@ main (int argc, char **argv)
       exit -2;
 
 
-  rc = sign_file (arguments.args[0], fp);
+  if (0 == (rc = sign_file (arguments.args[0], fp, &sig, arguments.hash)))
+  {
+      display_sig (&sig, arguments.display);
+  }
+
+
 
   exit (rc);
 }

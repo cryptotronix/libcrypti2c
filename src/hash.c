@@ -41,11 +41,14 @@ lca_sha256 (FILE *fp)
 
   int c;
 
+  printf ("before hash: \n");
   /* Perform the hash */
   while ((c = getc (fp)) != EOF)
     {
+      printf("0x%02X ", c);
       gcry_md_putc (hd, c);
     }
+  printf ("\nafter hash \n");
 
   unsigned char *result;
 
@@ -59,6 +62,31 @@ lca_sha256 (FILE *fp)
   gcry_md_close (hd);
 
   return digest;
+}
+
+int
+lca_hash_file (FILE *fp, gcry_sexp_t *digest)
+{
+  assert (NULL != fp);
+  assert (NULL != digest);
+
+  struct lca_octet_buffer result;
+  int rc = -1;
+
+  result = lca_sha256 (fp);
+
+  if (NULL == result.ptr)
+    return -2;
+
+  rc = gcry_sexp_build (digest, NULL,
+                        "(data (flags raw)\n"
+                        " (value %b))",
+                        result.len, result.ptr);
+
+  free (result.ptr);
+
+  return rc;
+
 }
 
 struct lca_octet_buffer

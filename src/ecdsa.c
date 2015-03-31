@@ -166,7 +166,7 @@ lca_gen_soft_keypair (gcry_sexp_t *key)
 }
 
 int
-lca_ssig2buffer (gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
+lca_ssig2buffer (const gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
                  struct lca_octet_buffer *s_out)
 {
   assert (NULL != sig);
@@ -200,9 +200,11 @@ lca_ssig2buffer (gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
 
   *r_out = lca_make_buffer(size_r);
   memcpy (r_out->ptr, raw_r, size_r);
+  r_out->len = size_r;
 
   *s_out = lca_make_buffer(size_s);
   memcpy (s_out->ptr, raw_s, size_s);
+  s_out->len = size_s;
 
   rc = 0;
 
@@ -230,6 +232,34 @@ lca_ssig2buffer (gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
   gcry_sexp_release (sexp_r);
  OUT:
   return rc;
+}
+
+struct lca_octet_buffer
+lca_sig2buf (const gcry_sexp_t *sig)
+{
+  int rc = -1;
+  struct lca_octet_buffer r, s, result = {0,0};
+  uint8_t *buf;
+  int slen;
+
+  if (rc = lca_ssig2buffer (sig, &r, &s))
+    return result;
+
+  assert (NULL != r.ptr);
+  assert (NULL != s.ptr);
+
+  slen = r.len + s.len;
+
+  result = lca_make_buffer (slen);
+
+  memcpy (result.ptr, r.ptr, r.len);
+  memcpy (result.ptr + r.len, s.ptr, s.len);
+
+  lca_free_octet_buffer(r);
+  lca_free_octet_buffer(s);
+
+  return result;
+
 }
 
 int
@@ -277,5 +307,37 @@ lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash,
     }
 
   return 0;
+
+}
+
+
+int
+lca_load_signing_key (const char *keyfile, gcry_sexp_t *key)
+{
+  assert (NULL != keyfile);
+  assert (NULL != key);
+
+  FILE *fp;
+  char *k_str;
+  int rc = -1;
+  size_t MAX = 2048;
+  size_t k_str_len;
+
+  if (NULL == (fp = fopen (keyfile, "rb")))
+    return rc;
+
+  k_str = (char *) malloc (MAX);
+  assert (NULL != k_str);
+  memset (k_str, 0, MAX);
+
+  k_str_len = fread(k_str, 1, MAX, fp);
+
+  assert (k_str_len > 0);
+
+  rc = gcry_sexp_build (key, NULL, k_str);
+
+  free (k_str);
+
+  return rc;
 
 }

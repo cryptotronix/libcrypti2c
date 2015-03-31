@@ -64,4 +64,23 @@ lca_gen_soft_keypair (gcry_sexp_t *key);
 int
 lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash,
                gcry_sexp_t  *sig_out);
+
+/**
+ * Load an ECDSA private key from a file.
+ *
+ * @param keyfile The file to load.
+ * @param key The gcrypt key struct to fill in
+ *
+ * @return 0 on success
+ */
+int
+lca_load_signing_key (const char *keyfile, gcry_sexp_t *key);
+
+int
+lca_ssig2buffer (const gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
+                 struct lca_octet_buffer *s_out);
+
+struct lca_octet_buffer
+lca_sig2buf (const gcry_sexp_t *sig);
+
 #endif /* ECDSA_H */

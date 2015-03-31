@@ -24,6 +24,7 @@
 #include <stdio.h>
 #include "util.h"
 #include "log.h"
+#include <gcrypt.h>
 
 /**
  * Perform a SHA256 Digest on a file stream
@@ -35,6 +36,17 @@
  */
 struct lca_octet_buffer
 lca_sha256 (FILE *fp);
+
+/**
+ * SHA256s a file and returns the gcrypt digest
+ *
+ * @param fp The file to hash
+ * @param digest the digest to return
+ *
+ * @return 0 on success.
+ */
+int
+lca_hash_file (FILE *fp, gcry_sexp_t *digest);
 
 /**
  * Perform a SHA 256 on a fixed data block
