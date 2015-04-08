@@ -173,7 +173,7 @@ lca_send_and_receive (int fd,
     }
   else
     {
-      LCA_LOG (DEBUG, "Write failed: %d\n, result");
+      LCA_LOG (DEBUG, "Write failed: %d\n", result);
     }
 #endif
 
