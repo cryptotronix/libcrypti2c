@@ -179,7 +179,7 @@ lca_send_and_receive (int fd,
 unsigned int
 lca_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 {
-#ifndef USE_KERENL
+#ifndef USE_KERNEL
   unsigned int total_len = 0;
   unsigned int crc_len = 0;
   unsigned int crc_offset = 0;
