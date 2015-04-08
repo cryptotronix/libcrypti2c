@@ -4,5 +4,22 @@ compiler:
   - clang
 # Change this to your needs
 before_install: sudo apt-get install texinfo libxml2-dev check
+
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: "Vo3LCruWew0iLhyR6EyKZo1JkDYvlxE5AqOLi30Yn1/nezNuojZsycrXMs5bwRunryM7P0bf+Y1N3WyHT8X8T/IS23jSAFdHTkHhWWlwyJiYgw4WWCKy3TNlDpbG6IvY1o2HOj+NVyD5+xe6PzAv+zJYl43JFMgERvMoEAoNgdM="
+
+addons:
+  coverity_scan:
+    project:
+      name: "cryptotronix/libcrypti2c"
+      description: "Build submitted via Travis CI"
+    notification_email: jbd@cryptotronix.com
+    build_command_prepend: "./configure; make clean"
+    build_command:   "make -j 4"
+    branch_pattern: coverity_scan
+
 script: ./autogen.sh
 make check
