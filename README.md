@@ -2,6 +2,10 @@
 
 [![Build Status](https://travis-ci.org/cryptotronix/libcrypti2c.png)](https://travis-ci.org/cryptotronix/libcrypti2c)
 [![Stories in Ready](https://badge.waffle.io/cryptotronix/libcrypti2c.png?label=ready&title=Ready)](https://waffle.io/cryptotronix/libcrypti2c)
+<a href="https://scan.coverity.com/projects/2309">
+  <img alt="Coverity Scan Build Status"
+       src="https://scan.coverity.com/projects/2309/badge.svg"/>
+</a>
 
 ## About
 
