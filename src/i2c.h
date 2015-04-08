@@ -1,20 +1,20 @@
 /* -*- mode: c; c-file-style: "gnu" -*-
- * Copyright (C) 2014 Cryptotronix, LLC.
+ * Copyright (C) 2014-2015 Cryptotronix, LLC.
  *
- * This file is part of libcrypti2c.
+ * This file is part of libcryptoauth.
  *
- * libcrypti2c is free software: you can redistribute it and/or modify
+ * libcryptoauth is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * libcrypti2c is distributed in the hope that it will be useful,
+ * libcryptoauth is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
+ * along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -23,6 +23,7 @@
 
 #include <unistd.h>
 #include <stdbool.h>
+#include <time.h>
 
 /**
  * Open the I2C bus
@@ -32,22 +33,22 @@
  * @return An open file descriptor or the program will exit.
  */
 int
-ci2c_setup (const char* bus);
+lca_setup (const char* bus);
 
 void
-ci2c_acquire_bus (int fd, int addr);
+lca_acquire_bus (int fd, int addr);
 
 bool
-ci2c_wakeup (int fd);
+lca_wakeup (int fd);
 
 int
-ci2c_sleep_device (int fd);
+lca_sleep_device (int fd);
 
 ssize_t
-ci2c_write(int fd, const unsigned char *buf, unsigned int len);
+lca_write(int fd, const unsigned char *buf, unsigned int len);
 
 ssize_t
-ci2c_read(int fd, unsigned char *buf, unsigned int len);
+lca_read(int fd, unsigned char *buf, unsigned int len);
 
 /**
  * Idle the device. It will only respond to a wakeup after
@@ -57,7 +58,7 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len);
  * @param fd The open file descriptor
  */
 bool
-ci2c_idle(int fd);
+lca_idle(int fd);
 
 /**
  * Sets up the device for communication.
@@ -68,7 +69,7 @@ ci2c_idle(int fd);
  * @return An open file descriptor or -1 on error
  */
 int
-ci2c_atmel_setup(const char *bus, unsigned int addr);
+lca_atmel_setup(const char *bus, unsigned int addr);
 
 /**
  * Sleeps the device and closes the file descriptor.
@@ -77,5 +78,11 @@ ci2c_atmel_setup(const char *bus, unsigned int addr);
  *
  */
 void
-ci2c_atmel_teardown(int fd);
+lca_atmel_teardown(int fd);
+
+ssize_t
+lca_read_sleep(int fd,
+                unsigned char *buf,
+                unsigned int len,
+                struct timespec wait_time);
 #endif /* I2C_H */

@@ -18,36 +18,43 @@
  *
  */
 
-#ifndef LOG_H
-#define LOG_H
-
-#include <stdbool.h>
-#include <stdint.h>
-
-enum CI2C_LOG_LEVEL
-  {
-    SEVERE = 0,
-    WARNING,
-    INFO,
-    DEBUG
-  };
-
-void
-ci2c_set_log_level(enum CI2C_LOG_LEVEL lvl);
-
-void
-CI2C_LOG(enum CI2C_LOG_LEVEL, const char *format, ...);
-
-void
-ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len);
+#ifndef CRYPTI2C_GUILE_EXT_H_
+#define CRYPTI2C_GUILE_EXT_H_
 
 /**
- * Returns true if debug (most verbose log level) is set.
+ * Fills the BV from src and len
  *
- *
- * @return True if debug is enabled.
+ * @param src The source buffer
+ * @param len The len, must match bv length
+ * @param bv The destination bytevector
  */
-bool
-ci2c_is_debug ();
+void
+copy_to_bytevector (const uint8_t *src, unsigned int len, SCM bv);
 
-#endif /* LOG_H */
+/**
+ * Serialize the command structure and return a bytevector
+ *
+ * @param c The command to serialize
+ *
+ * @return A serialized bytevector
+ */
+SCM
+command_to_bytevector (struct Command_ATSHA204 c);
+
+/**
+ * Builds the random command.
+ *
+ * @param bool_obj #t if update seed is required.
+ *
+ * @return A bytevector representing the built command.
+ */
+SCM
+build_random_cmd_wrapper (SCM bool_obj);
+/**
+ * The main initialization function for the guile extension.
+ *
+ */
+void
+init_crypti2c (void);
+
+#endif // EXAMPLE_H_

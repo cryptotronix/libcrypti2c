@@ -15,4 +15,24 @@
 ;; You should have received a copy of the GNU Lesser General Public License
 ;; along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
 
-(load-extension "/usr/local/lib/libcrypti2c-0.1.so" "scm_init_crypti2c_module")
+
+(define-module (i2c)
+  #:use-module (ice-9 format)
+  #:use-module (rnrs bytevectors)
+  #:export (bytevector->hex-string
+            bytevector->bit-string))
+
+;; From https://raw.githubusercontent.com/artyom-poptsov/guile-ssh/master/ssh/key.scm
+(define (bytevector->hex-string bv)
+  "Convert bytevector BV to a colon separated hex string."
+  (string-join (map (lambda (e) (format #f "~2,'0x" e))
+                    (bytevector->u8-list bv))
+               ":"))
+
+(define (bytevector->bit-string bv)
+  "Convert bytevector BV to a colon separated bit string."
+  (string-join (map (lambda (e) (format #f "~8,'0b" e))
+                    (bytevector->u8-list bv))
+               ":"))
+
+(load-extension "/usr/local/lib/libcrypti2c-0.1" "init_crypti2c")

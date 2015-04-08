@@ -1,20 +1,20 @@
 /* -*- mode: c; c-file-style: "gnu" -*-
- * Copyright (C) 2014 Cryptotronix, LLC.
+ * Copyright (C) 2014-2015 Cryptotronix, LLC.
  *
- * This file is part of libcrypti2c.
+ * This file is part of libcryptoauth.
  *
- * libcrypti2c is free software: you can redistribute it and/or modify
+ * libcryptoauth is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * libcrypti2c is distributed in the hope that it will be useful,
+ * libcryptoauth is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
+ * along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -38,7 +38,7 @@ struct Command_ATSHA204
     struct timespec exec_time;
 };
 
-enum CI2C_STATUS_RESPONSE
+enum LCA_STATUS_RESPONSE
   {
     RSP_SUCCESS = 0,            /**< The command succeeded. */
     RSP_CHECKMAC_MISCOMPARE = 0x01, /**< The CHECKMAC Command failed */
@@ -55,14 +55,14 @@ enum CI2C_STATUS_RESPONSE
   };
 
 
-enum CI2C_STATUS_RESPONSE
-ci2c_process_command (int fd,
+enum LCA_STATUS_RESPONSE
+lca_process_command (int fd,
                       struct Command_ATSHA204 *c,
                       uint8_t* rec_buf,
                       unsigned int recv_len);
 
-enum CI2C_STATUS_RESPONSE
-ci2c_send_and_receive (int fd,
+enum LCA_STATUS_RESPONSE
+lca_send_and_receive (int fd,
                        const uint8_t *send_buf,
                        unsigned int send_buf_len,
                        uint8_t *recv_buf,
@@ -70,12 +70,30 @@ ci2c_send_and_receive (int fd,
                        struct timespec *wait_time);
 
 unsigned int
-ci2c_serialize_command (struct Command_ATSHA204 *c,
+lca_serialize_command (struct Command_ATSHA204 *c,
                         uint8_t **serialized);
 
-enum CI2C_STATUS_RESPONSE
-ci2c_read_and_validate (int fd,
+enum LCA_STATUS_RESPONSE
+lca_read_and_validate (int fd,
                         uint8_t *buf,
                         unsigned int len);
+
+/**
+ * Returns a string for the enumerated response code. Useful for
+ * debugging and logging functions.
+ *
+ * @param rsp The response code.
+ *
+ * @return A pointer to a static string.
+ */
+const char*
+status_to_string (enum LCA_STATUS_RESPONSE rsp) __attribute__ ((pure));
+
+struct lca_octet_buffer
+lca_send_and_get_rsp (int fd,
+                       const uint8_t *send_buf,
+                       const unsigned int send_buf_len,
+                       struct timespec wait_time,
+                       const int MAX_RECV_LEN);
 
 #endif /* COMMAND_ADAPTATION_H */

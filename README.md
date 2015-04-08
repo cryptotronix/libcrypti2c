@@ -1,12 +1,12 @@
-[![Stories in Ready](https://badge.waffle.io/cryptotronix/libcrypti2c.png?label=ready&title=Ready)](https://waffle.io/cryptotronix/libcrypti2c)
-# Cryptotronix libcrypti2c
+# Cryptotronix libcryptoauth
 
 [![Build Status](https://travis-ci.org/cryptotronix/libcrypti2c.png)](https://travis-ci.org/cryptotronix/libcrypti2c)
+[![Stories in Ready](https://badge.waffle.io/cryptotronix/libcrypti2c.png?label=ready&title=Ready)](https://waffle.io/cryptotronix/libcrypti2c)
 
 ## About
 
 
-`libcrypti2c` is a library for interfacing with embedded cryptographic devices on the I2C bus. It is a small collection of utility functions that handling:
+`libcryptoauth` is a library for interfacing with embedded cryptographic devices on the I2C bus. It is a small collection of utility functions that handling:
 
 - memory allocation (wrappers that zero out allocated memory)
 - very basic logging

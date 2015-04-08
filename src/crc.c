@@ -1,20 +1,20 @@
 /* -*- mode: c; c-file-style: "gnu" -*-
- * Copyright (C) 2014 Cryptotronix, LLC.
+ * Copyright (C) 2014-2015 Cryptotronix, LLC.
  *
- * This file is part of libcrypti2c.
+ * This file is part of libcryptoauth.
  *
- * libcrypti2c is free software: you can redistribute it and/or modify
+ * libcryptoauth is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * libcrypti2c is distributed in the hope that it will be useful,
+ * libcryptoauth is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
+ * along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -93,7 +93,7 @@ update_crc16_8005( uint16_t crc, char c )
 }
 
 uint16_t
-ci2c_calculate_crc16(const uint8_t *p, unsigned int length)
+lca_calculate_crc16(const uint8_t *p, unsigned int length)
 {
   uint16_t crc;
   uint16_t hibyte;
@@ -112,14 +112,14 @@ ci2c_calculate_crc16(const uint8_t *p, unsigned int length)
   lobyte = (crc & 0xFF);
 
   /* And the bits are swapped */
-  hibyte = ci2c_reverse_bits_in_byte(hibyte);
-  lobyte = ci2c_reverse_bits_in_byte(lobyte);
+  hibyte = lca_reverse_bits_in_byte(hibyte);
+  lobyte = lca_reverse_bits_in_byte(lobyte);
 
   return  lobyte << 8 | hibyte;
 }
 
 bool
-ci2c_is_crc_16_valid(const uint8_t *data, unsigned int data_len,
+lca_is_crc_16_valid(const uint8_t *data, unsigned int data_len,
                      const uint8_t *crc)
 {
 
@@ -129,11 +129,11 @@ ci2c_is_crc_16_valid(const uint8_t *data, unsigned int data_len,
   assert(NULL != data);
   assert(NULL != crc);
 
-  ci2c_print_hex_string("crc", crc, 2);
+  lca_print_hex_string("crc", crc, 2);
 
-  result = ci2c_calculate_crc16(data, data_len);
+  result = lca_calculate_crc16(data, data_len);
 
-  ci2c_print_hex_string("Calculated crc", (uint8_t*)&result, 2);
+  lca_print_hex_string("Calculated crc", (uint8_t*)&result, 2);
 
   return ((0 == memcmp(&result, crc, sizeof(result))) ? true : false);
 

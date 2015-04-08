@@ -48,4 +48,14 @@ m4/
 *.lo
 .libs/
 *.la
-/crypti2c-1.0.pc
+*.pc
+/test/Makefile
+/test/Makefile.in
+/test/check_libcrypti2c
+/ar-lib
+/config.rpath
+/test/TAGS
+/test/check_libcryptoauth
+/test/csu
+/test/check_libcryptoauth.trs
+/test-driver

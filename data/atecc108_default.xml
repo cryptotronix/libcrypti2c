@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ECC108Content.01>
+  <ConfigZone>
+    <Sn0to1>01 23</Sn0to1>
+    <Sn2to3>53 64</Sn2to3>
+    <RevNum>80 00 10 01</RevNum>
+    <Sn4to7>51 2A CB 1C</Sn4to7>
+    <Sn8>EE</Sn8>
+    <Reserved13>C0</Reserved13>
+    <I2C_Enable>A7</I2C_Enable>
+    <Reserved15>00</Reserved15>
+    <I2C_Address>C0</I2C_Address>
+    <Reserved>00</Reserved>
+    <OTPmode>AA</OTPmode>
+    <ChipMode>00</ChipMode>
+    <SlotConfig00>81 A0</SlotConfig00>
+    <SlotConfig01>81 A0</SlotConfig01>
+    <SlotConfig02>81 A0</SlotConfig02>
+    <SlotConfig03>81 A0</SlotConfig03>
+    <SlotConfig04>81 A0</SlotConfig04>
+    <SlotConfig05>81 A0</SlotConfig05>
+    <SlotConfig06>81 A0</SlotConfig06>
+    <SlotConfig07>81 A0</SlotConfig07>
+    <SlotConfig08>00 00</SlotConfig08>
+    <SlotConfig09>81 A0</SlotConfig09>
+    <SlotConfig0A>81 A0</SlotConfig0A>
+    <SlotConfig0B>81 A0</SlotConfig0B>
+    <SlotConfig0C>81 A0</SlotConfig0C>
+    <SlotConfig0D>81 A0</SlotConfig0D>
+    <SlotConfig0E>81 A0</SlotConfig0E>
+    <SlotConfig0F>81 A0</SlotConfig0F>
+    <UseFlag00>FF</UseFlag00>
+    <UpdateCount00>00</UpdateCount00>
+    <UseFlag01>FF</UseFlag01>
+    <UpdateCount01>00</UpdateCount01>
+    <UseFlag02>FF</UseFlag02>
+    <UpdateCount02>00</UpdateCount02>
+    <UseFlag03>FF</UseFlag03>
+    <UpdateCount03>00</UpdateCount03>
+    <UseFlag04>FF</UseFlag04>
+    <UpdateCount04>00</UpdateCount04>
+    <UseFlag05>FF</UseFlag05>
+    <UpdateCount05>00</UpdateCount05>
+    <UseFlag06>FF</UseFlag06>
+    <UpdateCount06>00</UpdateCount06>
+    <UseFlag07>FF</UseFlag07>
+    <UpdateCount07>00</UpdateCount07>
+    <LastKeyUse>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</LastKeyUse>
+    <UserExtra>00</UserExtra>
+    <Selector>09</Selector>
+    <LockValue>00</LockValue>
+    <LockConfig>00</LockConfig>
+    <SlotLocked>FF FF</SlotLocked>
+    <TempOffset>00 00 00 00 00 00</TempOffset>
+    <KeyConfig00>33 00</KeyConfig00>
+    <KeyConfig01>33 00</KeyConfig01>
+    <KeyConfig02>33 00</KeyConfig02>
+    <KeyConfig03>33 00</KeyConfig03>
+    <KeyConfig04>33 00</KeyConfig04>
+    <KeyConfig05>33 00</KeyConfig05>
+    <KeyConfig06>33 00</KeyConfig06>
+    <KeyConfig07>3C 00</KeyConfig07>
+    <KeyConfig08>33 00</KeyConfig08>
+    <KeyConfig09>33 00</KeyConfig09>
+    <KeyConfig0A>33 00</KeyConfig0A>
+    <KeyConfig0B>33 00</KeyConfig0B>
+    <KeyConfig0C>33 00</KeyConfig0C>
+    <KeyConfig0D>33 00</KeyConfig0D>
+    <KeyConfig0E>33 00</KeyConfig0E>
+    <KeyConfig0F>33 00</KeyConfig0F>
+  </ConfigZone>
+  <OtpZone>43 52 59 50 54 4F 54 52 4F 4E 49 58 20 45 43 4C 45 54 20 52 45 56 3A 20 41 00 00 00 00 00 00 00 53 4F 46 54 57 41 52 45 20 56 45 52 53 49 4F 4E 3A 20 30 2E 31 00 00 00 00 00 00 00 00 00 00 00</OtpZone>
+  <DataZone>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0F 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+    <Slot>FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF</Slot>
+  </DataZone>
+</ECC108Content.01>
+

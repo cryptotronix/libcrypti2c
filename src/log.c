@@ -1,20 +1,20 @@
 /* -*- mode: c; c-file-style: "gnu" -*-
- * Copyright (C) 2014 Cryptotronix, LLC.
+ * Copyright (C) 2014-2015 Cryptotronix, LLC.
  *
- * This file is part of libcrypti2c.
+ * This file is part of libcryptoauth.
  *
- * libcrypti2c is free software: you can redistribute it and/or modify
+ * libcryptoauth is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * libcrypti2c is distributed in the hope that it will be useful,
+ * libcryptoauth is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
+ * along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -25,10 +25,10 @@
 #include <time.h>
 #include <assert.h>
 
-static enum CI2C_LOG_LEVEL CURRENT_LOG_LEVEL = INFO;
+static enum LCA_LOG_LEVEL CURRENT_LOG_LEVEL = INFO;
 
 void
-CI2C_LOG(enum CI2C_LOG_LEVEL lvl, const char *format, ...)
+LCA_LOG(enum LCA_LOG_LEVEL lvl, const char *format, ...)
 {
   if (lvl <= CURRENT_LOG_LEVEL)
     {
@@ -41,20 +41,20 @@ CI2C_LOG(enum CI2C_LOG_LEVEL lvl, const char *format, ...)
 }
 
 void
-ci2c_set_log_level(enum CI2C_LOG_LEVEL lvl)
+lca_set_log_level(enum LCA_LOG_LEVEL lvl)
 {
   CURRENT_LOG_LEVEL = lvl;
 
 }
 
 void
-ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len)
+lca_print_hex_string(const char *str, const uint8_t *hex, unsigned int len)
 {
 
   if (CURRENT_LOG_LEVEL < DEBUG)
     return;
 
-  int i;
+  unsigned int i;
 
   assert(NULL != str);
   assert(NULL != hex);
@@ -72,7 +72,7 @@ ci2c_print_hex_string(const char *str, const uint8_t *hex, unsigned int len)
 }
 
 bool
-ci2c_is_debug ()
+lca_is_debug (void)
 {
   return (DEBUG == CURRENT_LOG_LEVEL) ? true : false;
 }

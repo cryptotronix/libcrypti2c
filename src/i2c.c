@@ -1,20 +1,20 @@
 /* -*- mode: c; c-file-style: "gnu" -*-
- * Copyright (C) 2014 Cryptotronix, LLC.
+ * Copyright (C) 2014-2015 Cryptotronix, LLC.
  *
- * This file is part of libcrypti2c.
+ * This file is part of libcryptoauth.
  *
- * libcrypti2c is free software: you can redistribute it and/or modify
+ * libcryptoauth is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * any later version.
  *
- * libcrypti2c is distributed in the hope that it will be useful,
+ * libcryptoauth is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU Lesser General Public License for more details.
  *
  * You should have received a copy of the GNU Lesser General Public License
- * along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
+ * along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
 
@@ -34,7 +34,7 @@
 #include "log.h"
 
 int
-ci2c_setup(const char* bus)
+lca_setup(const char* bus)
 {
   assert(NULL != bus);
 
@@ -51,7 +51,7 @@ ci2c_setup(const char* bus)
 }
 
 void
-ci2c_acquire_bus(int fd, int addr)
+lca_acquire_bus(int fd, int addr)
 {
   if (ioctl(fd, I2C_SLAVE, addr) < 0)
     {
@@ -65,10 +65,9 @@ ci2c_acquire_bus(int fd, int addr)
 
 
 bool
-ci2c_wakeup(int fd)
+lca_wakeup(int fd)
 {
 
-  uint32_t wakeup = 0;
   uint8_t wup[] = {0, 0};
   unsigned char buf[4] = {0};
   bool awake = false;
@@ -89,7 +88,7 @@ ci2c_wakeup(int fd)
       if (write(fd,&wup,sizeof(wup)) > 1)
         {
 
-          CI2C_LOG(DEBUG, "%s", "Device is awake.");
+          LCA_LOG(DEBUG, "%s", "Device is awake.");
           // Using I2C Read
           if (read(fd,buf,sizeof(buf)) != 4)
             {
@@ -98,7 +97,7 @@ ci2c_wakeup(int fd)
             }
           else
             {
-              assert(ci2c_is_crc_16_valid(buf, 2, buf+2));
+              assert(lca_is_crc_16_valid(buf, 2, buf+2));
               awake = true;
             }
         }
@@ -109,7 +108,7 @@ ci2c_wakeup(int fd)
 }
 
 int
-ci2c_sleep_device(int fd)
+lca_sleep_device(int fd)
 {
 
   unsigned char sleep_byte[] = {0x01};
@@ -120,7 +119,7 @@ ci2c_sleep_device(int fd)
 }
 
 bool
-ci2c_idle(int fd)
+lca_idle(int fd)
 {
 
   bool result = false;
@@ -137,7 +136,7 @@ ci2c_idle(int fd)
 }
 
 ssize_t
-ci2c_write(int fd, const unsigned char *buf, unsigned int len)
+lca_write(int fd, const unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);
 
@@ -146,7 +145,7 @@ ci2c_write(int fd, const unsigned char *buf, unsigned int len)
 }
 
 ssize_t
-ci2c_read(int fd, unsigned char *buf, unsigned int len)
+lca_read(int fd, unsigned char *buf, unsigned int len)
 {
   assert(NULL != buf);
 
@@ -155,23 +154,58 @@ ci2c_read(int fd, unsigned char *buf, unsigned int len)
 
 }
 
-int
-ci2c_atmel_setup(const char *bus, unsigned int addr)
+ssize_t
+lca_read_sleep(int fd,
+                unsigned char *buf,
+                unsigned int len,
+                struct timespec wait_time)
 {
-    int fd = ci2c_setup(bus);
+  assert(NULL != buf);
 
-    ci2c_acquire_bus(fd, addr);
+  int bytes = -1;
+  int attempt = 0;
+  const int NUM_RETRIES = 3;
+  struct timespec tim_rem;
 
-    ci2c_wakeup(fd);
+  while (bytes < 0 && attempt < NUM_RETRIES)
+    {
+      if (0 > (bytes = read(fd, buf, len)))
+        {
+          LCA_LOG (DEBUG, "lca_read_sleep failed, retrying");
+          if (0 != nanosleep (&wait_time , &tim_rem))
+            {
+              LCA_LOG (DEBUG, "Irritably woken from peaceful slumber.");
+            }
+        }
+
+    }
+
+  return bytes;
+}
+
+int
+lca_atmel_setup(const char *bus, unsigned int addr)
+{
+#ifndef USE_KERNEL
+    int fd = lca_setup(bus);
+
+    lca_acquire_bus(fd, addr);
+
+    lca_wakeup(fd);
+#else
+    int fd = open (bus, O_RDWR);
+#endif
 
     return fd;
 
 }
 
 void
-ci2c_atmel_teardown(int fd)
+lca_atmel_teardown(int fd)
 {
-    ci2c_sleep_device(fd);
+#ifndef USE_KERNEL
+    lca_sleep_device(fd);
+#endif
 
     close(fd);
 

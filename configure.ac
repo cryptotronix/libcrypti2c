@@ -1,32 +1,46 @@
-# Copyright (C) 2014 Cryptotronix, LLC.
+# Copyright (C) 2014-2015 Cryptotronix, LLC.
 
-# This file is part of libcrypti2c.
+# This file is part of libcryptoauth.
 
-# libcrypti2c is free software: you can redistribute it and/or modify
+# libcryptoauth is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
 # the Free Software Foundation, either version 3 of the License, or
 # any later version.
 
-# libcrypti2c is distributed in the hope that it will be useful,
+# libcryptoauth is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU Lesser General Public License for more details.
 
 # You should have received a copy of the GNU Lesser General Public License
-# along with libcrypti2c.  If not, see <http://www.gnu.org/licenses/>.
+# along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([libcrypti2c], [0.1], [bugs@cryptotronix.com], [crypti2c],
-        [https://www.github.com/cryptotronix/libcrypti2c])
+AC_INIT([libcryptoauth], [0.1], [bugs@cryptotronix.com], [cryptoauth],
+        [https://www.github.com/cryptotronix/libcryptoauth])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define])
 AC_CONFIG_MACRO_DIR([m4])
 PKG_PROG_PKG_CONFIG
+AM_PROG_AR
+
 # Guile Extensions
-PKG_CHECK_MODULES([GUILE], [guile-1.8])
+# Maybe guile one day will be optional?
+#PKG_CHECK_MODULES([GUILE], [guile-2.0])
+
+#GUILE_PROGS
+#GUILE_FLAGS
+#GUILE_SITE_DIR
+
+#Check for libxml
+PKG_CHECK_MODULES([XML], [libxml-2.0 >= 2.8])
+
+#Check for check
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.8])
 
 #Check for lgcrypt
 have_gcrypt=no
 AC_SEARCH_LIBS([gcry_md_open], [gcrypt], [have_gcrypt=yes])
+AM_PATH_LIBGCRYPT
 
 if test "x${have_gcrypt}" = xno; then
 AC_MSG_ERROR([
@@ -43,17 +57,30 @@ fi
 AC_CONFIG_HEADERS([config.h])
 AC_PROG_CC
 AC_PROG_CC_C_O
+AM_PROG_CC_C_O
 LT_INIT([disable-static])
 
 # Define these substitions here to keep all version information in one place.
 # For information on how to properly maintain the library version information,
 # refer to the libtool manual, section "Updating library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([CRYPTI2C_SO_VERSION], [0:0:0])
-AC_SUBST([CRYPTI2C_API_VERSION], [0.1])
+AC_SUBST([CRYPTOAUTH_SO_VERSION], [0:0:0])
+AC_SUBST([CRYPTOAUTH_API_VERSION], [0.1])
+
+#AC_SUBST([GUILE_SITE], [/usr/local/share/guile/2.0])
 
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.
-AC_CONFIG_FILES([Makefile
-                 crypti2c-${CRYPTI2C_API_VERSION}.pc:crypti2c.pc.in])
+AC_CONFIG_FILES([Makefile test/Makefile
+                 cryptoauth-${CRYPTOAUTH_API_VERSION}.pc:cryptoauth.pc.in])
 AC_OUTPUT
+
+
+echo "
+     $PACKAGE_NAME version $PACKAGE_VERSION
+     Prefix.........: $prefix
+     Debug Build....: $debug
+     C Compiler.....: $CC $CFLAGS $CPPFLAGS
+     C++ Compiler...: $CXX $CXXFLAGS $CPPFLAGS
+     Linker.........: $LD $LDFLAGS $LIBS
+"
