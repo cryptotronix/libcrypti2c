@@ -380,7 +380,7 @@ lca_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
     }
 
   /* Data is read, check the CRC before returning */
-  if (NULL != rsp.ptr)
+  if (NULL != rsp.ptr && rsp.len > LCA_CRC_16_LEN)
     {
       if (lca_is_crc_16_valid (rsp.ptr,
                                 rsp.len - LCA_CRC_16_LEN,
@@ -400,6 +400,11 @@ lca_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
           LCA_LOG (DEBUG, "Received CRC Failed!");
           lca_free_octet_buffer (rsp);
         }
+    }
+  else if (NULL != rsp.ptr && rsp.len <= LCA_CRC_16_LEN)
+    {
+      LCA_LOG (DEBUG, "Message does not have a CRC");
+      lca_free_octet_buffer (rsp);
     }
 
   return rsp;

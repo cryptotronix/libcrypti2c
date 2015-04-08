@@ -60,7 +60,10 @@ lca_get_random (int fd, bool update_seed)
       buf.len = RANDOM_RSP_LENGTH;
     }
   else
-    LCA_LOG (DEBUG, "Random command failed");
+    {
+      LCA_LOG (DEBUG, "Random command failed");
+      free (random_buf);
+    }
 
   return buf;
 

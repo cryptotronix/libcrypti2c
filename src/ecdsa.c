@@ -332,6 +332,7 @@ lca_load_signing_key (const char *keyfile, gcry_sexp_t *key)
   rc = gcry_sexp_build (key, NULL, k_str);
 
   free (k_str);
+  fclose (fp);
 
   return rc;
 

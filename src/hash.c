@@ -49,7 +49,8 @@ lca_sha256 (FILE *fp)
 
   unsigned char *result;
 
-  assert ((result = gcry_md_read (hd, GCRY_MD_SHA256)) != NULL);
+  result = gcry_md_read (hd, GCRY_MD_SHA256);
+  assert (NULL != result);
 
   /* copy over to the digest */
   const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
