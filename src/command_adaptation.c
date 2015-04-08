@@ -23,7 +23,9 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
+#ifndef USE_KERNEL
 #include "i2c.h"
+#endif
 #include "crc.h"
 #include <assert.h>
 #include "util.h"
@@ -104,6 +106,7 @@ lca_send_and_receive (int fd,
                        unsigned int recv_buf_len,
                        struct timespec *wait_time)
 {
+#ifndef USE_KERNEL
   struct timespec tim_rem;
   enum LCA_STATUS_RESPONSE rsp = RSP_AWAKE;
   const unsigned int NUM_RETRIES = 10;
@@ -144,6 +147,31 @@ lca_send_and_receive (int fd,
 
 
     }
+#else
+  enum LCA_STATUS_RESPONSE rsp = RSP_COMM_ERROR;
+  ssize_t result = 0;
+
+  assert (NULL != send_buf);
+  assert (NULL != recv_buf);
+  assert (NULL != wait_time);
+
+  result = write (fd, send_buf, send_buf_len);
+
+  if (result == send_buf_len)
+    {
+      result = read (fd, recv_buf, recv_buf_len);
+
+      if (result == 1)
+        {
+          LCA_LOG (DEBUG, "Command Response: %s", status_to_string (recv_buf[0]));
+          rsp = recv_buf[0];
+        }
+      else
+        {
+          rsp = RSP_SUCCESS;
+        }
+    }
+#endif
 
   return rsp;
 }
@@ -151,6 +179,7 @@ lca_send_and_receive (int fd,
 unsigned int
 lca_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
 {
+#ifndef USE_KERENL
   unsigned int total_len = 0;
   unsigned int crc_len = 0;
   unsigned int crc_offset = 0;
@@ -195,6 +224,32 @@ lca_serialize_command (struct Command_ATSHA204 *c, uint8_t **serialized)
   *crc = lca_calculate_crc16 (&data[1], crc_len);
 
   *serialized = data;
+
+#else
+  unsigned int total_len = 0;
+  uint8_t *data;
+
+  assert (NULL != c);
+  assert (NULL != serialized);
+
+  total_len = sizeof (c->opcode) + sizeof (c->param1) + sizeof (c->param2)
+    + c->data_len;
+
+  data = (uint8_t*)malloc (total_len);
+
+  assert (NULL != data);
+
+  /* copy over the command */
+  data[0] = c->opcode;
+  data[1] = c->param1;
+  data[2] = c->param2[0];
+  data[3] = c->param2[1];
+
+  if (c->data_len > 0)
+    memcpy (&data[4], c->data, c->data_len);
+
+  *serialized = data;
+#endif
 
   return total_len;
 
