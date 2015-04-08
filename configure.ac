@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([libcryptoauth], [0.1], [bugs@cryptotronix.com], [cryptoauth],
+AC_INIT([cryptoauth], [0.2], [bugs@cryptotronix.com], [cryptoauth],
         [https://www.github.com/cryptotronix/libcryptoauth])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define])
@@ -64,8 +64,8 @@ LT_INIT([disable-static])
 # For information on how to properly maintain the library version information,
 # refer to the libtool manual, section "Updating library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([CRYPTOAUTH_SO_VERSION], [0:0:0])
-AC_SUBST([CRYPTOAUTH_API_VERSION], [0.1])
+AC_SUBST([CRYPTOAUTH_SO_VERSION], [1:0:0])
+AC_SUBST([CRYPTOAUTH_API_VERSION], [0.2])
 
 #AC_SUBST([GUILE_SITE], [/usr/local/share/guile/2.0])
 
