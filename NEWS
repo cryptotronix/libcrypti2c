@@ -2,6 +2,10 @@ libcryptoauth NEWS -- history of user-visible changes
 
 Copyright (C) 2014-2015 Cryptotronix, LLC.
 
+* libcryptoauth 0.2.0 Beta release - April 2015
+
+ Refactor to use kernel option with compile flag.
+
 * libcrypto1uth 0.1.0 Beta release - February 2015
 
 A large number of changes including:

@@ -10,15 +10,15 @@
 ## About
 
 
-`libcryptoauth` is a library for interfacing with embedded cryptographic devices on the I2C bus. It is a small collection of utility functions that handling:
+`libcryptoauth` is a library for interfacing with the Atmel
+CryptoAuthentication device. It implements a command middleware that
+can be called in other application.
 
-- memory allocation (wrappers that zero out allocated memory)
-- very basic logging
-- i2c bus acquisition
-- crc
-- Guile extensions for interactive i2c programming (in progress).
+## Dependencies
 
-It relies on [libgcrypt](https://www.gnu.org/software/libgcrypt/) for all cryptographic primitives.
+- libgcrypt
+- libxml
+- check (for unit testing)
 
 # Supported Device
 
@@ -29,7 +29,7 @@ Currently the library is designed for the following devices:
 
 # Status
 
-This software is currently in ***ALPHA***. Expect numerous changes to the ABI.
+This software is currently in ***BETA***. Expect numerous changes to the ABI.
 
 # Post install
 

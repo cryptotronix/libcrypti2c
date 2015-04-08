@@ -1,0 +1,20 @@
+2015-04-07  Josh Datko  <jbd@cryptotronix.com>
+	Refactors to use kernel module or user-space driver.
+
+-------------------------------------------------------------------
+Copyright (C) 2015 Cryptotronix, LLC.
+
+This file is part of libcryptoauth.
+
+libcryptoauth is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+any later version.
+
+libcryptoauth is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
