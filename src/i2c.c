@@ -186,11 +186,15 @@ lca_read_sleep(int fd,
 int
 lca_atmel_setup(const char *bus, unsigned int addr)
 {
+#ifndef USE_KERNEL
     int fd = lca_setup(bus);
 
     lca_acquire_bus(fd, addr);
 
     lca_wakeup(fd);
+#else
+    int fd = open (bus, O_RDWR);
+#endif
 
     return fd;
 
@@ -199,7 +203,9 @@ lca_atmel_setup(const char *bus, unsigned int addr)
 void
 lca_atmel_teardown(int fd)
 {
+#ifndef USE_KERNEL
     lca_sleep_device(fd);
+#endif
 
     close(fd);
 
