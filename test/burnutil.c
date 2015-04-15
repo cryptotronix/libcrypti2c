@@ -107,15 +107,16 @@ main (int argc, char **argv)
 
   lca_init ();
 
-  //int fd = lca_atmel_setup (arguments.args[0], 0x60);
+  int fd = lca_atmel_setup (arguments.args[0], 0x60);
 
   struct lca_octet_buffer result;
 
   assert (0 == config2bin(arguments.input_file, &result));
 
-  //assert (0 == lca_burn_config_zone (fd, result));
+  lca_set_log_level (DEBUG);
+  assert (0 == lca_burn_config_zone (fd, result));
 
-  //close (fd);
+  close (fd);
 
   rc = 0;
 

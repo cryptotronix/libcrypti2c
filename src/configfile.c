@@ -173,7 +173,9 @@ lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
 
   for (x = 0; x < cz.len; x+=4)
     {
-      if (write4 (fd, CONFIG_ZONE, x, &cz.ptr[x]))
+      int addr = x >> 2;
+      uint32_t *data = (uint32_t *)&cz.ptr[x];
+      if (write4 (fd, CONFIG_ZONE, addr, *data))
         printf ("Write to %d success\n", x);
       else
         printf ("Write to %d Failure\n", x);
