@@ -61,8 +61,8 @@ libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_SOURCES =	src/util.c \
                                                 src/command_util.c \
                                                 src/atsha204_command.c \
                                                 src/atecc108_command.c \
-						src/configfile.c \
-						src/init.c
+                                                src/init.c \
+						src/configfile.c
 
 
 ## Instruct libtool to include ABI version information in the generated shared
@@ -86,7 +86,8 @@ nobase_cryptoauth_include_HEADERS = libcryptoauth.h \
 				    src/ecdsa.h \
                                     src/command_util.h \
                                     src/atsha204_command.h \
-                                    src/atecc108_command.h
+                                    src/atecc108_command.h \
+				    src/configzone.h
 
 
 ## Scheme source

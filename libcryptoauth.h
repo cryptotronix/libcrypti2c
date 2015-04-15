@@ -33,6 +33,7 @@
 #include "src/atecc108_command.h"
 #include "src/atsha204_command.h"
 #include "src/command_util.h"
+#include "src/configzone.h"
 
 void
 lca_init (void);

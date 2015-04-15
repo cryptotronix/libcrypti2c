@@ -21,15 +21,16 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdint.h>
+#include <assert.h>
+#include "util.h"
+#include "command_util.h"
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
-const char tok[] = " ";
-char * token;
 
-unsigned char cz[128] = {};
-
-unsigned char c2h(char c)
+static unsigned char
+c2h(char c)
 {
     if (c >= 'A')
         return (c - 'A' + 10);
@@ -37,25 +38,30 @@ unsigned char c2h(char c)
         return (c - '0');
 }
 
-unsigned char a2b(char *ptr)
+static unsigned char
+a2b(char *ptr)
 {
-    return c2h( *ptr )*16 + c2h( *(ptr+1) );
+  assert (NULL != ptr);
+  return c2h( *ptr )*16 + c2h( *(ptr+1) );
 }
 
-void
+struct lca_octet_buffer
 parseStory (xmlDocPtr doc, xmlNodePtr cur) {
 
   xmlChar *key;
   char *key_cp;
   cur = cur->xmlChildrenNode;
   int x = 0;
+  const char tok[] = " ";
+  char * token;
+
+
+  struct lca_octet_buffer result = {0,0};
+
+  uint8_t *configzone = NULL;
+
   while (cur != NULL)
     {
-	    /* if ((!xmlStrcmp(cur->name, (const xmlChar *)"Sn0to1"))) { */
-	    /*         key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1); */
-	    /*         printf("ConfigZone: %s\n", key); */
-	    /*         xmlFree(key); */
- 	    /* } */
 
       key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
       if (NULL != key)
@@ -66,8 +72,10 @@ parseStory (xmlDocPtr doc, xmlNodePtr cur) {
           while (token!=NULL)
             {
               printf("%s", token);
-              cz[x] = a2b(token);
-              x++;
+              assert (NULL != (configzone = realloc (configzone, x + 1)));
+              configzone[x] = a2b(token);
+              //cz[x] = a2b(token);
+              x+=1;
 
               // get the next token
               token = strtok(NULL, tok);
@@ -82,21 +90,33 @@ parseStory (xmlDocPtr doc, xmlNodePtr cur) {
 
       cur = cur->next;
     }
-  return;
+
+  printf ("C: %p, l %d\n", configzone, x);
+  result.ptr = configzone;
+  result.len = x;
+
+  return result;
 }
 
-void
-config2bin(char *docname) {
+int
+config2bin(char *docname, struct lca_octet_buffer *out)
+{
 
   xmlDocPtr doc;
   xmlNodePtr cur;
+  struct lca_octet_buffer tmp;
+  int rc = -1;
+
+  assert (NULL != docname);
+  assert (NULL != out);
 
   doc = xmlParseFile(docname);
 
   if (doc == NULL)
     {
       fprintf(stderr,"Document not parsed successfully. \n");
-      return;
+      rc = -2;
+      goto OUT;
     }
 
   cur = xmlDocGetRootElement(doc);
@@ -104,15 +124,15 @@ config2bin(char *docname) {
   if (cur == NULL)
     {
       fprintf(stderr,"empty document\n");
-      xmlFreeDoc(doc);
-      return;
+      rc = -3;
+      goto FREE;
     }
 
   if (xmlStrcmp(cur->name, (const xmlChar *) "ECC108Content.01"))
     {
       fprintf(stderr,"document of the wrong type, root node != ECC108Content.01");
-      xmlFreeDoc(doc);
-      return;
+      rc = -4;
+      goto FREE;
     }
 
   cur = cur->xmlChildrenNode;
@@ -122,12 +142,48 @@ config2bin(char *docname) {
       if ((!xmlStrcmp(cur->name, (const xmlChar *)"ConfigZone")))
         {
           printf("Parsing!\n");
-          parseStory (doc, cur);
+          tmp = parseStory (doc, cur);
+          if (NULL != tmp.ptr)
+            {
+              out->ptr = tmp.ptr;
+              out->len = tmp.len;
+              rc = 0;
+            }
+
         }
 
       cur = cur->next;
     }
 
+ FREE:
   xmlFreeDoc(doc);
-  return;
+ OUT:
+  return rc;
+}
+
+
+int
+lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
+{
+  bool result = false;
+  int rc = -1;
+
+  if (lca_is_config_locked (fd))
+    return 0;
+
+  assert (0 == cz.len % 4);
+  assert (NULL != cz.ptr);
+
+  int x = 0;
+
+  for (x = 0; x < cz.len; x+=4)
+    {
+      if (write4 (fd, CONFIG_ZONE, x, &cz.ptr[x]))
+        printf ("Write to %d success\n", x);
+      else
+        printf ("Write to %d Failure\n", x);
+    }
+
+  return 0;
+
 }

@@ -16,10 +16,14 @@
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 TESTS = check_libcryptoauth
 check_PROGRAMS = check_libcryptoauth
-check_libcryptoauth_SOURCES = test_hmac.c $(top_builddir)/libcryptoauth.h
-check_libcryptoauth_CFLAGS = @CHECK_CFLAGS@
-check_libcryptoauth_LDADD = ../libcryptoauth-@CRYPTOAUTH_API_VERSION@.la @CHECK_LIBS@ -lgpg-error
+check_libcryptoauth_SOURCES = tester.c test_hmac.c $(top_builddir)/libcryptoauth.h test_hmac.h test_xml.c
+check_libcryptoauth_CFLAGS = @CHECK_CFLAGS@ $(XML_CFLAGS)
+check_libcryptoauth_LDADD = ../libcryptoauth-@CRYPTOAUTH_API_VERSION@.la @CHECK_LIBS@ -lgpg-error $(XML_LIBS)
 
 bin_PROGRAMS = csu
 csu_SOURCES = csu.c $(top_builddir)/libcryptoauth.h
 csu_LDADD = -lgcrypt -lgpg-error ../libcryptoauth-@CRYPTOAUTH_API_VERSION@.la
+
+bin_PROGRAMS = burnutil
+burnutil_SOURCES = burnutil.c $(top_builddir)/libcryptoauth.h
+burnutil_LDADD = ../libcryptoauth-@CRYPTOAUTH_API_VERSION@.la
