@@ -71,7 +71,6 @@ parseStory (xmlDocPtr doc, xmlNodePtr cur) {
 
           while (token!=NULL)
             {
-              printf("%s", token);
               assert (NULL != (configzone = realloc (configzone, x + 1)));
               configzone[x] = a2b(token);
               //cz[x] = a2b(token);
@@ -81,9 +80,7 @@ parseStory (xmlDocPtr doc, xmlNodePtr cur) {
               token = strtok(NULL, tok);
 
             }
-          printf("\n");
 
-          printf("ConfigZone: %s\n", key);
           xmlFree(key);
           free(key_cp);
         }
@@ -91,7 +88,6 @@ parseStory (xmlDocPtr doc, xmlNodePtr cur) {
       cur = cur->next;
     }
 
-  printf ("C: %p, l %d\n", configzone, x);
   result.ptr = configzone;
   result.len = x;
 
@@ -141,7 +137,6 @@ config2bin(char *docname, struct lca_octet_buffer *out)
     {
       if ((!xmlStrcmp(cur->name, (const xmlChar *)"ConfigZone")))
         {
-          printf("Parsing!\n");
           tmp = parseStory (doc, cur);
           if (NULL != tmp.ptr)
             {
