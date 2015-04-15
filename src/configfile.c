@@ -25,6 +25,7 @@
 #include <assert.h>
 #include "util.h"
 #include "command_util.h"
+#include "atsha204_command.h"
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 
@@ -180,6 +181,16 @@ lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
       else
         printf ("Write to %d Failure\n", x);
     }
+
+  struct lca_octet_buffer read_cz = get_config_zone (fd);
+
+  memcpy (read_cz.ptr, cz.ptr, 16);
+  memcpy (read_cz.ptr+86, cz.ptr+86, 2);
+
+  if (0 == memcmp (read_cz.ptr, cz.ptr, read_cz.len))
+    rc = 0;
+  else
+    rc = -1;
 
   return 0;
 
