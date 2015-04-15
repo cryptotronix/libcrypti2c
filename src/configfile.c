@@ -172,7 +172,7 @@ lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
 
   int x = 0;
 
-  for (x = 0; x < cz.len; x+=4)
+  for (x = 16; x < cz.len; x+=4)
     {
       int addr = x >> 2;
       uint32_t *data = (uint32_t *)&cz.ptr[x];
@@ -182,16 +182,34 @@ lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
         printf ("Write to %d Failure\n", x);
     }
 
+  return 0;
+
+}
+
+int
+lca_lock_config_zone (int fd, const struct lca_octet_buffer template)
+{
+
   struct lca_octet_buffer read_cz = get_config_zone (fd);
 
-  memcpy (read_cz.ptr, cz.ptr, 16);
-  memcpy (read_cz.ptr+86, cz.ptr+86, 2);
+  assert (read_cz.ptr);
+  assert (template.ptr);
+  assert (read_cz.len == 128);
+  assert (template.len == 128);
 
-  if (0 == memcmp (read_cz.ptr, cz.ptr, read_cz.len))
-    rc = 0;
+  /* The first 16 bytes are unique per device so backfill the template */
+  memcpy (read_cz.ptr, template.ptr, 16);
+
+  /* can't write to bytes 86 and 87 */
+  memcpy (read_cz.ptr+86, template.ptr+86, 2);
+
+  uint16_t crc = lca_calculate_crc16 (read_cz.ptr, read_cz.len);
+
+  lca_free_octet_buffer (read_cz);
+
+  if (lock (fd, CONFIG_ZONE, crc))
+    return 0;
   else
-    rc = -1;
-
-  return 0;
+    return -1;
 
 }

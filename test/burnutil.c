@@ -23,6 +23,7 @@ static struct argp_option options[] = {
   {"verbose",  'v', 0,      0,  "Produce verbose output" },
   {"quiet",    'q', 0,      0,  "Don't produce any output" },
   {"silent",   's', 0,      OPTION_ALIAS },
+  {"lock",     'l', 0,      0,  "Locks zones"},
   {"file",     'f', "XMLFILE", 0,
    "XML Memory configuration file" },
   { 0 }
@@ -32,7 +33,7 @@ static struct argp_option options[] = {
 struct arguments
 {
     char *args[NUM_ARGS];                /* arg1 & arg2 */
-    int silent, verbose;
+    int silent, verbose, lock;
     char *display, *input_file;
 };
 
@@ -51,6 +52,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
     case 'v':
       arguments->verbose = 1;
+      break;
+    case 'l':
+      arguments->lock = 1;
       break;
     case 'f':
       arguments->input_file = arg;
@@ -91,6 +95,7 @@ main (int argc, char **argv)
   /* Default values. */
   arguments.silent = 0;
   arguments.verbose = 0;
+  arguments.lock = 0;
   arguments.input_file = NULL;
 
 
@@ -113,8 +118,10 @@ main (int argc, char **argv)
 
   assert (0 == config2bin(arguments.input_file, &result));
 
-  lca_set_log_level (DEBUG);
   assert (0 == lca_burn_config_zone (fd, result));
+
+  if (arguments.lock)
+      assert (0 == lca_lock_config_zone (fd, result));
 
   close (fd);
 
