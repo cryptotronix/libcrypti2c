@@ -335,5 +335,4 @@ lca_is_config_locked (int fd);
 bool
 lca_is_data_locked (int fd);
 
-
 #endif /* COMMAND_H */

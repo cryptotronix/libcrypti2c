@@ -5,7 +5,7 @@
 #include "util.h"
 
 int
-config2bin(char *docname, struct lca_octet_buffer *out);
+lca_config2bin(const char *docname, struct lca_octet_buffer *out);
 
 int
 lca_burn_config_zone (int fd, struct lca_octet_buffer cz);

@@ -20,10 +20,9 @@ check_libcryptoauth_SOURCES = tester.c test_hmac.c $(top_builddir)/libcryptoauth
 check_libcryptoauth_CFLAGS = @CHECK_CFLAGS@ $(XML_CFLAGS)
 check_libcryptoauth_LDADD = ../libcryptoauth-@CRYPTOAUTH_API_VERSION@.la @CHECK_LIBS@ -lgpg-error $(XML_LIBS)
 
-bin_PROGRAMS = csu
+bin_PROGRAMS = csu burnutil
 csu_SOURCES = csu.c $(top_builddir)/libcryptoauth.h
 csu_LDADD = -lgcrypt -lgpg-error ../libcryptoauth-@CRYPTOAUTH_API_VERSION@.la
 
-bin_PROGRAMS = burnutil
 burnutil_SOURCES = burnutil.c $(top_builddir)/libcryptoauth.h
 burnutil_LDADD = ../libcryptoauth-@CRYPTOAUTH_API_VERSION@.la

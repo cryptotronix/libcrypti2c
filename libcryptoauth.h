@@ -34,6 +34,7 @@
 #include "src/atsha204_command.h"
 #include "src/command_util.h"
 #include "src/configzone.h"
+#include "src/otp.h"
 
 void
 lca_init (void);

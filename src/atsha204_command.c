@@ -26,7 +26,7 @@
 #include <string.h>
 #include "config.h"
 #include "log.h"
-
+#include <time.h>
 
 struct Command_ATSHA204
 lca_build_random_cmd (bool update_seed)

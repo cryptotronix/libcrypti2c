@@ -96,7 +96,7 @@ parseStory (xmlDocPtr doc, xmlNodePtr cur) {
 }
 
 int
-config2bin(char *docname, struct lca_octet_buffer *out)
+lca_config2bin(const char *docname, struct lca_octet_buffer *out)
 {
 
   xmlDocPtr doc;

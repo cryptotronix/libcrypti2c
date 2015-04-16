@@ -24,6 +24,7 @@ static struct argp_option options[] = {
   {"quiet",    'q', 0,      0,  "Don't produce any output" },
   {"silent",   's', 0,      OPTION_ALIAS },
   {"lock",     'l', 0,      0,  "Locks zones"},
+  {"personalize",     'p', 0,      0,  "Fully personalizes device"},
   {"file",     'f', "XMLFILE", 0,
    "XML Memory configuration file" },
   { 0 }
@@ -33,7 +34,7 @@ static struct argp_option options[] = {
 struct arguments
 {
     char *args[NUM_ARGS];                /* arg1 & arg2 */
-    int silent, verbose, lock;
+    int silent, verbose, lock, personalize;
     char *display, *input_file;
 };
 
@@ -56,6 +57,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'l':
       arguments->lock = 1;
       break;
+    case 'p':
+        arguments->personalize = 1;
+        break;
     case 'f':
       arguments->input_file = arg;
       break;
@@ -96,6 +100,7 @@ main (int argc, char **argv)
   arguments.silent = 0;
   arguments.verbose = 0;
   arguments.lock = 0;
+  arguments.personalize = 0;
   arguments.input_file = NULL;
 
 
@@ -114,18 +119,23 @@ main (int argc, char **argv)
 
   int fd = lca_atmel_setup (arguments.args[0], 0x60);
 
-  struct lca_octet_buffer result;
+  if (arguments.personalize)
+      rc = personalize (fd, arguments.input_file);
+  else
+  {
+      struct lca_octet_buffer result;
 
-  assert (0 == config2bin(arguments.input_file, &result));
+      assert (0 == lca_config2bin(arguments.input_file, &result));
 
-  assert (0 == lca_burn_config_zone (fd, result));
+      assert (0 == lca_burn_config_zone (fd, result));
 
-  if (arguments.lock)
-      assert (0 == lca_lock_config_zone (fd, result));
+      if (arguments.lock)
+          assert (0 == lca_lock_config_zone (fd, result));
+
+      rc = 0;
+  }
 
   close (fd);
-
-  rc = 0;
 
   exit (rc);
 }

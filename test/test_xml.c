@@ -31,7 +31,7 @@ START_TEST(test_xml_parse)
 
     struct lca_octet_buffer result;
 
-    assert (0 == config2bin("../data/atecc108_default.xml", &result));
+    assert (0 == lca_config2bin("../data/atecc108_default.xml", &result));
 
     ck_assert (NULL != result.ptr);
 
@@ -42,6 +42,20 @@ START_TEST(test_xml_parse)
     lca_set_log_level(INFO);
 
     assert (0 == memcmp(ecc108, result.ptr, result.len) );
+}
+END_TEST
+
+START_TEST(test_build_otp)
+{
+    struct lca_octet_buffer otp;
+
+    otp = lca_build_otp_zone ();
+
+    ck_assert (NULL != otp.ptr);
+    ck_assert (otp.len == 64);
+
+    printf("%s\n", otp.ptr);
+
 }
 END_TEST
 
@@ -57,7 +71,9 @@ Suite * xml_suite(void)
 
 
     tcase_add_test(tc_core, test_xml_parse);
+    tcase_add_test(tc_core, test_build_otp);
     suite_add_tcase(s, tc_core);
+
 
     return s;
 }
