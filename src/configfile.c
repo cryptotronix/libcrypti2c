@@ -200,8 +200,8 @@ lca_lock_config_zone (int fd, const struct lca_octet_buffer template)
   /* The first 16 bytes are unique per device so backfill the template */
   memcpy (read_cz.ptr, template.ptr, 16);
 
-  /* can't write to bytes 86 and 87 */
-  memcpy (read_cz.ptr+86, template.ptr+86, 2);
+  /* can't write to bytes 84,85,86,87 */
+  memcpy (read_cz.ptr+84, template.ptr+84, 4);
 
   uint16_t crc = lca_calculate_crc16 (read_cz.ptr, read_cz.len);
 
