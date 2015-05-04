@@ -14,6 +14,12 @@
 CryptoAuthentication device. It implements a command middleware that
 can be called in other application.
 
+## Installing
+
+Probably best to pick the latest
+[release](https://github.com/cryptotronix/libcrypti2c/releases). Clone
+this repo if you want to pull the latest source to hack on libcryptoauth.
+
 ## Dependencies
 
 - libgcrypt

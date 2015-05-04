@@ -28,12 +28,8 @@ AM_CFLAGS = -DDATA_DIR=\"$(pkgdatadir)\"
 ## to provide a way for the user to supply additional arguments.
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
-## Add Guile libs
-#libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_CPPFLAGS = $(GUILE_CFLAGS)
-#libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_LIBADD = $(GUILE_LIBS)
-
-libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_CPPFLAGS = $(XML_CFLAGS)
-libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_LIBADD = $(XML_LIBS)
+libcryptoauth_la_CPPFLAGS = $(XML_CFLAGS)
+libcryptoauth_la_LIBADD = $(XML_LIBS)
 
 ## Define a libtool archive target "libcryptoauth-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTOAUTH_API_VERSION@ substituted into the generated Makefile at configure
@@ -41,7 +37,7 @@ libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_LIBADD = $(XML_LIBS)
 ## The libtool archive file (.la) will be installed into the directory named
 ## by the predefined variable $(bindir), along with the actual shared library
 ## file (.so).
-lib_LTLIBRARIES = libcryptoauth-@CRYPTOAUTH_API_VERSION@.la
+lib_LTLIBRARIES = libcryptoauth.la
 
 ## Define the source file list for the "libcryptoauth-@CRYPTOAUTH_API_VERSION@.la"
 ## target.  Note that @CRYPTOAUTH_API_VERSION@ is not interpreted by Automake and
@@ -51,25 +47,26 @@ lib_LTLIBRARIES = libcryptoauth-@CRYPTOAUTH_API_VERSION@.la
 ## rules which invoke the C++ compiler to produce a libtool object file (.lo)
 ## from each source file.  Note that it is not necessary to list header files
 ## which are already listed elsewhere in a _HEADERS variable assignment.
-libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_SOURCES =	src/util.c \
-						src/log.c \
-						src/crc.c \
-						src/command_adaptation.c \
-						src/i2c.c \
-						src/hash.c \
-						src/ecdsa.c \
-                                                src/command_util.c \
-                                                src/atsha204_command.c \
-                                                src/atecc108_command.c \
-                                                src/init.c \
-						src/configfile.c \
-						src/otp.c
+libcryptoauth_la_SOURCES =	src/util.c \
+				src/log.c \
+		        	src/crc.c \
+				src/command_adaptation.c \
+				src/i2c.c \
+				src/hash.c \
+				src/ecdsa.c \
+                                src/command_util.c \
+                                src/atsha204_command.c \
+                                src/atecc108_command.c \
+                                src/init.c \
+			        src/configfile.c \
+				src/otp.c
 
 
 ## Instruct libtool to include ABI version information in the generated shared
 ## library file (.so).  The library ABI version is defined in configure.ac, so
 ## that all version information is kept in one place.
-libcryptoauth_@CRYPTOAUTH_API_VERSION@_la_LDFLAGS = -version-info $(CRYPTOAUTH_SO_VERSION)
+libcryptoauth_la_LDFLAGS = -version-info $(CRYPTOAUTH_SO_VERSION) \
+		           -release $(CRYPTOAUTH_API_VERSION)
 
 ## Define the list of public header files and their install location.  The
 ## nobase_ prefix instructs Automake to not strip the directory part from each
@@ -91,12 +88,6 @@ nobase_cryptoauth_include_HEADERS = libcryptoauth.h \
 				    src/configzone.h \
 				    src/otp.h
 
-
-## Scheme source
-#SCM_SOURCES = crypti2c/configzone.scm
-#pkgguilesitedir = $(GUILE_SITE)
-#nobase_dist_pkgguilesite_DATA = $(SCM_SOURCES)
-#ETAGS_ARGS = $(SCM_SOURCES)
 
 ## Data files
 dist_pkgdata_DATA = data/atecc108_default.xml
@@ -120,7 +111,7 @@ cryptoauth_libincludedir = $(libdir)/cryptoauth-$(CRYPTOAUTH_API_VERSION)/includ
 ## pkg-config files are also used for architecture-independent data packages,
 ## in which case the correct install location would be $(datadir)/pkgconfig.
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = cryptoauth-$(CRYPTOAUTH_API_VERSION).pc
+pkgconfig_DATA = cryptoauth.pc
 
 ## Define an independent executable script for inclusion in the distribution
 ## archive.  However, it will not be installed on an end user's system due to

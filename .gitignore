@@ -60,3 +60,7 @@ m4/
 /test/check_libcryptoauth.trs
 /test-driver
 /cov-int/
+/*.tar.gz
+/*.tgz
+/test/burnutil
+/test/payload.bin

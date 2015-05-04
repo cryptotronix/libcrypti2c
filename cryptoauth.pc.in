@@ -8,5 +8,5 @@ Description: Library for communicating Atmel's CryptoAuthentication devices.
 Version: @PACKAGE_VERSION@
 Libs.private: -lgcrypt
 URL: @PACKAGE_URL@
-Libs: -L${libdir} -lcryptoauth-@CRYPTOAUTH_API_VERSION@
+Libs: -L${libdir} -lcryptoauth
 Cflags: -I${includedir}/cryptoauth-@CRYPTOAUTH_API_VERSION@ -I${libdir}/cryptoauth-@CRYPTOAUTH_API_VERSION@/include
