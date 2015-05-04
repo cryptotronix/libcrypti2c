@@ -102,7 +102,7 @@ END_TEST
 START_TEST(ecdsa_soft_key_pair)
 {
     gcry_sexp_t ecc, sig, g_digest;
-    struct lca_octet_buffer result, signature;
+    struct lca_octet_buffer result;
 
     ck_assert(0 == lca_gen_soft_keypair (&ecc));
 

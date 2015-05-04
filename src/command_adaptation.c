@@ -330,7 +330,7 @@ lca_read_and_validate (int fd, uint8_t *buf, unsigned int len)
   return status;
 }
 
-struct lca_octet_buffer
+static struct lca_octet_buffer
 lca_get_response (int fd, const int MAX_RECV_LEN, struct timespec wait_time)
 {
 
@@ -418,7 +418,6 @@ lca_send_and_get_rsp (int fd,
                        struct timespec wait_time,
                        const int MAX_RECV_LEN)
 {
-  unsigned int x = 0;
   ssize_t result = 0;
   struct lca_octet_buffer rsp = {0,0};
 

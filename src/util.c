@@ -247,7 +247,7 @@ smemset(void *s, int c, size_t n)
 static void *secure_malloc(size_t size)
 {
   /* Store the memory area size in the beginning of the block */
-  void *ptr = malloc(size + 8);
+  uint8_t *ptr = malloc(size + 8);
   *((size_t *)ptr) = size;
   return ptr + 8;
 }
@@ -256,9 +256,10 @@ static void secure_free(void *ptr)
 {
   size_t size;
 
-  ptr -= 8;
-  size = *((size_t *)ptr);
+  uint8_t *p = (uint8_t *)ptr;
+  p -= 8;
+  size = *((size_t *)p);
 
-  smemset(ptr, 0, size + 8);
-  free(ptr);
+  smemset(p, 0, size + 8);
+  free(p);
 }

@@ -113,7 +113,7 @@ copy_over (uint8_t *dst, const uint8_t *src, unsigned int src_len,
 }
 
 
-struct lca_octet_buffer
+static struct lca_octet_buffer
 perform_hash(struct lca_octet_buffer challenge,
              struct lca_octet_buffer key,
              uint8_t mode, uint16_t param2,
@@ -203,8 +203,9 @@ lca_verify_hash_defaults (struct lca_octet_buffer challenge,
 
 }
 
-struct lca_octet_buffer hmac_buffer (struct lca_octet_buffer data_to_hash,
-                                 struct lca_octet_buffer key)
+static struct lca_octet_buffer
+hmac_buffer (struct lca_octet_buffer data_to_hash,
+             struct lca_octet_buffer key)
 {
   struct lca_octet_buffer digest;
   const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
@@ -238,7 +239,7 @@ struct lca_octet_buffer hmac_buffer (struct lca_octet_buffer data_to_hash,
   return digest;
 }
 
-struct lca_octet_buffer
+static struct lca_octet_buffer
 prepare_hmac_buffer(struct lca_octet_buffer challenge,
                     struct lca_octet_buffer key,
                     uint8_t mode,
@@ -304,7 +305,7 @@ prepare_hmac_buffer(struct lca_octet_buffer challenge,
   return result;
 }
 
-struct lca_octet_buffer
+static struct lca_octet_buffer
 perform_hmac_256(struct lca_octet_buffer challenge,
                  struct lca_octet_buffer key,
                  uint8_t mode,
@@ -360,8 +361,6 @@ lca_verify_hmac_defaults (struct lca_octet_buffer challenge,
 {
 
   bool result = false;
-  const uint8_t MAX_NUM_DATA_SLOTS = 16;
-
   struct lca_octet_buffer otp8 = lca_make_buffer (8);
   struct lca_octet_buffer otp3 = lca_make_buffer (3);
   struct lca_octet_buffer sn4 = lca_make_buffer (4);

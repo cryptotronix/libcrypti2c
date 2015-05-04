@@ -37,7 +37,7 @@ lca_print_sexp (gcry_sexp_t to_print) {
                                 GCRYSEXP_FMT_ADVANCED,
                                 debug,
                                 DEBUG_MAX_SIZE);
-  LCA_LOG (DEBUG, "%s", debug);
+  LCA_LOG (DEBUG, "%d %s", bytes, debug);
   free (debug);
 }
 
@@ -148,7 +148,8 @@ lca_gen_soft_keypair (gcry_sexp_t *key)
 
   if (0 == rc)
     {
-      if (rc = gcry_pk_genkey (key, keyparam))
+      rc = gcry_pk_genkey (key, keyparam);
+      if (rc)
         {
           LCA_LOG (DEBUG, "gcry_pk_genkey failed: %s", gpg_strerror (rc));
         }
@@ -191,10 +192,12 @@ lca_ssig2buffer (const gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
   if (NULL == (mpi_s = gcry_sexp_nth_mpi (sexp_s, 1, GCRYMPI_FMT_USG)))
     goto FREE_MPI_R;
 
-  if (rc = gcry_mpi_aprint(GCRYMPI_FMT_USG, &raw_r, &size_r, mpi_r))
+  rc = gcry_mpi_aprint(GCRYMPI_FMT_USG, &raw_r, &size_r, mpi_r);
+  if (rc)
     goto FREE_MPI_S;
 
-  if (rc = gcry_mpi_aprint(GCRYMPI_FMT_USG, &raw_s, &size_s, mpi_s))
+  rc = gcry_mpi_aprint(GCRYMPI_FMT_USG, &raw_s, &size_s, mpi_s);
+  if (rc)
     goto FREE_RAW_R;
 
   *r_out = lca_make_buffer(size_r);
@@ -214,7 +217,6 @@ lca_ssig2buffer (const gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
   lca_print_hex_string("R: ", r_out->ptr, r_out->len);
   lca_print_hex_string("S: ", s_out->ptr, s_out->len);
 
- FREE_RAW_S:
   gcry_free (raw_s);
  FREE_RAW_R:
   gcry_free (raw_r);
@@ -235,10 +237,10 @@ lca_sig2buf (const gcry_sexp_t *sig)
 {
   int rc = -1;
   struct lca_octet_buffer r, s, result = {0,0};
-  uint8_t *buf;
   int slen;
 
-  if (rc = lca_ssig2buffer (sig, &r, &s))
+  rc = lca_ssig2buffer (sig, &r, &s);
+  if (rc)
     return result;
 
   assert (NULL != r.ptr);
@@ -262,18 +264,11 @@ int
 lca_soft_sign (gcry_sexp_t *key_pair, struct lca_octet_buffer hash,
                gcry_sexp_t *sig_out)
 {
-  gcry_sexp_t digest, key;
+  gcry_sexp_t digest;
   gpg_error_t err;
-  struct lca_octet_buffer rsp;
-  int result = -1;
-  gcry_mpi_t mpi_r,mpi_s;
 
   assert (NULL != key_pair);
 
-  static const char my_string[] =
-    "(data (flags raw)\n"
-    " (value #84D96682895B83EB1E5FEB085D67842D"
-    "23C6150A85AC637F3090772CFAD3E6BE#))";
 
   static const char zzz[] =
     "(data (flags raw)\n"

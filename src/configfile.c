@@ -28,6 +28,8 @@
 #include "atsha204_command.h"
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
+#include "crc.h"
+#include "configzone.h"
 
 
 static unsigned char
@@ -46,8 +48,8 @@ a2b(char *ptr)
   return c2h( *ptr )*16 + c2h( *(ptr+1) );
 }
 
-struct lca_octet_buffer
-parseStory (xmlDocPtr doc, xmlNodePtr cur) {
+static struct lca_octet_buffer
+parse_body (xmlDocPtr doc, xmlNodePtr cur) {
 
   xmlChar *key;
   char *key_cp;
@@ -67,7 +69,7 @@ parseStory (xmlDocPtr doc, xmlNodePtr cur) {
       key = xmlNodeListGetString(doc, cur->xmlChildrenNode, 1);
       if (NULL != key)
         {
-          key_cp = strdup(key);
+          key_cp = strdup((const char *)key);
           token = strtok(key_cp, tok);
 
           while (token!=NULL)
@@ -138,7 +140,7 @@ lca_config2bin(const char *docname, struct lca_octet_buffer *out)
     {
       if ((!xmlStrcmp(cur->name, (const xmlChar *)"ConfigZone")))
         {
-          tmp = parseStory (doc, cur);
+          tmp = parse_body (doc, cur);
           if (NULL != tmp.ptr)
             {
               out->ptr = tmp.ptr;
@@ -161,9 +163,6 @@ lca_config2bin(const char *docname, struct lca_octet_buffer *out)
 int
 lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
 {
-  bool result = false;
-  int rc = -1;
-
   if (lca_is_config_locked (fd))
     return 0;
 

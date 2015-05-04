@@ -437,7 +437,7 @@ lock (int fd, enum DATA_ZONE zone, uint16_t crc)
 
 }
 
-bool
+static bool
 is_otp_read_only_mode (int fd)
 {
   const uint8_t ADDR = 0x04;

@@ -47,7 +47,7 @@ lca_build_otp_zone (void)
     assert (snprintf(otp, OTP_SIZE, "CRYPTOTRONIX SV: %s, TOL: %s",
                      PACKAGE_VERSION, ctime(&tp)));
 
-    result.ptr = otp;
+    result.ptr = (uint8_t *)otp;
     result.len = OTP_SIZE;
 
     return result;
