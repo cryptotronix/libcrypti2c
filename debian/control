@@ -1,0 +1,22 @@
+Source: libcryptoauth
+Priority: optional
+Maintainer: Josh Datko <jbd@cryptotronix.com>
+Build-Depends: debhelper (>= 9), autotools-dev, texinfo, check, pkg-config
+Standards-Version: 3.9.5
+Section: libs
+Homepage: https://github.com/cryptotronix/libcrypti2c
+Vcs-Git: git@github.com:cryptotronix/libcrypti2c.git
+Vcs-Browser: https://github.com/cryptotronix/libcrypti2c
+
+Package: libcryptoauth-dev
+Section: libdevel
+Architecture: any
+Depends: libcryptoauth0 (= ${binary:Version}), ${misc:Depends}
+Description: Library for Atmel CryptoAuthentication Devices
+ Development library for Atmel's CryptoAutentication Devices, ATECC108 and ATSHA204
+
+Package: libcryptoauth0
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Library for Atmel CryptoAuthentication Devices
+ library for Atmel's CryptoAutentication Devices, ATECC108 and ATSHA204
