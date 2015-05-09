@@ -48,6 +48,33 @@ LT_INIT([static])
 AC_SUBST([CRYPTOAUTH_SO_VERSION], [2:0:0])
 AC_SUBST([CRYPTOAUTH_API_VERSION], [0.3])
 
+# --enable-rpm copies the ni executable and the spec file to the dist package,
+# for use in building RPM packages. Requires rpm and rpmbuild.
+AC_ARG_ENABLE([rpm],
+        [AS_HELP_STRING([--enable-rpm=@<:@yes/no@:>@],
+                [Configure for building RPM package @<:@default=no@:>@ (requires rpm and rpmbuild)])],
+        [AS_IF([$TEST "x$enable_rpm" = xyes],
+                      [AS_IF([$TEST "x$RPMBUILD" = xnotfound],
+                                    [AC_MSG_ERROR([rpmbuild is required for --enable-rpm])],
+                      [$TEST "x$RPM" = xnotfound],
+                                    [AC_MSG_ERROR([rpm is required for --enable-rpm])])])],
+        [enable_rpm=no])
+AM_CONDITIONAL(BUILDING_RPM, $TEST "x$enable_rpm" = xyes)
+
+
+# --enable-deb copies only the ni executable to the dist package, for use in
+# building DEB packages.
+AC_ARG_ENABLE([deb],
+        [AS_HELP_STRING([--enable-deb=@<:@yes/no@:>@],
+                [Configure for building Debian package @<:@default=no@:>@ (requires dpkg-buildpackage)])],
+        [AS_IF([$TEST "x$enable_deb" = xyes],
+                      [AS_IF([$TEST "x$DEBUILD" = xnotfound],
+                                    [AC_MSG_ERROR([dpkg-buildpackage is required for --enable-deb])],
+                      [$TEST "x$enable_rpm" = xyes],
+                             [AC_MSG_ERROR([--enable-rpm and --enable-deb are mutually exclusive])])])],
+        [enable_deb=no])
+AM_CONDITIONAL([BUILDING_DEB], [$TEST "x$enable_deb" = xyes])
+
 # Override the template file name of the generated .pc file, so that there
 # is no need to rename the template file when the API version changes.
 AC_CONFIG_FILES([Makefile test/Makefile
