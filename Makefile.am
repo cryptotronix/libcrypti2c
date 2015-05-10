@@ -123,23 +123,22 @@ if BUILDING_DEB
 DEBSOURCEPKG=$(PACKAGE)_$(VERSION).orig.tar.gz
 DEBSOURCEDIR=$(PACKAGE)-$(VERSION)
 deb: dist
-	@$(ECHO) "Building Debian package..."; \
-	if $(TEST) ! -d debian; then \
-		$(ECHO) "The files needed for building a Debian package are not" \
+	@echo "Building Debian package..."; \
+	if test ! -d debian; then \
+		echo "The files needed for building a Debian package are not" \
 		"included by default in the distribution. To build a package, check" \
 		"out the project from source control."; \
 		exit 1; \
 	fi; \
-	$(MV) $(PACKAGE)-$(VERSION).tar.gz $(DEBSOURCEPKG) && \
-	$(TAR) --extract --gunzip --file $(DEBSOURCEPKG) && \
-	$(MKDIR_P) $(DEBSOURCEDIR)/debian && \
-	$(CP) \
+	mv $(PACKAGE)-$(VERSION).tar.gz $(DEBSOURCEPKG) && \
+	tar --extract --gunzip --file $(DEBSOURCEPKG) && \
+	mkdir -p $(DEBSOURCEDIR)/debian && \
+	cp \
 		debian/changelog \
 		debian/compat \
 		debian/control \
 		debian/copyright \
 		debian/docs \
-		debian/menu \
 		debian/rules \
 		$(DEBSOURCEDIR)/debian && \
 	cd $(DEBSOURCEDIR) && \
