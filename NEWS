@@ -2,22 +2,30 @@ libcryptoauth NEWS -- history of user-visible changes
 
 Copyright (C) 2014-2015 Cryptotronix, LLC.
 
-* libcryptoauth 0.2.0 Beta release - April 2015
+# UNRELEASED
+
+ - Includes debian files and a make deb target.
+ - Builds a static (.a) library in addition to .so
+ - Changes pkg-config to just need `pkg-config cryptoauth --cflags
+   --libs`
+ -
+
+# libcryptoauth 0.2.0 Beta release - April 2015
 
  Refactor to use kernel option with compile flag.
 
-* libcrypto1uth 0.1.0 Beta release - February 2015
+#libcrypto1uth 0.1.0 Beta release - February 2015
 
 A large number of changes including:
 
-** Rename library from libcrypti2c to libcryptoauth to be more
+## Rename library from libcrypti2c to libcryptoauth to be more
    consistent with the Atmel naming conventions.
 
-* Libcrypti2c 0.1.0 - Beta Release - May 2014
+# Libcrypti2c 0.1.0 - Beta Release - May 2014
 
 The initial release of Libcrypti2c is the first Beta release
 
-** Features
+## Features
 
 libcrypti2c provides a library for working with cryptographic I2C devices
 
@@ -38,6 +46,6 @@ You should have received a copy of the GNU General Public License
 along with Libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
 Local variables:
-mode: outline
+mode: markdown
 paragraph-separate: "[ 	]*$"
 end:
