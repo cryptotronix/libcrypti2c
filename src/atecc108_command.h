@@ -21,10 +21,12 @@
 #ifndef ATECC108_COMMAND_H
 #define ATECC108_COMMAND_H
 
+#include <stdint.h>
+#include <stdbool.h>
 
 /**
  * Generates a private or public key in the specified slot. If private
- * is true, it will generate a new private key. If false, it will
+* is true, it will generate a new private key. If false, it will
  * return the *public* key from the *existing* private key in that slot.
  *
  * @param fd The open file descriptor.
@@ -34,7 +36,8 @@
  * @return In either case, this will return the *public* key of the
  * specified key slot. The caller should check if the pointer is null,
  * which signifies an error.
- */struct lca_octet_buffer
+ */
+struct lca_octet_buffer
 lca_gen_ecc_key (int fd,
                       uint8_t key_id,
                       bool private);
@@ -69,5 +72,20 @@ lca_ecc_verify (int fd,
                      struct lca_octet_buffer pub_key,
                      struct lca_octet_buffer signature);
 
+/**
+ * Compute the master secret from ECDH between the passed in public
+ * key and the key stored in slot @slot.
+ *
+ * @param fd The open fd for the device.
+ * @param slot The slot which should contain an ECDSA Private Key.
+ * @param x The x component of the corresponding key to do the exchange.
+ * @param y Like param x, but the y component.
+ *
+ * @return The buffer containing the master secret which will be 32
+ * bytes or the buffer will indicate 0 bytes on failure.
+ */
+struct lca_octet_buffer
+lca_ecdh (int fd, uint8_t slot,
+          struct lca_octet_buffer x, struct lca_octet_buffer y);
 
 #endif

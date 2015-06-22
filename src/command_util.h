@@ -39,6 +39,7 @@
 #define COMMAND_GEN_KEY         0x40
 #define COMMAND_ECC_SIGN        0x41
 #define COMMAND_ECC_VERIFY      0x45
+#define COMMAND_ECDH            0x43
 
 /* Command responses */
 #define SUCCESS_RESPONSE        0x00

@@ -64,3 +64,4 @@ m4/
 /*.tgz
 /test/burnutil
 /test/payload.bin
+/test/ecdh

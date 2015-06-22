@@ -173,6 +173,9 @@ lca_print_command (struct Command_ATSHA204 *c)
     case COMMAND_ECC_VERIFY:
       opcode = "Command ECC Verify";
       break;
+    case COMMAND_ECDH:
+      opcode = "Command ECDH";
+      break;
     default:
       assert (false);
     }

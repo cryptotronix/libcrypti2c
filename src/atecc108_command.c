@@ -163,3 +163,49 @@ lca_ecc_verify (int fd,
 
 
 }
+
+struct lca_octet_buffer
+lca_ecdh (int fd, uint8_t slot,
+          struct lca_octet_buffer x, struct lca_octet_buffer y)
+{
+  assert (slot <= 15);
+  assert (32 == x.len);
+  assert (32 == y.len);
+  assert (x.ptr);
+  assert (y.ptr);
+
+  uint8_t param2[2] = {0};
+  uint8_t param1 = 0;
+
+  param2[0] = slot;
+
+  struct lca_octet_buffer shared_secret = lca_make_buffer (32);
+  struct lca_octet_buffer data = lca_make_buffer (64);
+
+  memcpy (data.ptr, x.ptr, x.len);
+  memcpy (data.ptr + x.len, y.ptr, y.len);
+
+  struct Command_ATSHA204 c = make_command ();
+
+  set_opcode (&c, COMMAND_ECDH);
+  set_param1 (&c, param1);
+  set_param2 (&c, param2);
+  set_data (&c, data.ptr, data.len);
+  set_execution_time (&c, 0, ECC_SIGN_MAX_EXEC);
+
+  if (RSP_SUCCESS == lca_process_command (fd, &c,
+                                          shared_secret.ptr, shared_secret.len))
+    {
+      LCA_LOG (DEBUG, "ECDH success");
+    }
+  else
+    {
+      LCA_LOG (DEBUG, "ECDH failure");
+      lca_free_octet_buffer (shared_secret);
+      shared_secret.ptr = NULL;
+    }
+
+  lca_free_octet_buffer (data);
+
+  return shared_secret;
+}
