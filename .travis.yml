@@ -6,7 +6,9 @@ before_install:
 
 script:
   - ./autogen.sh
-  - ./configure --enable-deb CFLAGS='-g -fmessage-length=0 -pedantic -std=gnu99 -Wall -Wextra -Wwrite-strings -Winit-self -Wcast-align -Wcast-qual -Wpointer-arith -Wstrict-aliasing -Wformat=2 -Wmissing-declarations -Wmissing-include-dirs -Wno-unused-parameter -Wuninitialized -Wold-style-definition -Wstrict-prototypes -Wmissing-prototypes -Wshadow'
+  - ./configure CFLAGS='-g -fmessage-length=0 -pedantic -std=gnu99 -Wall -Wextra -Wwrite-strings -Winit-self -Wcast-align -Wcast-qual -Wpointer-arith -Wstrict-aliasing -Wformat=2 -Wmissing-declarations -Wmissing-include-dirs -Wno-unused-parameter -Wuninitialized -Wold-style-definition -Wstrict-prototypes -Wmissing-prototypes -Wshadow'
   - make
+  - make clean
+  - ./configure --enable-deb
   - make check
   - make deb
