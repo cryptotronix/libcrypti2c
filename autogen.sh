@@ -24,4 +24,3 @@ if [ ! -e "config.rpath" ]; then
 fi
 autoreconf --force --install
 ./configure
-make
