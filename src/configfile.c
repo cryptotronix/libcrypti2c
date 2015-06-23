@@ -29,7 +29,7 @@
 #include <libxml/xmlmemory.h>
 #include <libxml/parser.h>
 #include "crc.h"
-#include "configzone.h"
+#include "../libcryptoauth.h"
 
 
 static unsigned char
@@ -169,7 +169,7 @@ lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
   assert (0 == cz.len % 4);
   assert (NULL != cz.ptr);
 
-  int x = 0;
+  unsigned int x = 0;
 
   for (x = 16; x < cz.len; x+=4)
     {

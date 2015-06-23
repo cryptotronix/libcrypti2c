@@ -37,7 +37,7 @@ libcryptoauth_la_LIBADD = $(XML_LIBS)
 ## The libtool archive file (.la) will be installed into the directory named
 ## by the predefined variable $(bindir), along with the actual shared library
 ## file (.so).
-lib_LTLIBRARIES = libcryptoauth.la
+pkglib_LTLIBRARIES = libcryptoauth.la
 
 ## Define the source file list for the "libcryptoauth-@CRYPTOAUTH_API_VERSION@.la"
 ## target.  Note that @CRYPTOAUTH_API_VERSION@ is not interpreted by Automake and
@@ -59,7 +59,14 @@ libcryptoauth_la_SOURCES =	src/util.c \
                                 src/atecc108_command.c \
                                 src/init.c \
 			        src/configfile.c \
-				src/otp.c
+				src/otp.c \
+				src/util.h \
+				src/crc.h \
+				src/command_adaptation.h \
+				src/hash.h \
+				src/command_util.h \
+				src/atsha204_command.h
+
 
 
 ## Instruct libtool to include ABI version information in the generated shared
@@ -74,20 +81,7 @@ libcryptoauth_la_LDFLAGS = -version-info $(CRYPTOAUTH_SO_VERSION) \
 ## installation directory.  This only works if the directory hierarchy in the
 ## source tree matches the hierarchy at the install location, however.
 cryptoauth_includedir = $(includedir)/cryptoauth-$(CRYPTOAUTH_API_VERSION)
-nobase_cryptoauth_include_HEADERS = libcryptoauth.h \
-                                    src/util.h \
-			            src/log.h \
-                                    src/crc.h \
-                                    src/command_adaptation.h \
-			            src/i2c.h \
-				    src/hash.h \
-				    src/ecdsa.h \
-                                    src/command_util.h \
-                                    src/atsha204_command.h \
-                                    src/atecc108_command.h \
-				    src/configzone.h \
-				    src/otp.h
-
+nobase_cryptoauth_include_HEADERS = libcryptoauth.h
 
 ## Data files
 dist_pkgdata_DATA = data/atecc108_default.xml
@@ -104,7 +98,6 @@ dist_pkgdata_DATA = data/atecc108_default.xml
 ## configuration header file is generated at configure time and should not be
 ## shipped with the source tarball.
 cryptoauth_libincludedir = $(libdir)/cryptoauth-$(CRYPTOAUTH_API_VERSION)/include
-#nodist_crypti2c_libinclude_HEADERS = crypti2cconfig.h
 
 ## Install the generated pkg-config file (.pc) into the expected location for
 ## architecture-dependent package configuration information.  Occasionally,

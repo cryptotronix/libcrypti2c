@@ -102,14 +102,6 @@
 #define ECC_SIGN_MAX_EXEC 38000000
 #define ECC_VERIFY_MAX_EXEC 73000000
 
-enum DATA_ZONE
-  {
-    CONFIG_ZONE = 0,
-    OTP_ZONE = 1,
-    DATA_ZONE = 2
-  };
-
-
 struct Command_ATSHA204
 make_command (void) __attribute__ ((const));
 
@@ -122,23 +114,6 @@ build_command (uint8_t opcode,
                unsigned int sec,
                unsigned long nano);
 
-/**
- * Print the command structure to the debug log source.
- *
- * @param c The command to be sent.
- */
-void
-lca_print_command (struct Command_ATSHA204 *c);
-
-/**
- * Returns the status, as an enumeration, from the response buffer
- *
- * @param rsp The full response buffer
- *
- * @return The converted enumeration
- */
-enum LCA_STATUS_RESPONSE
-lca_get_status_response(const uint8_t *rsp);
 
 /**
  * Sets the param1 field in the command structure.

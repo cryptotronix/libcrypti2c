@@ -20,9 +20,9 @@
 #include "command_util.h"
 #include <stdlib.h>
 #include <string.h>
-#include "log.h"
 #include "crc.h"
 #include <assert.h>
+#include "../libcryptoauth.h"
 
 struct Command_ATSHA204
 make_command (void)

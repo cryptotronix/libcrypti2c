@@ -23,13 +23,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdio.h>
-#ifndef USE_KERNEL
-#include "i2c.h"
-#endif
 #include "crc.h"
 #include <assert.h>
 #include "util.h"
-#include "log.h"
+#include "../libcryptoauth.h"
 #include "command_util.h"
 
 const char*

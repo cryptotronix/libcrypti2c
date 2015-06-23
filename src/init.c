@@ -1,6 +1,5 @@
 #include <gcrypt.h>
 #include <assert.h>
-#include "log.h"
 #include "../libcryptoauth.h"
 
 void

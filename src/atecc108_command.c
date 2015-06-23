@@ -17,16 +17,15 @@
  * along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+#include "config.h"
 #include "atsha204_command.h"
-#include "atecc108_command.h"
 #include <assert.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
-#include "log.h"
+#include "../libcryptoauth.h"
+#include "command_util.h"
 
 
 struct lca_octet_buffer

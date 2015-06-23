@@ -18,12 +18,11 @@
  *
  */
 
-#include "log.h"
-
 #include <stdio.h>
 #include <stdarg.h>
 #include <time.h>
 #include <assert.h>
+#include "../libcryptoauth.h"
 
 static enum LCA_LOG_LEVEL CURRENT_LOG_LEVEL = INFO;
 

@@ -18,15 +18,16 @@
  *
  */
 
+#include "config.h"
 #include "atsha204_command.h"
 #include <assert.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include "config.h"
-#include "log.h"
 #include <time.h>
+#include "../libcryptoauth.h"
+#include "command_util.h"
 
 struct Command_ATSHA204
 lca_build_random_cmd (bool update_seed)

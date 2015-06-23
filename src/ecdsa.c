@@ -21,8 +21,7 @@
 #include "config.h"
 
 #include <assert.h>
-#include "ecdsa.h"
-#include "log.h"
+#include "../libcryptoauth.h"
 
 void
 lca_print_sexp (gcry_sexp_t to_print) {

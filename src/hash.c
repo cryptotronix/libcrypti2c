@@ -23,6 +23,7 @@
 #include <assert.h>
 #include <gcrypt.h>
 #include "hash.h"
+#include "../libcryptoauth.h"
 
 struct lca_octet_buffer
 lca_sha256 (FILE *fp)

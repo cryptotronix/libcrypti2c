@@ -4,7 +4,6 @@
 #include <fcntl.h>
 #include "../libcryptoauth.h"
 #include <libxml/parser.h>
-#include "../src/configzone.h"
 
 static uint8_t ecc108[] = {
     0x01, 0x23, 0x53, 0x64, 0x80, 0x00, 0x10, 0x01,

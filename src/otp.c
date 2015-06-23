@@ -24,12 +24,10 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <string.h>
-#include "log.h"
 #include <time.h>
-#include "otp.h"
 #include "command_util.h"
-#include "configzone.h"
 #include "atsha204_command.h"
+#include "../libcryptoauth.h"
 
 struct lca_octet_buffer
 lca_build_otp_zone (void)

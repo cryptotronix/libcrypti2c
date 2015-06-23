@@ -18,7 +18,6 @@
  *
  */
 
-#include "i2c.h"
 #include "crc.h"
 #include <assert.h>
 #include <errno.h>
@@ -31,7 +30,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-#include "log.h"
+#include "../libcryptoauth.h"
 
 int
 lca_setup(const char* bus)

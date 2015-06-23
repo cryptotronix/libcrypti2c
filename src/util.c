@@ -18,14 +18,14 @@
  *
  */
 
-#include "util.h"
 #include <stdio.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "log.h"
 #include <ctype.h>
 #include <limits.h>
+#include "util.h"
+#include "../libcryptoauth.h"
 
 void
 lca_wipe(unsigned char *buf, unsigned int len)

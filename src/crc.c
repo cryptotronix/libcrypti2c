@@ -24,8 +24,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
-#include "log.h"
-
+#include "../libcryptoauth.h"
 
 
 const uint16_t crc_tab_8005_normal[256] = {
