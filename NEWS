@@ -2,6 +2,15 @@ libcryptoauth NEWS -- history of user-visible changes
 
 Copyright (C) 2014-2015 Cryptotronix, LLC.
 
+* libcryptoauth 0.4.0 Beta release - June 2015
+
+** Moves all public functions to libcryptoauth.h and does not install
+   any other headers.
+
+** Adds ECDH function for ATECC508.
+
+** Changes install directory to lib/libcryptoauth/...
+
 * libcryptoauth 0.2.0 Beta release - April 2015
 
  Refactor to use kernel option with compile flag.

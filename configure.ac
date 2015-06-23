@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([cryptoauth], [0.3.3], [bugs@cryptotronix.com], [libcryptoauth],
+AC_INIT([cryptoauth], [0.4.0], [bugs@cryptotronix.com], [libcryptoauth],
         [https://www.github.com/cryptotronix/libcryptoauth])
 AC_PREREQ([2.59])
 AM_INIT_AUTOMAKE([1.10 -Wall no-define])
@@ -47,22 +47,8 @@ LT_INIT([static])
 # For information on how to properly maintain the library version information,
 # refer to the libtool manual, section "Updating library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([CRYPTOAUTH_SO_VERSION], [2:0:0])
-AC_SUBST([CRYPTOAUTH_API_VERSION], [0.3])
-
-# --enable-rpm copies the ni executable and the spec file to the dist package,
-# for use in building RPM packages. Requires rpm and rpmbuild.
-AC_ARG_ENABLE([rpm],
-        [AS_HELP_STRING([--enable-rpm=@<:@yes/no@:>@],
-        [Configure for building RPM package @<:@default=no@:>@ (requires rpm and rpmbuild)])],
-        [AS_IF([$TEST "x$enable_rpm" = xyes],
-        [AS_IF([$TEST "x$RPMBUILD" = xnotfound],
-        [AC_MSG_ERROR([rpmbuild is required for --enable-rpm])],
-        [$TEST "x$RPM" = xnotfound],
-        [AC_MSG_ERROR([rpm is required for --enable-rpm])])])],
-        [enable_rpm=no])
-AM_CONDITIONAL(BUILDING_RPM, $TEST "x$enable_rpm" = xyes)
-
+AC_SUBST([CRYPTOAUTH_SO_VERSION], [3:0:0])
+AC_SUBST([CRYPTOAUTH_API_VERSION], [0.4])
 
 # --enable-deb copies only the ni executable to the dist package, for use in
 # building DEB packages.
