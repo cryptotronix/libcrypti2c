@@ -74,9 +74,9 @@ parse_body (xmlDocPtr doc, xmlNodePtr cur) {
 
           while (token!=NULL)
             {
-              assert (NULL != (configzone = realloc (configzone, x + 1)));
+              configzone = realloc (configzone, x + 1);
+              assert (NULL != configzone);
               configzone[x] = a2b(token);
-              //cz[x] = a2b(token);
               x+=1;
 
               // get the next token
