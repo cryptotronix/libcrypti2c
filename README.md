@@ -14,6 +14,9 @@
 CryptoAuthentication device. It implements a command middleware that
 can be called in other application.
 
+The master version is currently 0.4.0-rc. 0.4.0 is expected to be
+released late June 2015.
+
 ## Installing
 
 Probably best to pick the latest
@@ -30,8 +33,9 @@ this repo if you want to pull the latest source to hack on libcryptoauth.
 
 Currently the library is designed for the following devices:
 
-- [Atmel ATSHA204](http://www.atmel.com/devices/atsha204.aspx)
-- [Atmel ECC108](http://www.atmel.com/devices/atecc108.aspx)
+- [Atmel ATSHA204A](http://www.atmel.com/devices/atsha204.aspx)
+- [Atmel ATECC108A](http://www.atmel.com/devices/atecc108.aspx)
+- [Atmel ATECC508](http://www.atmel.com/devices/ATECC508A.aspx)
 
 # Status
 
