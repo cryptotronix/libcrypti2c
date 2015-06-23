@@ -2,7 +2,7 @@ language: c
 compiler: gcc
 before_install:
   - sudo apt-get update
-  - sudo apt-get install texinfo libxml2-dev check libgcrypt11-dev dpkg-buildpackage
+  - sudo apt-get install texinfo libxml2-dev check libgcrypt11-dev dpkg-dev devscripts
 
 script:
   - ./autogen.sh
