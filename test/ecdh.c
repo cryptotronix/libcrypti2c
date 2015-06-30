@@ -60,6 +60,9 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'g':
         arguments->gen_key = 1;
         break;
+    case 'p':
+        arguments->personalize = 1;
+        break;
     case 'f':
       arguments->input_file = arg;
       break;
@@ -153,6 +156,12 @@ main (int argc, char **argv)
     get_config_zone (fd);
 
   lca_print_hex_string ("cz:", cz.ptr, cz.len);
+
+  if (arguments.personalize)
+    {
+      rc = personalize (fd, arguments.input_file);
+      exit (rc);
+    }
 
   if (arguments.gen_key)
       genkey(arguments.slot, fd);
