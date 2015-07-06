@@ -17,7 +17,7 @@ int main(void)
 
     lca_set_log_level(DEBUG);
 
-    //s = hmac_suite();
+    s = hmac_suite();
     e = ecdsa_suite();
     x = xml_suite();
 

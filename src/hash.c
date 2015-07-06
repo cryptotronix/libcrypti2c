@@ -204,7 +204,7 @@ lca_verify_hash_defaults (struct lca_octet_buffer challenge,
 
 }
 
-static struct lca_octet_buffer
+struct lca_octet_buffer
 hmac_buffer (struct lca_octet_buffer data_to_hash,
              struct lca_octet_buffer key)
 {
@@ -215,7 +215,11 @@ hmac_buffer (struct lca_octet_buffer data_to_hash,
   assert (NULL != key.ptr);
 
   /* Init gcrypt */
-  assert (NULL != gcry_check_version (NULL));
+  if (!gcry_control (GCRYCTL_INITIALIZATION_FINISHED_P))
+    {
+      fputs ("libgcrypt has not been initialized\n", stderr);
+      abort ();
+    }
 
   digest = lca_make_buffer (DLEN);
 
@@ -227,11 +231,15 @@ hmac_buffer (struct lca_octet_buffer data_to_hash,
 
   gcry_md_setkey (hd, key.ptr, key.len);
 
+  lca_print_hex_string("hmac input", data_to_hash.ptr, data_to_hash.len);
+  lca_print_hex_string("hmac key", key.ptr, key.len);
+
   gcry_md_write (hd, data_to_hash.ptr, data_to_hash.len);
 
   unsigned char *result = gcry_md_read (hd, GCRY_MD_SHA256);
 
   assert (NULL != result);
+  lca_print_hex_string("hmac result", result, 32);
 
   memcpy (digest.ptr, result, DLEN);
 

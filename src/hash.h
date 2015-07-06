@@ -38,4 +38,8 @@ unsigned int
 copy_over (uint8_t *dst, const uint8_t *src, unsigned int src_len,
            unsigned int offset);
 
+struct lca_octet_buffer
+hmac_buffer (struct lca_octet_buffer data_to_hash,
+             struct lca_octet_buffer key);
+
 #endif /* HASH_H */

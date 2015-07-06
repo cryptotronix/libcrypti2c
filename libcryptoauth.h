@@ -28,6 +28,8 @@
 #include <gcrypt.h>
 #include <unistd.h>
 
+#define LCA_SHA256_DLEN 32
+
 enum LCA_LOG_LEVEL
   {
     SEVERE = 0,
@@ -792,6 +794,12 @@ lca_burn_otp_zone (int fd, struct lca_octet_buffer otp_zone);
 
 int
 personalize (int fd, const char *config_file);
+
+int
+hkdf_256_extract( const uint8_t *salt, int salt_len,
+                  const uint8_t *ikm, int ikm_len,
+                  uint8_t prk[LCA_SHA256_DLEN]);
+
 
 
 #endif // LIBCRYPTOAUTH_H_

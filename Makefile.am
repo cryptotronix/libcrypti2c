@@ -65,7 +65,8 @@ libcryptoauth_la_SOURCES =	src/util.c \
 				src/command_adaptation.h \
 				src/hash.h \
 				src/command_util.h \
-				src/atsha204_command.h
+				src/atsha204_command.h \
+                                src/hkdf.c
 
 
 
