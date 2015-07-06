@@ -46,6 +46,8 @@ src/.deps/
 /config.sub
 m4/
 *.lo
+lib/
+snippet/
 .libs/
 *.la
 *.pc
