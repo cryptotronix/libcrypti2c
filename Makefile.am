@@ -136,6 +136,7 @@ deb: dist
 		debian/rules \
 		$(DEBSOURCEDIR)/debian && \
 	cd $(DEBSOURCEDIR) && \
+	./configure && \
 	DEB_BUILD_MAINT_OPTIONS=hardening=-format \
 	$(DEBUILD) -rfakeroot -D -us -uc; \
 	cd $(srcdir); \

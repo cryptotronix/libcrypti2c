@@ -18,3 +18,391 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
+2015-07-06  Josh Datko  <jbd@cryptotronix.com>
+
+	Updates gitignore for gnulib.
+
+	Adds gnulib.
+
+	Adds hkdf. Resolves issue #16.
+	- Adds hkdf expand and hkdf which combines extract and expand.
+	- Adds some of the test vectors for hkdf.
+
+	Initial hkdf extract implementation.
+
+2015-06-30  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds personalization options to ecdh.c
+
+2015-06-22  Josh Datko  <jbd@cryptotronix.com>
+
+	More travis tweaks.
+
+	Adds missing packages.
+
+	tweak travis build.
+
+	Fixes broken travis file.
+
+	Removes travis auto build thing.
+	I didn't have the branch setup.
+
+	Fixes coverity error.
+	Side affect in assertion.
+
+	Updates readme.
+
+	Bumps versions and updates news
+
+	There's no init actions for libcryptoauth
+
+	Refactors headers to use the one-true libcryptoauth.h.
+
+	Removes last few guile files.
+
+	Adds ECDH support for ATECC508 chips. Resolves issue #15.
+
+2015-05-09  Josh Datko  <jbd@cryptotronix.com>
+
+	Bumps package version.
+
+	Adds debian deb build into build system.
+
+	Adds deb package to configure/makefile
+
+	Adds debian packaging files.
+
+2015-05-07  Josh Datko  <jbd@cryptotronix.com>
+
+	Bumps version
+
+	Adds static library option.
+
+2015-05-04  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds lgpg-error back to ld_flags
+
+	Refactors makefile to use release tag and cleans up pkgconfig.
+
+	Fixes compile warnings.
+
+2015-04-16  Josh Datko  <jbd@cryptotronix.com>
+
+	Merge branch 'xml' of github.com:cryptotronix/libcrypti2c into xml
+
+	Adds personalize function.
+
+2015-04-15  Josh Datko  <jbd@cryptotronix.com>
+
+	updates
+
+	Adds lock command.
+
+	Adds get config zone.
+
+	basic config burning is working
+
+	removes debug statements.
+
+	adds missing file.
+
+	Adds xml mods.
+
+	Adds mods for xml test.
+
+2015-04-08  Josh Datko  <jbd@cryptotronix.com>
+
+	Changes tar name
+
+	Bumps versions.
+
+	Updates documentation. Closes issuel #10.
+
+	Attempt 1 for Travis CI with coverity
+
+2015-04-08  Josh  <jbdatko@gmail.com>
+
+	Adds coverity badge.
+
+2015-04-08  Josh Datko  <jbd@cryptotronix.com>
+
+	Addresses coverity errors. Issue #11.
+
+	Merge branch 'kernel-opt' into 0.2
+	Conflicts:
+		README.md
+
+	Fixes to use api version.
+
+	More debug on write failed.
+
+	Adds debug on write.
+
+	spelling is hard.
+
+	Adds USE_KERNEL flags to i2c.c
+
+	Adds kernel driver as a compile option.
+
+2015-03-31  Josh Datko  <jbd@cryptotronix.com>
+
+	Removes printfs
+
+	WIP.
+
+	Adds init function.
+
+2015-03-25  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds cryptoauth signing utility.
+
+	Increased debug length
+
+	Adds verification to signature.
+
+2015-03-23  Josh Datko  <jbd@cryptotronix.com>
+
+	Basic software signing seems to be working.
+
+	Oddly had to add -lgpg-error
+
+	Adds autotools changes for libgcrypt macro
+	This reverts commit 43bfd7fd7bfb7b56cba3f4e96825060368832a4b.
+
+	Adds libgcrypt flags to makefile.am
+
+2015-03-18  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds more secure memory functions.
+
+2015-02-18  Josh Datko  <jbd@cryptotronix.com>
+
+	fixes lca prefix.
+
+	Adds emacs projectile support.
+
+	Fixes typo.
+
+	Adds make check
+
+	Adds key slot into hmac functions.
+
+	renames to libcryptoauth
+
+	updates package config info.
+
+	Updates news with rename
+
+	Updates header date.
+
+	Renames library name in headers.
+
+	refactor to lca.
+	WIP. Renaming library to libcryptoauth.
+
+2015-02-17  Josh  <jbdatko@gmail.com>
+
+	Merge pull request #9 from waffle-iron/master
+	adds waffle.io Badge to Readme
+
+2015-02-17  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds basic signing command.
+
+	Adds initial hmac test.
+
+	Adds files to ignore.
+
+	Adds unit test framework.
+
+	Adds useful compile options.
+
+	Adds prefix to utility function. Closes issue #7.
+
+	Adds HMAC functions.
+
+	Adds libxml2-dev and removes guile depends.
+
+2015-02-12  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds initial xml parser.
+
+	Adds libxml depends
+
+2015-02-12  Josh Datko  <jbd@cryptotronix.com>
+
+	Revert "Updated to used kernel driver."
+	This reverts commit 13414c7a8394b2dd57760c86a87a93e3faf13835.
+
+	Conflicts:
+		Makefile.am
+
+2015-02-12  Demo User  <debian@beaglebone>
+
+	Removes guile dependencies. Issue #8.
+
+2015-02-06  Making GitHub Delicious.  <iron@waffle.io>
+
+	add waffle.io badge
+
+2014-12-15  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds soft-keypain generation.
+
+2014-11-03  Josh Datko  <jbd@cryptotronix.com>
+
+	Updated to used kernel driver.
+
+2014-10-19  Josh Datko  <jbd@cryptotronix.com>
+
+	uses local site dir
+
+2014-09-11  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds random command.
+
+	Removes srfi-64
+
+	Adds get data-dir.
+
+	Adds scheme files and xml files to build installation.
+
+	Refactors send and receive to use with guile.
+
+	Fixes incorrect memset args.
+
+	Adds guile macros to configure.ac
+
+2014-09-10  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds code to serialize commands and apply crcs
+
+2014-09-09  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds documentation.
+	Adds doc strings to functions.
+
+	Adds ignore for test results.
+
+	Adds some tests
+
+	Adds ice-9 format include.
+
+	Adds hex string utility
+
+	Adds initial test code.
+
+	Adds new guile extension for crc.
+
+	Merge branch '0.1' of github.com:cryptotronix/libcrypti2c into guile
+
+	Re-adds required zone parameter in write32
+
+2014-09-09  Josh Datko  <jbdatko@gmail.com>
+
+	Adds appropriate scheme module.
+
+2014-09-08  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds configuration zone utility
+
+	More compiler workoff.
+
+	Fixes compiler warnings.
+
+2014-09-05  Josh Datko  <jbd@cryptotronix.com>
+
+	Fixes various compiler warnings.
+
+	Switches to guile-2.0
+
+2014-09-05  Demo User  <debian@hotblack.(none)>
+
+	Updates guile extensions.
+
+	Changes to guile2.0
+
+	Adds new files
+
+	Adds new files to Makefile
+
+2014-05-30  Josh Datko  <jbd@cryptotronix.com>
+
+	Adds initial news file.
+
+	Adds license.
+
+	Fixes coverity scan complaining about "tainted scalar."
+	Resolves issue #2.
+
+	Fixes unchecked return value from Coverity.
+	Part of issue #2.
+
+	Fixes coverity error about resource leak.
+	Adds const qualifier to I2C send buffer.
+
+2014-05-25  Josh Datko  <jbd@cryptotronix.com>
+
+	Updates readme.
+
+	Fixes debug call.
+
+	Cleans up logging.
+
+	gcrypt signature verification working.
+
+	Adds ECDSA functions.
+
+2014-05-24  Josh Datko  <jbd@cryptotronix.com>
+
+	Fixes i2c.h naming.
+
+	Updates depends on libgcrypt.
+
+	Adds hash features into library.
+
+	Updates readme to remind about ldconfig.
+
+	Comments out guile extension as it appears not be compatible with Guile 1.8
+
+2014-05-23  Josh Datko  <jbd@cryptotronix.com>
+
+	Fixes brackets... again.
+
+	Fixes brackets
+
+	Updates guile extension and build files.
+
+	Adds LGPLv3 Logo
+
+	Changes version to 0.0.0 for lib.
+
+	Adds initial README.
+
+	Adds build file and licenses.
+
+	Fixes autogen to create m4 directory.
+
+	Adds guile bindings.
+
+	Fixes internal references.
+
+	Adds main header file.
+
+	Remains all functions to have ci2c prefix.
+
+	Adds updated header information.
+
+2014-05-09  Josh Datko  <jbd@cryptotronix.com>
+
+	Creates i2c library
+
+2014-03-27  Josh Datko  <jbdatko@gmail.com>
+
+	Fixes source file list.
+
+	cleans up project setup.
+
+	adds library files
+
+	Initial commit
