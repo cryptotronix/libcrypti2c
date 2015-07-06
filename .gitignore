@@ -67,8 +67,4 @@ snippet/
 /test/burnutil
 /test/payload.bin
 /test/ecdh
-/GNUmakefile
-/maint.mk
-/gitlog-to-changelog
-/useless-if-before-free
-/vc-list-files
+/announce-gen
