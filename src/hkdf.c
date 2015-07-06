@@ -61,7 +61,6 @@ lca_hkdf_256_extract( const uint8_t *salt, int salt_len,
   struct lca_octet_buffer saltb, keyb, prkb;
 
   assert (salt >= 0);
-  assert (salt);
   assert (ikm);
   assert (prk);
 
