@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = . test
+SUBDIRS = lib . test
 ## Place generated object files (.o) into the same directory as their source
 ## files, in order to avoid collisions when non-recursive make is used.
 AUTOMAKE_OPTIONS = subdir-objects
@@ -29,7 +29,7 @@ AM_CFLAGS = -DDATA_DIR=\"$(pkgdatadir)\"
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 libcryptoauth_la_CPPFLAGS = $(XML_CFLAGS)
-libcryptoauth_la_LIBADD = $(XML_LIBS)
+libcryptoauth_la_LIBADD = $(XML_LIBS) lib/libgnu.la
 
 ## Define a libtool archive target "libcryptoauth-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTOAUTH_API_VERSION@ substituted into the generated Makefile at configure

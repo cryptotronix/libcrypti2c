@@ -22,5 +22,7 @@ fi
 if [ ! -e "config.rpath" ]; then
     touch config.rpath
 fi
+gnulib-tool --lgpl --libtool --import configmake safe-alloc valgrind-tests maintainer-makefile full-write gitlog-to-changelog
+
 autoreconf --force --install
 ./configure
