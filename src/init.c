@@ -1,11 +1,15 @@
-#include <gcrypt.h>
+#include "config.h"
 #include <assert.h>
 #include "../libcryptoauth.h"
+
+#ifdef CRYPTOAUTH_HAVE_GCRYPT
+#include <gcrypt.h>
+#endif
 
 void
 lca_init (void)
 {
-
+#ifdef CRYPTOAUTH_HAVE_GCRYPT
     if (!gcry_control (GCRYCTL_INITIALIZATION_FINISHED_P))
     {
         assert (NULL != gcry_check_version (NULL));
@@ -22,6 +26,7 @@ lca_init (void)
 
         gcry_control (GCRYCTL_INITIALIZATION_FINISHED, 0);
     }
+#endif
 }
 
 void
