@@ -39,26 +39,28 @@ lca_setup(const char* bus)
 
   int fd;
 
-  if ((fd = open(bus, O_RDWR)) < 0)
-    {
-      perror("Failed to open I2C bus\n");
-      exit(1);
-    }
+  fd = open(bus, O_RDWR);
+
+  if (fd < 0)
+    perror("Failed to open I2C bus\n");
 
   return fd;
 
 }
 
-void
+int
 lca_acquire_bus(int fd, int addr)
 {
-  if (ioctl(fd, I2C_SLAVE, addr) < 0)
+  int rc = ioctl(fd, I2C_SLAVE, addr);
+
+  if (rc < 0)
     {
       perror("Failed to acquire bus access and/or talk to slave.\n");
+    }
+  else
+    rc = 0;
 
-      exit(1);
-  }
-
+  return rc;
 }
 
 
@@ -82,6 +84,8 @@ lca_wakeup(int fd)
   if(fcntl(fd, F_GETFD) < 0)
     perror("Invalid FD.\n");
 
+  int numTries = 0;
+
   while (!awake)
     {
       if (write(fd,&wup,sizeof(wup)) > 1)
@@ -96,10 +100,13 @@ lca_wakeup(int fd)
             }
           else
             {
-              assert(lca_is_crc_16_valid(buf, 2, buf+2));
-              awake = true;
+              awake = lca_is_crc_16_valid(buf, 2, buf+2);
             }
         }
+
+      numTries += 1;
+      if (numTries > 3)
+        return false;
     }
 
   return awake;
@@ -207,5 +214,26 @@ lca_atmel_teardown(int fd)
 #endif
 
     close(fd);
+
+}
+
+
+int
+lca_setup_no_wake (const char* bus, int addr)
+{
+#ifndef USE_KERNEL
+  int fd = lca_setup(bus);
+
+  if (fd < 0)
+    return fd;
+
+  int rc = lca_acquire_bus(fd, addr);
+  if (rc < 0)
+    return rc;
+#else
+  int fd = open (bus, O_RDWR);
+#endif
+
+  return fd;
 
 }
