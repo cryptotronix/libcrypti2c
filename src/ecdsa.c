@@ -21,8 +21,12 @@
 #include "config.h"
 
 #include <assert.h>
+#include <yacl.h>
 #include "../libcryptoauth.h"
+#include <stdint.h>
+#include <string.h>
 
+#ifdef CRYPTOAUTH_HAVE_GCRYPT
 void
 lca_print_sexp (gcry_sexp_t to_print) {
 
@@ -330,4 +334,59 @@ lca_load_signing_key (const char *keyfile, gcry_sexp_t *key)
 
   return rc;
 
+}
+
+#endif
+
+
+int
+lca_ecdsa_p256_hash_sign (int fd, uint8_t *data, size_t len,
+                          uint8_t slot,
+                          uint8_t signature[LCA_P256_COORD_SIZE*2])
+{
+  assert (data);
+  uint8_t digest[YACL_SHA256_LEN];
+  int rc = yacl_sha256 (data, len, digest);
+
+  if (rc)
+    return rc;
+
+  struct lca_octet_buffer dig;
+  dig.ptr = digest;
+  dig.len = YACL_SHA256_LEN;
+
+  if (!lca_wakeup(fd))
+    return -3;
+
+  /* Forces a seed update on the RNG */
+  struct lca_octet_buffer r = lca_get_random (fd, true);
+
+  /* Loading the nonce is the mechanism to load the SHA256
+     hash into the device */
+  if (load_nonce (fd, dig))
+    {
+
+      struct lca_octet_buffer rsp = lca_ecc_sign (fd, slot);
+
+      if (NULL != rsp.ptr)
+        {
+          assert (YACL_P256_COORD_SIZE*2 == rsp.len);
+          memcpy (signature, rsp.ptr, rsp.len);
+          lca_free_octet_buffer (rsp);
+          rc = 0;
+        }
+      else
+        {
+          rc = -2;
+        }
+
+    }
+  else
+    {
+      rc = -1;
+    }
+
+  lca_idle(fd);
+
+  return rc;
 }
