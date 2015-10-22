@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([cryptoauth], [0.4.0], [bugs@cryptotronix.com], [libcryptoauth],
+AC_INIT([cryptoauth], [0.5.0], [bugs@cryptotronix.com], [libcryptoauth],
         [https://www.github.com/cryptotronix/libcryptoauth])
 AC_PREREQ([2.59])
 AC_USE_SYSTEM_EXTENSIONS
@@ -24,14 +24,29 @@ AC_CONFIG_MACRO_DIR([m4])
 PKG_PROG_PKG_CONFIG
 AM_PROG_AR
 
-#Check for libxml
-PKG_CHECK_MODULES([XML], [libxml-2.0 >= 2.8])
+AC_ARG_WITH([libxml],
+AS_HELP_STRING([--with-libxml], [Include libxml]))
+
+AS_IF([test "x$with_libxml" = "xyes"], [
+            PKG_CHECK_MODULES([XML], [libxml-2.0 >= 2.8])
+AC_DEFINE([CRYPTOAUTH_HAVE_LIBXML], [1], [Use libxml])
+])
+
 
 #Check for check
 PKG_CHECK_MODULES([CHECK], [check >= 0.9.8])
 
-#Check for libgcrypt
-AM_PATH_LIBGCRYPT([], [], AC_MSG_ERROR([libgcrypt is not installed]))
+#Check for libyacl
+PKG_CHECK_MODULES([YACL], [yacl])
+
+AC_ARG_WITH([gcrypt],
+AS_HELP_STRING([--with-gcrypt], [Include gcrypt]))
+
+AS_IF([test "x$with_libxml" = "xyes"], [
+            AM_PATH_LIBGCRYPT([], [], AC_MSG_ERROR([libgcrypt is not installed]))
+            AC_DEFINE([CRYPTOAUTH_HAVE_GCRYPT], [1], [Use libgcrypt])
+])
+
 
 AC_PATH_PROG([DEBUILD], [dpkg-buildpackage], [notfound])
 AC_PATH_PROG([TEST], [test])
