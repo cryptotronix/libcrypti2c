@@ -26,11 +26,13 @@
 #include "util.h"
 #include "command_util.h"
 #include "atsha204_command.h"
-#include <libxml/xmlmemory.h>
-#include <libxml/parser.h>
 #include "crc.h"
 #include "../libcryptoauth.h"
 
+#ifdef CRYPTOAUTH_HAVE_LIBXML
+#include <libxml/xmlmemory.h>
+#include <libxml/parser.h>
+#endif
 
 static unsigned char
 c2h(char c)
@@ -48,6 +50,7 @@ a2b(char *ptr)
   return c2h( *ptr )*16 + c2h( *(ptr+1) );
 }
 
+#ifdef CRYPTOAUTH_HAVE_LIBXML
 static struct lca_octet_buffer
 parse_body (xmlDocPtr doc, xmlNodePtr cur) {
 
@@ -96,11 +99,14 @@ parse_body (xmlDocPtr doc, xmlNodePtr cur) {
 
   return result;
 }
+#endif
 
 int
 lca_config2bin(const char *docname, struct lca_octet_buffer *out)
 {
 
+  return -1;
+#ifdef CRYPTOAUTH_HAVE_LIBXML
   xmlDocPtr doc;
   xmlNodePtr cur;
   struct lca_octet_buffer tmp;
@@ -157,6 +163,8 @@ lca_config2bin(const char *docname, struct lca_octet_buffer *out)
   xmlFreeDoc(doc);
  OUT:
   return rc;
+  #endif
+
 }
 
 
