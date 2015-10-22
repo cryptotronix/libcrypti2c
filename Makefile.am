@@ -28,8 +28,8 @@ AM_CFLAGS = -DDATA_DIR=\"$(pkgdatadir)\"
 ## to provide a way for the user to supply additional arguments.
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
-libcryptoauth_la_CPPFLAGS = $(XML_CFLAGS)
-libcryptoauth_la_LIBADD = $(XML_LIBS) lib/libgnu.la
+libcryptoauth_la_CPPFLAGS = $(XML_CFLAGS) $(YACL_CFLAGS)
+libcryptoauth_la_LIBADD = $(XML_LIBS) lib/libgnu.la $(YACL_LIBS)
 
 ## Define a libtool archive target "libcryptoauth-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTOAUTH_API_VERSION@ substituted into the generated Makefile at configure
@@ -65,9 +65,14 @@ libcryptoauth_la_SOURCES =	src/util.c \
 				src/command_adaptation.h \
 				src/hash.h \
 				src/command_util.h \
-				src/atsha204_command.h \
-                                src/hkdf.c
+				src/atsha204_command.h
 
+noinst_PROGRAMS = lca-simple
+
+lca_simple_SOURCES = src/driver.c $(top_builddir)/libcryptoauth.h
+lca_simple_LDADD = libcryptoauth.la
+lca_simple_LDFLAGS = -all-static
+#check_db_LDFLAGS = -all-static  -Wl,--undefined=AES_wrap_key
 
 
 ## Instruct libtool to include ABI version information in the generated shared
