@@ -25,8 +25,12 @@
 #include <stdint.h>
 #include <time.h>
 #include <stdio.h>
-#include <gcrypt.h>
 #include <unistd.h>
+
+#ifdef CRYPTOAUTH_HAVE_GCRYPT
+#include <gcrypt.h>
+#endif
+
 
 #define LCA_SHA256_DLEN 32
 
@@ -301,6 +305,7 @@ lca_send_and_get_rsp (int fd,
 struct lca_octet_buffer
 lca_sha256 (FILE *fp);
 
+#ifdef CRYPTOAUTH_HAVE_LIBXML
 /**
  * SHA256s a file and returns the gcrypt digest
  *
@@ -311,6 +316,7 @@ lca_sha256 (FILE *fp);
  */
 int
 lca_hash_file (FILE *fp, gcry_sexp_t *digest);
+#endif /* HAVE_LIBXML */
 
 /**
  * Perform a SHA 256 on a fixed data block
@@ -381,8 +387,12 @@ lca_soft_hmac256_defaults(struct lca_octet_buffer challenge,
 int
 lca_setup (const char* bus);
 
-void
+int
 lca_acquire_bus (int fd, int addr);
+
+/* Convenience function for the previous two */
+int
+lca_setup_no_wake (const char* bus, int addr);
 
 bool
 lca_wakeup (int fd);
@@ -450,6 +460,7 @@ lca_ecdsa_p256_verify (struct lca_octet_buffer pub_key,
 struct lca_octet_buffer
 lca_add_uncompressed_point_tag (struct lca_octet_buffer q);
 
+#ifdef CRYPTOAUTH_HAVE_GCRYPT
 /**
  * Prints out the sexp to the logging facility.
  *
@@ -490,6 +501,8 @@ lca_ssig2buffer (const gcry_sexp_t *sig, struct lca_octet_buffer *r_out,
 struct lca_octet_buffer
 lca_sig2buf (const gcry_sexp_t *sig);
 
+#endif /* HAVE_GCRYPT */
+
 /* ATECCX08 Commands */
 
 /**
@@ -524,6 +537,24 @@ struct lca_octet_buffer
 lca_ecc_sign (int fd,
                    uint8_t key_id);
 
+#define LCA_P256_COORD_SIZE 32
+
+/**
+ * Wakeup the device, hash the buffer, update the random seed, load
+ * the digest, and perform the signature.
+ *
+ * @param fd The open fd.
+ * @param data The data to sign, this data will be sha256 hashed
+ * @param len The length of said data
+ * @param slot The key slot to use
+ *
+ * @return 0 if the sign passed and signature will be valid
+ */
+int
+lca_ecdsa_p256_hash_sign (int fd, uint8_t *data, size_t len,
+                          uint8_t slot,
+                          uint8_t signature[LCA_P256_COORD_SIZE*2]);
+
 /**
  * Verifies an ECDSA Signature. Requires that the data, which was
  * signed, was first loaded with the nonce command.
@@ -555,6 +586,19 @@ lca_ecc_verify (int fd,
 struct lca_octet_buffer
 lca_ecdh (int fd, uint8_t slot,
           struct lca_octet_buffer x, struct lca_octet_buffer y);
+
+/**
+ * Locks an individual slot (this is only supported if the
+ * configuration zone allows)
+ *
+ * @param fd The open file descriptor
+ * @param slot The slot to lock
+ *
+ * @return If the slot lock was successful, otherwise false. This will
+ * be false if you try to re-lock a locked slot.
+ */
+bool
+lca_slot_lock (int fd, uint8_t slot);
 
 /* ATSHA204 Commands */
 
@@ -722,6 +766,8 @@ lca_get_device_state (int fd);
 bool
 lca_is_locked (int fd, enum DATA_ZONE zone);
 
+
+
 /**
  * Returns true if the configuration zone is locked.
  *
@@ -795,59 +841,8 @@ lca_burn_otp_zone (int fd, struct lca_octet_buffer otp_zone);
 int
 personalize (int fd, const char *config_file);
 
-/* hkdf functions */
-
 int
-lca_hkdf_256_extract( const uint8_t *salt, int salt_len,
-                      const uint8_t *ikm, int ikm_len,
-                      uint8_t prk[LCA_SHA256_DLEN]);
+lca_personalize (int fd, struct lca_octet_buffer config);
 
-
-int
-lca_hkdf_256_expand(const uint8_t prk[ ], int prk_len,
-                    const unsigned char *info, int info_len,
-                    uint8_t okm[ ], int okm_len);
-
-/*
- *  hkdf
- *
- *  Description:
- *      This function will generate keying material using HKDF-256.
- *
- *  Parameters:
- *      salt[ ]: [in]
- *          The optional salt value (a non-secret random value);
- *          if not provided (salt == NULL), it is set internally
- *          to a string of HashLen(whichSha) zeros.
- *      salt_len: [in]
- *          The length of the salt value.  (Ignored if salt == NULL.)
- *      ikm[ ]: [in]
- *          Input keying material.
- *      ikm_len: [in]
- *          The length of the input keying material.
- *      info[ ]: [in]
- *          The optional context and application specific information.
- *          If info == NULL or a zero-length string, it is ignored.
- *      info_len: [in]
- *          The length of the optional context and application specific
- *          information.  (Ignored if info == NULL.)
- *      okm[ ]: [out]
- *          Where the HKDF is to be stored.
- *      okm_len: [in]
- *          The length of the buffer to hold okm.
- *          okm_len must be <= 255 * USHABlockSize(whichSha)
- *
- *  Notes:
- *      Calls hkdf_extract() and hkdf_expand().
- *
- *  Returns:
- *      sha 0 on success otherwise non-zero
- *
- */
-int
-lca_hkdf(const unsigned char *salt, int salt_len,
-         const unsigned char *ikm, int ikm_len,
-         const unsigned char *info, int info_len,
-         uint8_t okm[ ], int okm_len);
 
 #endif // LIBCRYPTOAUTH_H_
