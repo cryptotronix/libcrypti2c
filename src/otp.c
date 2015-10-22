@@ -87,6 +87,51 @@ lca_burn_otp_zone (int fd, struct lca_octet_buffer otp_zone)
     return rc;
 }
 
+int
+lca_personalize (int fd, struct lca_octet_buffer config)
+{
+  enum DEVICE_STATE state = lca_get_device_state (fd);
+  struct lca_octet_buffer otp;
+  int rc = -1;
+
+  if (state == STATE_PERSONALIZED)
+    return 0;
+
+  if (state == STATE_FACTORY)
+    {
+
+      rc = lca_burn_config_zone (fd, config);
+      if (rc)
+        goto OUT;
+
+      rc = lca_lock_config_zone (fd, config);
+      if (rc)
+        goto OUT;
+
+      state = lca_get_device_state(fd);
+    }
+
+  if (state == STATE_INITIALIZED)
+    {
+      otp = lca_build_otp_zone ();
+
+      rc = lca_burn_otp_zone (fd, otp);
+
+      lca_free_octet_buffer (otp);
+
+      if (!rc)
+        {
+          if (lock (fd, DATA_ZONE, 0))
+            rc = 0;
+          else
+            rc = -2;
+        }
+
+    }
+
+ OUT:
+  return rc;
+}
 
 int
 personalize (int fd, const char *config_file)
