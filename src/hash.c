@@ -21,9 +21,16 @@
 #include "config.h"
 
 #include <assert.h>
-#include <gcrypt.h>
+
 #include "hash.h"
 #include "../libcryptoauth.h"
+#include <yacl.h>
+#include <string.h>
+#include <stdlib.h>
+
+#ifdef CRYPTOAUTH_HAVE_GCRYPT
+#include <gcrypt.h>
+
 
 struct lca_octet_buffer
 lca_sha256 (FILE *fp)
@@ -88,19 +95,18 @@ lca_hash_file (FILE *fp, gcry_sexp_t *digest)
 
 }
 
+#endif
+
 struct lca_octet_buffer
 lca_sha256_buffer (struct lca_octet_buffer data)
   {
     struct lca_octet_buffer digest;
-    const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
 
     assert (NULL != data.ptr);
     /* Init gcrypt */
-    assert (NULL != gcry_check_version (NULL));
+    digest = lca_make_buffer (YACL_SHA256_LEN);
 
-    digest = lca_make_buffer (DLEN);
-
-    gcry_md_hash_buffer (GCRY_MD_SHA256, digest.ptr, data.ptr, data.len);
+    assert (0 == yacl_sha256 (data.ptr, data.len, digest.ptr));
 
     return digest;
   }
@@ -209,43 +215,19 @@ hmac_buffer (struct lca_octet_buffer data_to_hash,
              struct lca_octet_buffer key)
 {
   struct lca_octet_buffer digest;
-  const unsigned int DLEN = gcry_md_get_algo_dlen (GCRY_MD_SHA256);
 
   assert (NULL != data_to_hash.ptr);
   assert (NULL != key.ptr);
+  digest = lca_make_buffer (YACL_SHA256_LEN);
 
-  /* Init gcrypt */
-  if (!gcry_control (GCRYCTL_INITIALIZATION_FINISHED_P))
-    {
-      fputs ("libgcrypt has not been initialized\n", stderr);
-      abort ();
-    }
+  int rc = yacl_hmac_sha256(key.ptr, key.len,
+                            data_to_hash.ptr, data_to_hash.len,
+                            digest.ptr);
 
-  digest = lca_make_buffer (DLEN);
-
-  gcry_md_hd_t hd;
-
-  gcry_md_open (&hd, GCRY_MD_SHA256, GCRY_MD_FLAG_HMAC);
-
-  assert (NULL != hd);
-
-  gcry_md_setkey (hd, key.ptr, key.len);
-
-  lca_print_hex_string("hmac input", data_to_hash.ptr, data_to_hash.len);
-  lca_print_hex_string("hmac key", key.ptr, key.len);
-
-  gcry_md_write (hd, data_to_hash.ptr, data_to_hash.len);
-
-  unsigned char *result = gcry_md_read (hd, GCRY_MD_SHA256);
-
-  assert (NULL != result);
-  lca_print_hex_string("hmac result", result, 32);
-
-  memcpy (digest.ptr, result, DLEN);
-
-  gcry_md_close (hd);
+  assert (0 == rc);
 
   return digest;
+
 }
 
 static struct lca_octet_buffer
