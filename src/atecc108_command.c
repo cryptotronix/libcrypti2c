@@ -208,3 +208,46 @@ lca_ecdh (int fd, uint8_t slot,
 
   return shared_secret;
 }
+
+bool
+lca_slot_lock (int fd, uint8_t slot)
+{
+
+  uint8_t param1 = 0;
+  uint8_t param2[] = {0, 0};
+  uint8_t response;
+  bool result = false;
+
+  const uint8_t NO_CRC_MASK = 0x80;
+  const uint8_t SLOT_LOCK_MASK = 2;
+  uint8_t slot_mask = slot << 2;
+
+
+  /* ignore the crc */
+  param1 = NO_CRC_MASK | SLOT_LOCK_MASK | slot_mask;
+
+  struct Command_ATSHA204 c = make_command ();
+
+  set_opcode (&c, COMMAND_LOCK);
+  set_param1 (&c, param1);
+  set_param2 (&c, param2);
+  set_data (&c, NULL, 0);
+  set_execution_time (&c, 0, LOCK_AVG_EXEC);
+
+  if (RSP_SUCCESS == lca_process_command (fd, &c, &response, sizeof (response)))
+    {
+      if (0 == response)
+        {
+          result = true;
+          LCA_LOG (DEBUG, "Lock Successful");
+        }
+      else
+        {
+          LCA_LOG (DEBUG, "Lock Failed");
+        }
+    }
+
+
+  return result;
+
+}
