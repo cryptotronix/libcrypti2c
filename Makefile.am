@@ -67,13 +67,15 @@ libcryptoauth_la_SOURCES =	src/util.c \
 				src/command_util.h \
 				src/atsha204_command.h
 
-noinst_PROGRAMS = lca-simple
+noinst_PROGRAMS = lca-simple lca-really-simple
 
 lca_simple_SOURCES = src/driver.c $(top_builddir)/libcryptoauth.h
 lca_simple_LDADD = libcryptoauth.la
 lca_simple_LDFLAGS = -all-static
 #check_db_LDFLAGS = -all-static  -Wl,--undefined=AES_wrap_key
 
+
+lca_really_simple_SOURCES = src/simple.c
 
 ## Instruct libtool to include ABI version information in the generated shared
 ## library file (.so).  The library ABI version is defined in configure.ac, so

@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([cryptoauth], [0.5.0], [bugs@cryptotronix.com], [libcryptoauth],
+AC_INIT([cryptoauth], [0.5.7], [bugs@cryptotronix.com], [libcryptoauth],
         [https://www.github.com/cryptotronix/libcryptoauth])
 AC_PREREQ([2.59])
 AC_USE_SYSTEM_EXTENSIONS
@@ -47,6 +47,7 @@ AS_IF([test "x$with_libxml" = "xyes"], [
             AC_DEFINE([CRYPTOAUTH_HAVE_GCRYPT], [1], [Use libgcrypt])
 ])
 
+AC_CHECK_HEADERS_ONCE([argp.h])
 
 AC_PATH_PROG([DEBUILD], [dpkg-buildpackage], [notfound])
 AC_PATH_PROG([TEST], [test])
@@ -66,8 +67,8 @@ AC_PROG_MKDIR_P
 # For information on how to properly maintain the library version information,
 # refer to the libtool manual, section "Updating library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
-AC_SUBST([CRYPTOAUTH_SO_VERSION], [3:0:0])
-AC_SUBST([CRYPTOAUTH_API_VERSION], [0.4])
+AC_SUBST([CRYPTOAUTH_SO_VERSION], [4:0:0])
+AC_SUBST([CRYPTOAUTH_API_VERSION], [0.5])
 
 # --enable-deb copies only the ni executable to the dist package, for use in
 # building DEB packages.

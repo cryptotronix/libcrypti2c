@@ -42,7 +42,7 @@ lca_build_otp_zone (void)
 
     assert (time(&tp));
 
-    assert (snprintf(otp, OTP_SIZE, "CRYPTOTRONIX SV: %s, TOL: %s",
+    assert (snprintf(otp, OTP_SIZE, "SV: %s, TOL: %s",
                      PACKAGE_VERSION, ctime(&tp)));
 
     result.ptr = (uint8_t *)otp;
@@ -119,13 +119,14 @@ lca_personalize (int fd, struct lca_octet_buffer config)
 
       lca_free_octet_buffer (otp);
 
-      if (!rc)
-        {
-          if (lock (fd, DATA_ZONE, 0))
-            rc = 0;
-          else
-            rc = -2;
-        }
+      /* Don't lock the data zone here */
+      /* if (!rc) */
+      /*   { */
+      /*     if (lock (fd, DATA_ZONE, 0)) */
+      /*       rc = 0; */
+      /*     else */
+      /*       rc = -2; */
+      /*   } */
 
     }
 

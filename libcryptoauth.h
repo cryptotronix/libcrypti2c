@@ -637,6 +637,9 @@ lca_get_random (int fd, bool update_seed);
 struct Command_ATSHA204
 lca_build_read4_cmd (enum DATA_ZONE zone, uint8_t addr);
 
+bool
+lca_read4 (int fd, enum DATA_ZONE zone, uint8_t addr[2], uint8_t buf[4]);
+
 /**
  * Builds the command structure for the write 4 command.
  *
@@ -837,6 +840,8 @@ lca_burn_config_zone (int fd, struct lca_octet_buffer cz);
 int
 lca_lock_config_zone (int fd, const struct lca_octet_buffer template);
 
+bool
+lca_lock_data_zone (int fd);
 
 /* OTP zone functions */
 struct lca_octet_buffer

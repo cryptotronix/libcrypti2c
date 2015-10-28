@@ -110,6 +110,27 @@ read4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t *buf)
   return result;
 }
 
+bool
+lca_read4 (int fd, enum DATA_ZONE zone, uint8_t addr[2], uint8_t buf[4])
+{
+
+  bool result = false;
+  assert (NULL != buf);
+
+  struct Command_ATSHA204 c = lca_build_read4_cmd (zone, addr[0]);
+
+  /* hack, fix the addr */
+  c.param2[0] = addr[0];
+  c.param2[1] = addr[1];
+
+  if (RSP_SUCCESS == lca_process_command (fd, &c, buf, 4))
+    {
+      result = true;
+    }
+
+  return result;
+}
+
 struct Command_ATSHA204
 lca_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr)
 {
@@ -161,6 +182,8 @@ lca_read32 (int fd, enum DATA_ZONE zone, uint8_t addr[2])
   /* hack, fix the addr */
   c.param2[0] = addr[0];
   c.param2[1] = addr[1];
+
+  set_execution_time (&c, 0, 1000000);
 
   const unsigned int LENGTH_OF_RESPONSE = 32;
   struct lca_octet_buffer buf = lca_make_buffer (LENGTH_OF_RESPONSE);
@@ -523,6 +546,12 @@ lock (int fd, enum DATA_ZONE zone, uint16_t crc)
 
   return result;
 
+}
+
+bool
+lca_lock_data_zone (int fd)
+{
+  return lock (fd, DATA_ZONE, 0);
 }
 
 static bool
