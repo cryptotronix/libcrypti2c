@@ -58,7 +58,9 @@ lca_acquire_bus(int fd, int addr)
       perror("Failed to acquire bus access and/or talk to slave.\n");
     }
   else
-    rc = 0;
+    {
+      rc = 0;
+    }
 
   return rc;
 }
@@ -88,24 +90,31 @@ lca_wakeup(int fd)
 
   while (!awake)
     {
-      if (write(fd,&wup,sizeof(wup)) > 1)
+      int rc = write(fd,&wup,sizeof(wup));
+      if (rc > 1)
         {
-
           LCA_LOG(DEBUG, "%s", "Device is awake.");
           // Using I2C Read
+        TRY_AGAIN:
           if (read(fd,buf,sizeof(buf)) != 4)
             {
               /* ERROR HANDLING: i2c transaction failed */
               perror("Failed to read from the i2c bus.\n");
+              goto TRY_AGAIN;
             }
           else
             {
               awake = lca_is_crc_16_valid(buf, 2, buf+2);
             }
         }
+      else
+        {
+          //fprintf (stderr, "Failed to write: %d\n", rc);
+          //perror("Failed to write from the i2c bus\n");
+        }
 
       numTries += 1;
-      if (numTries > 3)
+      if (numTries > 10)
         return false;
     }
 

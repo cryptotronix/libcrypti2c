@@ -683,6 +683,10 @@ lca_write32_cmd (const int fd,
                   const struct lca_octet_buffer buf,
                   const struct lca_octet_buffer *mac);
 
+bool
+lca_write_32_data_zone (const int fd,
+                        const uint8_t addr[2],
+                        const struct lca_octet_buffer buf);
 /**
  *
  *
@@ -734,6 +738,9 @@ get_otp_zone (int fd);
  */
 struct Command_ATSHA204
 lca_build_read32_cmd (enum DATA_ZONE zone, uint8_t addr);
+
+struct lca_octet_buffer
+lca_read32 (int fd, enum DATA_ZONE zone, uint8_t addr[2]);
 
 enum DEVICE_STATE
   {

@@ -152,6 +152,29 @@ read32 (int fd, enum DATA_ZONE zone, uint8_t addr)
   return buf;
 }
 
+struct lca_octet_buffer
+lca_read32 (int fd, enum DATA_ZONE zone, uint8_t addr[2])
+{
+
+  struct Command_ATSHA204 c = lca_build_read32_cmd (zone, addr[0]);
+
+  /* hack, fix the addr */
+  c.param2[0] = addr[0];
+  c.param2[1] = addr[1];
+
+  const unsigned int LENGTH_OF_RESPONSE = 32;
+  struct lca_octet_buffer buf = lca_make_buffer (LENGTH_OF_RESPONSE);
+
+  if (RSP_SUCCESS != lca_process_command (fd, &c, buf.ptr, LENGTH_OF_RESPONSE))
+    {
+      lca_free_wipe (buf.ptr, LENGTH_OF_RESPONSE);
+      buf.ptr = NULL;
+      buf.len = 0;
+    }
+
+  return buf;
+}
+
 
 struct Command_ATSHA204
 lca_build_write4_cmd (enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
@@ -234,6 +257,70 @@ lca_build_write32_cmd (const enum DATA_ZONE zone,
 
   return c;
 
+}
+
+static struct Command_ATSHA204
+lca_build_write32_nomac (const enum DATA_ZONE zone,
+                         const uint8_t addr[2],
+                         const struct lca_octet_buffer buf)
+{
+
+  assert (NULL != buf.ptr);
+  assert (32 == buf.len);
+
+  uint8_t param2[2] = {0};
+  uint8_t param1 = set_zone_bits (zone);
+
+  struct lca_octet_buffer data = {0,0};
+
+  data = lca_make_buffer (buf.len);
+
+  memcpy (data.ptr, buf.ptr, buf.len);
+
+  /* If writing 32 bytes, this bit must be set in param1 */
+  uint8_t WRITE_32_MASK = 0b10000000;
+
+  param1 |= WRITE_32_MASK;
+
+  param2[0] = addr[0];
+  param2[1] = addr[1];
+
+  struct Command_ATSHA204 c =
+    build_command (COMMAND_WRITE,
+                   param1,
+                   param2,
+                   data.ptr, data.len,
+                   0, WRITE_AVG_EXEC);
+
+  return c;
+
+}
+
+bool
+lca_write_32_data_zone (const int fd,
+                        const uint8_t addr[2],
+                        const struct lca_octet_buffer buf)
+{
+  bool status = false;
+  uint8_t recv = 0;
+
+  struct Command_ATSHA204 c =
+    lca_build_write32_nomac (DATA_ZONE,
+                             addr,
+                             buf);
+
+
+  if (RSP_SUCCESS == lca_process_command (fd, &c, &recv, sizeof (recv)))
+    {
+      LCA_LOG (DEBUG, "Write 32 successful.");
+      if (0 == (int) recv)
+        status = true;
+    }
+
+  if (NULL != c.data)
+    free (c.data);
+
+  return status;
 }
 
 bool
