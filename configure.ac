@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([cryptoauth], [0.5.7], [bugs@cryptotronix.com], [libcryptoauth],
+AC_INIT([cryptoauth], [0.5.8], [bugs@cryptotronix.com], [libcryptoauth],
         [https://www.github.com/cryptotronix/libcryptoauth])
 AC_PREREQ([2.59])
 AC_USE_SYSTEM_EXTENSIONS
