@@ -28,7 +28,7 @@ AM_PROG_AR
 PKG_CHECK_MODULES([XML], [libxml-2.0 >= 2.8])
 
 #Check for check
-PKG_CHECK_MODULES([CHECK], [check >= 0.9.8])
+PKG_CHECK_MODULES([CHECK], [check >= 0.9.8],,[AC_MSG_WARN("Check not found")])
 
 #Check for libgcrypt
 AM_PATH_LIBGCRYPT([], [], AC_MSG_ERROR([libgcrypt is not installed]))
