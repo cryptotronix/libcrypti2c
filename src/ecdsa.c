@@ -68,7 +68,7 @@ lca_ecdsa_p256_verify (struct lca_octet_buffer pub_key,
                         " (ecdsa\n"
                         "  (curve \"NIST P-256\")\n"
                         "  (q %b)"
-                        "))", pub_key.len, pub_key);
+                        "))", pub_key.len, pub_key.ptr);
 
   lca_print_sexp (g_pub_key);
 
