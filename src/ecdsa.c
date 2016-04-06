@@ -25,6 +25,7 @@
 #include "../libcryptoauth.h"
 #include <stdint.h>
 #include <string.h>
+#include "atsha204_command.h"
 
 #ifdef CRYPTOAUTH_HAVE_GCRYPT
 void
