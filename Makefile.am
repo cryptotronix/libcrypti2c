@@ -29,7 +29,7 @@ AM_CFLAGS = -DDATA_DIR=\"$(pkgdatadir)\"
 ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 
 libcryptoauth_la_CPPFLAGS = $(XML_CFLAGS) $(YACL_CFLAGS)
-libcryptoauth_la_LIBADD = $(XML_LIBS) lib/libgnu.la $(YACL_LIBS)
+libcryptoauth_la_LIBADD = $(XML_LIBS) $(YACL_LIBS)
 
 ## Define a libtool archive target "libcryptoauth-@EXAMPLE_API_VERSION@.la", with
 ## @CRYPTOAUTH_API_VERSION@ substituted into the generated Makefile at configure
@@ -70,7 +70,7 @@ libcryptoauth_la_SOURCES =	src/util.c \
 noinst_PROGRAMS = lca-simple lca-really-simple
 
 lca_simple_SOURCES = src/driver.c $(top_builddir)/libcryptoauth.h
-lca_simple_LDADD = libcryptoauth.la $(XML_LIBS) lib/libgnu.la $(YACL_LIBS)
+lca_simple_LDADD = libcryptoauth.la $(XML_LIBS) $(YACL_LIBS)
 #lca_simple_LDFLAGS = -all-static
 lca_simple_CPPFLAGS = $(XML_CFLAGS) $(YACL_CFLAGS)
 
@@ -120,40 +120,3 @@ pkgconfig_DATA = cryptoauth.pc
 ## archive.  However, it will not be installed on an end user's system due to
 ## the noinst_ prefix.
 dist_noinst_SCRIPTS = autogen.sh
-
-
-if BUILDING_DEB
-DEBSOURCEPKG=$(PACKAGE)_$(VERSION).orig.tar.gz
-DEBSOURCEDIR=$(PACKAGE)-$(VERSION)
-deb: dist
-	@echo "Building Debian package..."; \
-	if test ! -d debian; then \
-		echo "The files needed for building a Debian package are not" \
-		"included by default in the distribution. To build a package, check" \
-		"out the project from source control."; \
-		exit 1; \
-	fi; \
-	mv $(PACKAGE)-$(VERSION).tar.gz $(DEBSOURCEPKG) && \
-	tar --extract --gunzip --file $(DEBSOURCEPKG) && \
-	mkdir -p $(DEBSOURCEDIR)/debian && \
-	cp \
-		debian/changelog \
-		debian/compat \
-		debian/control \
-		debian/copyright \
-		debian/docs \
-		debian/rules \
-		$(DEBSOURCEDIR)/debian && \
-	cd $(DEBSOURCEDIR) && \
-	./configure && \
-	DEB_BUILD_MAINT_OPTIONS=hardening=-format \
-	$(DEBUILD) -rfakeroot -D -us -uc; \
-	cd $(srcdir); \
-	rm --force $(DEBSOURCEPKG); \
-	rm --recursive --force $(DEBSOURCEDIR)
-else
-deb:
-	@$(ECHO) \
-	"To build a Debian package, you must run configure with --enable-deb."; \
-	exit 1
-endif
