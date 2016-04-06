@@ -521,7 +521,7 @@ lca_sig2buf (const gcry_sexp_t *sig);
 struct lca_octet_buffer
 lca_gen_ecc_key (int fd,
                       uint8_t key_id,
-                      bool private);
+                      bool private_key);
 
 /**
  * Performs an ECC signature over the data loaded in tempkey

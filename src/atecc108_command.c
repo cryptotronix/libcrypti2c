@@ -29,7 +29,7 @@
 
 
 struct lca_octet_buffer
-lca_gen_ecc_key (int fd, uint8_t key_id, bool private)
+lca_gen_ecc_key (int fd, uint8_t key_id, bool private_key)
 {
 
   assert (key_id <= 15);
@@ -39,7 +39,7 @@ lca_gen_ecc_key (int fd, uint8_t key_id, bool private)
 
   param2[0] = key_id;
 
-  if (private)
+  if (private_key)
     {
       param1 = 0x04; /* Private key */
     }
