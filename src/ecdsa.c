@@ -341,7 +341,7 @@ lca_load_signing_key (const char *keyfile, gcry_sexp_t *key)
 
 
 int
-lca_ecdsa_p256_hash_sign (int fd, uint8_t *data, size_t len,
+lca_ecdsa_p256_hash_sign (int fd, const uint8_t *data, size_t len,
                           uint8_t slot,
                           uint8_t signature[LCA_P256_COORD_SIZE*2])
 {
@@ -360,6 +360,7 @@ lca_ecdsa_p256_hash_sign (int fd, uint8_t *data, size_t len,
     return -3;
 
   /* Forces a seed update on the RNG */
+  /*lint -e{747} suppress Info 747: Significant prototype coercion (arg. no. 2) int to bool*/
   struct lca_octet_buffer r = lca_get_random (fd, true);
 
   /* Loading the nonce is the mechanism to load the SHA256
@@ -389,5 +390,8 @@ lca_ecdsa_p256_hash_sign (int fd, uint8_t *data, size_t len,
 
   lca_idle(fd);
 
+  /*lint -e{438} suppress Last value assigned to variable 'r' (defined
+    at line 364) not used, we just throw it away*/
   return rc;
+  /*lint -e{529} suppress Warning 529: Symbol 'r' (line 364) not subsequently referenced*/
 }

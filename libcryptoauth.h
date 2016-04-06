@@ -26,6 +26,7 @@
 #include <time.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <stdint.h>
 
 #ifdef CRYPTOAUTH_HAVE_GCRYPT
 #include <gcrypt.h>
@@ -52,8 +53,8 @@ lca_init_and_debug (enum LCA_LOG_LEVEL lvl);
 
 struct lca_octet_buffer
 {
-    unsigned char *ptr; /* Pointer to buffer */
-    unsigned int len;   /* Length of data */
+    uint8_t *ptr; /* Pointer to buffer */
+    size_t len;   /* Length of data */
 };
 
 /**
@@ -259,7 +260,7 @@ enum LCA_STATUS_RESPONSE
     RSP_AWAKE = 0x11,           /**< The device is awake */
     RSP_COMM_ERROR = 0xFF,       /**< Command was not received properly
                                   */
-    RSP_NAK = 0xAA,     /**< Response was NAKed and a retry should occur */
+    RSP_NAK = 0xAA     /**< Response was NAKed and a retry should occur */
   };
 
 
@@ -551,7 +552,7 @@ lca_ecc_sign (int fd,
  * @return 0 if the sign passed and signature will be valid
  */
 int
-lca_ecdsa_p256_hash_sign (int fd, uint8_t *data, size_t len,
+lca_ecdsa_p256_hash_sign (int fd, const uint8_t *data, size_t len,
                           uint8_t slot,
                           uint8_t signature[LCA_P256_COORD_SIZE*2]);
 
@@ -777,26 +778,6 @@ bool
 lca_is_locked (int fd, enum DATA_ZONE zone);
 
 
-
-/**
- * Returns true if the configuration zone is locked.
- *
- * @param fd The open file descriptor.
- *
- * @return true or false.
- */
-bool
-lca_is_config_locked (int fd);
-
-/**
- * Returns true if the data section is locked.
- *
- * @param fd The open file descriptor.
- *
- * @return True if locked.
- */
-bool
-lca_is_data_locked (int fd);
 
 /* Command Utilities */
 /**
