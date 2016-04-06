@@ -70,8 +70,10 @@ libcryptoauth_la_SOURCES =	src/util.c \
 noinst_PROGRAMS = lca-simple lca-really-simple
 
 lca_simple_SOURCES = src/driver.c $(top_builddir)/libcryptoauth.h
-lca_simple_LDADD = libcryptoauth.la
-lca_simple_LDFLAGS = -all-static
+lca_simple_LDADD = libcryptoauth.la $(XML_LIBS) lib/libgnu.la $(YACL_LIBS)
+#lca_simple_LDFLAGS = -all-static
+lca_simple_CPPFLAGS = $(XML_CFLAGS) $(YACL_CFLAGS)
+
 #check_db_LDFLAGS = -all-static  -Wl,--undefined=AES_wrap_key
 
 
