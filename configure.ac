@@ -33,8 +33,22 @@ AC_DEFINE([CRYPTOAUTH_HAVE_LIBXML], [1], [Use libxml])
 ])
 
 
-#Check for libglib (used for testing)
-PKG_CHECK_MODULES([LIBGLIB], [glib-2.0])
+AC_ARG_ENABLE(tests,
+[AS_HELP_STRING(--disable-tests,Do not build tests)],
+[
+  AS_IF([test "x$enableval" = "xno"], [
+    enable_tests="no"
+    AC_MSG_WARN([tests are disabled])
+  ], [
+    enable_tests="yes"
+  ])
+],
+[
+  enable_tests="yes"
+  #Check for libglib (used for testing)
+  PKG_CHECK_MODULES([LIBGLIB], [glib-2.0])
+])
+AM_CONDITIONAL([WANT_TESTS], [test "x$enable_tests" = "xyes"])
 
 #Check for libyacl
 PKG_CHECK_MODULES([YACL], [yacl])
@@ -62,19 +76,6 @@ AC_PROG_MKDIR_P
 AC_SUBST([CRYPTOAUTH_SO_VERSION], [5:0:0])
 AC_SUBST([CRYPTOAUTH_API_VERSION], [0.6])
 
-# --enable-deb copies only the ni executable to the dist package, for use in
-# building DEB packages.
-
-AC_ARG_ENABLE([deb],
-        [AS_HELP_STRING([--enable-deb=@<:@yes/no@:>@],
-        [Configure for building Debian package @<:@default=no@:>@ (requires dpkg-buildpackage)])],
-        [AS_IF([$TEST "x$enable_deb" = xyes],
-        [AS_IF([$TEST "x$DEBUILD" = xnotfound],
-        [AC_MSG_ERROR([dpkg-buildpackage is required for --enable-deb])],
-        [$TEST "x$enable_rpm" = xyes],
-        [AC_MSG_ERROR([--enable-rpm and --enable-deb are mutually exclusive])])])],
-        [enable_deb=no])
-AM_CONDITIONAL([BUILDING_DEB], [$TEST "x$enable_deb" = xyes])
 
 AC_CONFIG_FILES([Makefile test/Makefile lib/Makefile
                  cryptoauth.pc:cryptoauth.pc.in])
@@ -88,4 +89,5 @@ echo "
      C Compiler......: $CC $CFLAGS $CPPFLAGS
      C++ Compiler....: $CXX $CXXFLAGS $CPPFLAGS
      Linker..........: $LD $LDFLAGS $LIBS
+     Build tests.....: $enable_tests
 "
