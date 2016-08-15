@@ -220,7 +220,7 @@ lca_build_write4_cmd (enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
 }
 
 bool
-write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
+lca_write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf)
 {
 
   bool status = false;
@@ -489,7 +489,7 @@ get_otp_zone (int fd)
 }
 
 bool
-lock (int fd, enum DATA_ZONE zone, uint16_t crc)
+lca_lock (int fd, enum DATA_ZONE zone, uint16_t crc)
 {
 
   uint8_t param1 = 0;
@@ -551,7 +551,7 @@ lock (int fd, enum DATA_ZONE zone, uint16_t crc)
 bool
 lca_lock_data_zone (int fd)
 {
-  return lock (fd, DATA_ZONE, 0);
+  return lca_lock (fd, DATA_ZONE, 0);
 }
 
 static bool
@@ -638,7 +638,7 @@ set_otp_zone (int fd, struct lca_octet_buffer *otp_zone)
 
 
 struct lca_octet_buffer
-get_serial_num (int fd)
+lca_get_serial_num (int fd)
 {
   struct lca_octet_buffer serial;
   const unsigned int len = sizeof (uint32_t) * 2 + 1;

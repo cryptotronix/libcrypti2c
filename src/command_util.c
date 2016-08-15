@@ -236,7 +236,7 @@ set_zone_bits (const enum DATA_ZONE zone)
 }
 
 uint8_t
-slot_to_addr (const enum DATA_ZONE zone, const uint8_t slot)
+lca_slot_to_addr (const enum DATA_ZONE zone, const uint8_t slot)
 {
     switch (zone)
     {

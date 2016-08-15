@@ -29,6 +29,7 @@
 #include <stdint.h>
 
 #define LCA_SHA256_DLEN 32
+#define LCA_MAX_NUM_DATA_SLOTS 16
 
 enum LCA_LOG_LEVEL
   {
@@ -603,6 +604,53 @@ enum DATA_ZONE
     DATA_ZONE = 2
   };
 
+/**
+ * Converts the slot number to the correct address byte
+ *
+ * @param zone The zone enumeration
+ * @param slot The slot number
+ *
+ * @return The formatted byte, it will assert a failure if not correct.
+ */
+uint8_t
+lca_slot_to_addr (enum DATA_ZONE zone, uint8_t slot);
+
+/**
+ * Locks the specified zone.
+ *
+ * @param fd The open file descriptor
+ * @param zone The zone to lock.  Either CONFIG_ZONE or (DATA_ZONE or
+ * OTP_ZONE). The later will be locked together
+ * @param crc The crc16 of the respective zone(s)
+ *
+ * @return True if now locked.
+ */
+bool
+lca_lock (int fd, enum DATA_ZONE zone, uint16_t crc);
+
+/**
+ * Retrieve the device's serial number
+ *
+ * @param fd An open file descriptor
+ *
+ * @return a malloc'd buffer with the serial number.
+ */
+struct lca_octet_buffer
+lca_get_serial_num (int fd);
+
+/**
+ * Programs the OTP zone with fixed data
+ *
+ * @param fd The open file descriptor
+ * @param otp_zone A pointer to an octet buffer that will be malloc'd
+ * and filled in with the OTP Zone contents if successful
+ *
+ * @return True if the OTP zone has been written.
+ */
+bool
+lca_set_otp_zone (int fd, struct lca_octet_buffer *otp_zone);
+
+
 /* Random Commands */
 
 struct Command_ATSHA204
@@ -633,6 +681,22 @@ lca_build_read4_cmd (enum DATA_ZONE zone, uint8_t addr);
 
 bool
 lca_read4 (int fd, enum DATA_ZONE zone, uint8_t addr[2], uint8_t buf[4]);
+
+
+/**
+ * Write four bytes to the device
+ *
+ * @param fd The open file descriptor
+ * @param zone The zone to which to write
+ * @param addr The address to write to, consult the data sheet for
+ * address conversions.
+ * @param buf The data to write.  Passed by value.
+ *
+ * @return True if successful.
+ */
+bool
+lca_write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
+
 
 /**
  * Builds the command structure for the write 4 command.

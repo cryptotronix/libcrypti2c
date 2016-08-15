@@ -176,7 +176,7 @@ personalize (int fd, const char *config_file)
 
         if (!rc)
         {
-            if (lock (fd, DATA_ZONE, 0))
+            if (lca_lock (fd, DATA_ZONE, 0))
                 rc = 0;
             else
                 rc = -2;

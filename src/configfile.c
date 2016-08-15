@@ -183,7 +183,7 @@ lca_burn_config_zone (int fd, struct lca_octet_buffer cz)
     {
       int addr = x >> 2;
       uint32_t *data = (uint32_t *)&cz.ptr[x];
-      if (write4 (fd, CONFIG_ZONE, addr, *data))
+      if (lca_write4 (fd, CONFIG_ZONE, addr, *data))
         printf ("Write to %d success\n", x);
       else
         printf ("Write to %d Failure\n", x);
@@ -214,7 +214,7 @@ lca_lock_config_zone (int fd, const struct lca_octet_buffer template)
 
   lca_free_octet_buffer (read_cz);
 
-  if (lock (fd, CONFIG_ZONE, crc))
+  if (lca_lock (fd, CONFIG_ZONE, crc))
     return 0;
   else
     return -1;

@@ -175,15 +175,4 @@ uint8_t
 set_zone_bits (const enum DATA_ZONE zone)
   __attribute__ ((pure));
 
-/**
- * Serialize the slot byte based on the data zone and the logical slot number.
- *
- * @param zone The zone where this slot lives.
- * @param slot The slot number.
- *
- * @return The serialized byte for this slot.
- */
-uint8_t
-slot_to_addr (const enum DATA_ZONE zone, const uint8_t slot)
-  __attribute__ ((pure));
 #endif

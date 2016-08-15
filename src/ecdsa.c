@@ -27,6 +27,25 @@
 #include <string.h>
 #include "atsha204_command.h"
 
+struct lca_octet_buffer
+lca_add_uncompressed_point_tag (struct lca_octet_buffer q)
+{
+  assert (NULL != q.ptr);
+  assert (64 == q.len); /* only support P256 now */
+
+  struct lca_octet_buffer new_q = lca_make_buffer (65);
+
+  new_q.ptr[0] = 0x04;
+
+  memcpy (new_q.ptr + 1, q.ptr, q.len);
+
+  lca_free_octet_buffer (q);
+
+  return new_q;
+
+}
+
+
 #ifdef CRYPTOAUTH_HAVE_GCRYPT
 void
 lca_print_sexp (gcry_sexp_t to_print) {
@@ -109,26 +128,6 @@ lca_ecdsa_p256_verify (struct lca_octet_buffer pub_key,
   gcry_sexp_release (g_pub_key);
 
   return (rc == 0) ? true : false;
-}
-
-
-
-struct lca_octet_buffer
-lca_add_uncompressed_point_tag (struct lca_octet_buffer q)
-{
-  assert (NULL != q.ptr);
-  assert (64 == q.len); /* only support P256 now */
-
-  struct lca_octet_buffer new_q = lca_make_buffer (65);
-
-  new_q.ptr[0] = 0x04;
-
-  memcpy (new_q.ptr + 1, q.ptr, q.len);
-
-  lca_free_octet_buffer (q);
-
-  return new_q;
-
 }
 
 int

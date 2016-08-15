@@ -42,20 +42,6 @@ bool
 read4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t *buf);
 
 
-/**
- * Write four bytes to the device
- *
- * @param fd The open file descriptor
- * @param zone The zone to which to write
- * @param addr The address to write to, consult the data sheet for
- * address conversions.
- * @param buf The data to write.  Passed by value.
- *
- * @return True if successful.
- */
-bool
-write4 (int fd, enum DATA_ZONE zone, uint8_t addr, uint32_t buf);
-
 
 /**
  * Performs the nonce operation on the device.  Depending on the data
@@ -85,54 +71,6 @@ struct lca_octet_buffer
 get_nonce (int fd);
 
 /**
- * Set the configuration zone based.  This function will setup the
- * configuration zone, and thus the device, to a fixed configuration.
- *
- * @param fd The open file descriptor.
- *
- * @return True if succesful, otherwise false
- */
-bool
-set_config_zone (int fd);
-
-/**
- * Programs the OTP zone with fixed data
- *
- * @param fd The open file descriptor
- * @param otp_zone A pointer to an octet buffer that will be malloc'd
- * and filled in with the OTP Zone contents if successful
- *
- * @return True if the OTP zone has been written.
- */
-bool
-set_otp_zone (int fd, struct lca_octet_buffer *otp_zone);
-
-
-/**
- * Locks the specified zone.
- *
- * @param fd The open file descriptor
- * @param zone The zone to lock.  Either CONFIG_ZONE or (DATA_ZONE or
- * OTP_ZONE). The later will be locked together
- * @param crc The crc16 of the respective zone(s)
- *
- * @return True if now locked.
- */
-bool
-lock (int fd, enum DATA_ZONE zone, uint16_t crc);
-
-/**
- * Retrieve the device's serial number
- *
- * @param fd An open file descriptor
- *
- * @return a malloc'd buffer with the serial number.
- */
-struct lca_octet_buffer
-get_serial_num (int fd);
-
-
-/**
  * Reads 32 Bytes from the address
  *
  * @param fd The open file descriptor
@@ -143,19 +81,6 @@ get_serial_num (int fd);
  */
 struct lca_octet_buffer
 read32 (int fd, enum DATA_ZONE zone, uint8_t addr);
-
-
-
-/**
- * Converts the slot number to the correct address byte
- *
- * @param zone The zone enumeration
- * @param slot The slot number
- *
- * @return The formatted byte, it will assert a failure if not correct.
- */
-uint8_t
-slot_to_addr (enum DATA_ZONE zone, uint8_t slot);
 
 
 
