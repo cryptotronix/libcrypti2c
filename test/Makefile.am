@@ -18,6 +18,7 @@
 check_PROGRAMS = #csu burnutil ecdh
 
 if WANT_TESTS
+if HAVE_XML
 check_PROGRAMS += check_libcryptoauth
 TESTS = check_libcryptoauth
 check_libcryptoauth_SOURCES = test_hmac.c \
@@ -26,6 +27,7 @@ check_libcryptoauth_SOURCES = test_hmac.c \
 check_libcryptoauth_CFLAGS = $(XML_CFLAGS) $(LIBGLIB_CFLAGS) $(YACL_CFLAGS)
 check_libcryptoauth_LDADD = ../libcryptoauth.la  \
                             $(XML_LIBS) $(LIBGLIB_LIBS) $(YACL_LIBS)
+endif
 endif
 
 # csu_SOURCES = csu.c $(top_builddir)/libcryptoauth.h

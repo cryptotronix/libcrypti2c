@@ -28,11 +28,6 @@
 #include <unistd.h>
 #include <stdint.h>
 
-#ifdef CRYPTOAUTH_HAVE_GCRYPT
-#include <gcrypt.h>
-#endif
-
-
 #define LCA_SHA256_DLEN 32
 
 enum LCA_LOG_LEVEL
@@ -306,7 +301,6 @@ lca_send_and_get_rsp (int fd,
 struct lca_octet_buffer
 lca_sha256 (FILE *fp);
 
-#ifdef CRYPTOAUTH_HAVE_LIBXML
 /**
  * SHA256s a file and returns the gcrypt digest
  *
@@ -316,8 +310,7 @@ lca_sha256 (FILE *fp);
  * @return 0 on success.
  */
 int
-lca_hash_file (FILE *fp, gcry_sexp_t *digest);
-#endif /* HAVE_LIBXML */
+lca_hash_file (FILE *fp, uint8_t **digest, size_t *len);
 
 /**
  * Perform a SHA 256 on a fixed data block

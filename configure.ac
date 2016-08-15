@@ -31,6 +31,7 @@ AS_IF([test "x$with_libxml" = "xyes"], [
             PKG_CHECK_MODULES([XML], [libxml-2.0 >= 2.8])
 AC_DEFINE([CRYPTOAUTH_HAVE_LIBXML], [1], [Use libxml])
 ])
+AM_CONDITIONAL([HAVE_XML], [test "x$with_libxml" = "xyes"])
 
 
 AC_ARG_ENABLE(tests,
