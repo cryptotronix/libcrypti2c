@@ -22,7 +22,9 @@ static char args_doc[] = "BUS";
 static struct argp_option options[] = {
   {"verbose",  'v', 0,      0,  "Produce verbose output" },
   {"quiet",    'q', 0,      0,  "Don't produce any output" },
-  {"slot",   's', 0,      0, "specify the slot" },
+  {"dump",    'd', 0,      0,  "Dump the config zone" },
+  {"random",    'r', 0,      0,  "Run get random" },
+  {"slot",   's', "SLOT_NUMBER",      0, "specify the slot" },
   {"gen-key",     'g', 0,      0,  "generates a new key"},
   {"personalize",     'p', 0,      0,  "Fully personalizes device"},
   {"file",     'f', "XMLFILE", 0,
@@ -34,7 +36,7 @@ static struct argp_option options[] = {
 struct arguments
 {
     char *args[NUM_ARGS];                /* arg1 & arg2 */
-    int silent, verbose, lock, personalize, slot, gen_key;
+    int silent, verbose, lock, personalize, slot, gen_key, dump, random;
     char *display, *input_file;
 };
 
@@ -54,11 +56,18 @@ parse_opt (int key, char *arg, struct argp_state *state)
     case 'v':
       arguments->verbose = 1;
       break;
+    case 'r':
+        arguments->random = 1;
+        break;
     case 's':
+        assert (arg);
         arguments->slot =  atoi(arg);
       break;
     case 'g':
         arguments->gen_key = 1;
+        break;
+    case 'd':
+        arguments->dump = 1;
         break;
     case 'p':
         arguments->personalize = 1;
@@ -102,6 +111,11 @@ genkey(int slot, int fd)
        the updateCount in such a way that signatures fail. The interim fix
        is to generate two keys and discard the first. */
     pub_key = lca_gen_ecc_key (fd, slot, true);
+    if (!pub_key.ptr)
+    {
+        fprintf (stderr, "%s\n", "Failed to gen key, exiting");
+        exit(EXIT_FAILURE);
+    }
 
     lca_set_log_level (DEBUG);
     lca_print_hex_string ("Pub Key: ", pub_key.ptr, pub_key.len);
@@ -119,8 +133,10 @@ main (int argc, char **argv)
   arguments.verbose = 0;
   arguments.lock = 0;
   arguments.personalize = 0;
+  arguments.random = 0;
   arguments.slot = 1;
   arguments.gen_key = 0;
+  arguments.dump = 0;
   arguments.input_file = NULL;
 
 
@@ -152,20 +168,37 @@ main (int argc, char **argv)
 
   int fd = lca_atmel_setup (arguments.args[0], 0x60);
 
-  struct lca_octet_buffer cz =
-    get_config_zone (fd);
+  if (arguments.dump)
+  {
+      struct lca_octet_buffer cz =
+          get_config_zone (fd);
 
-  lca_print_hex_string ("cz:", cz.ptr, cz.len);
+      lca_print_hex_string ("cz:", cz.ptr, cz.len);
+  }
 
   if (arguments.personalize)
     {
-      rc = personalize (fd, arguments.input_file);
-      exit (rc);
+        printf ("Calling personalize\n");
+        rc = personalize (fd, arguments.input_file);
+        printf ("Personalize done: %d\n", rc);
+        exit (rc);
     }
 
   if (arguments.gen_key)
+  {
       genkey(arguments.slot, fd);
+      assert (lca_idle (fd));
+  }
 
+
+  if (arguments.random)
+  {
+      lca_get_random (fd, false);
+      assert (lca_idle(fd));
+  }
+
+
+  assert (lca_wakeup(fd));
   struct lca_octet_buffer s =
       lca_ecdh (fd, arguments.slot, x_buf, y_buf);
 
@@ -175,4 +208,3 @@ main (int argc, char **argv)
 
   exit (0);
 }
-

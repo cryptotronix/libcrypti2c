@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Cryptotronix, LLC.
+# Copyright (C) 2014-2016 Cryptotronix, LLC.
 
 # This file is part of libcryptoauth.
 
@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-SUBDIRS = lib . test
+SUBDIRS = lib . test utils
 ## Place generated object files (.o) into the same directory as their source
 ## files, in order to avoid collisions when non-recursive make is used.
 AUTOMAKE_OPTIONS = subdir-objects
@@ -31,22 +31,8 @@ ACLOCAL_AMFLAGS = ${ACLOCAL_FLAGS} -I m4
 libcryptoauth_la_CPPFLAGS = $(XML_CFLAGS) $(YACL_CFLAGS)
 libcryptoauth_la_LIBADD = $(XML_LIBS) $(YACL_LIBS)
 
-## Define a libtool archive target "libcryptoauth-@EXAMPLE_API_VERSION@.la", with
-## @CRYPTOAUTH_API_VERSION@ substituted into the generated Makefile at configure
-## time.
-## The libtool archive file (.la) will be installed into the directory named
-## by the predefined variable $(bindir), along with the actual shared library
-## file (.so).
 pkglib_LTLIBRARIES = libcryptoauth.la
 
-## Define the source file list for the "libcryptoauth-@CRYPTOAUTH_API_VERSION@.la"
-## target.  Note that @CRYPTOAUTH_API_VERSION@ is not interpreted by Automake and
-## will therefore be treated as if it were literally part of the target name,
-## and the variable name derived from that.
-## The file extension .cc is recognized by Automake, and makes it produce
-## rules which invoke the C++ compiler to produce a libtool object file (.lo)
-## from each source file.  Note that it is not necessary to list header files
-## which are already listed elsewhere in a _HEADERS variable assignment.
 libcryptoauth_la_SOURCES =	src/util.c \
 				src/log.c \
 		        	src/crc.c \
@@ -79,9 +65,6 @@ lca_simple_CPPFLAGS = $(XML_CFLAGS) $(YACL_CFLAGS)
 
 lca_really_simple_SOURCES = src/simple.c
 
-## Instruct libtool to include ABI version information in the generated shared
-## library file (.so).  The library ABI version is defined in configure.ac, so
-## that all version information is kept in one place.
 libcryptoauth_la_LDFLAGS = -version-info $(CRYPTOAUTH_SO_VERSION) \
 		           -release $(CRYPTOAUTH_API_VERSION)
 
@@ -109,14 +92,8 @@ dist_pkgdata_DATA = data/atecc108_default.xml
 ## shipped with the source tarball.
 cryptoauth_libincludedir = $(libdir)/cryptoauth-$(CRYPTOAUTH_API_VERSION)/include
 
-## Install the generated pkg-config file (.pc) into the expected location for
-## architecture-dependent package configuration information.  Occasionally,
-## pkg-config files are also used for architecture-independent data packages,
-## in which case the correct install location would be $(datadir)/pkgconfig.
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = cryptoauth.pc
 
-## Define an independent executable script for inclusion in the distribution
-## archive.  However, it will not be installed on an end user's system due to
-## the noinst_ prefix.
+
 dist_noinst_SCRIPTS = autogen.sh

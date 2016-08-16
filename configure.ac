@@ -78,7 +78,7 @@ AC_SUBST([CRYPTOAUTH_SO_VERSION], [6:0:0])
 AC_SUBST([CRYPTOAUTH_API_VERSION], [0.7])
 
 
-AC_CONFIG_FILES([Makefile test/Makefile lib/Makefile
+AC_CONFIG_FILES([Makefile test/Makefile lib/Makefile utils/Makefile
                  cryptoauth.pc:cryptoauth.pc.in])
 AC_OUTPUT
 

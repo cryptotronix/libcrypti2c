@@ -17,7 +17,7 @@
  * along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
  *
  */
-
+#include "config.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -105,7 +105,7 @@ int
 lca_config2bin(const char *docname, struct lca_octet_buffer *out)
 {
 
-  return -1;
+  printf ("HERE YO!\n");
 #ifdef CRYPTOAUTH_HAVE_LIBXML
   xmlDocPtr doc;
   xmlNodePtr cur;
@@ -163,7 +163,10 @@ lca_config2bin(const char *docname, struct lca_octet_buffer *out)
   xmlFreeDoc(doc);
  OUT:
   return rc;
-  #endif
+#else
+  printf ("WTF!\n");
+  return -1;
+#endif
 
 }
 
