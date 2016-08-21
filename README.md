@@ -14,9 +14,6 @@
 CryptoAuthentication device. It implements a command middleware that
 can be called in other application.
 
-The master version is currently 0.4.0-rc. 0.4.0 is expected to be
-released late June 2015.
-
 ## Installing
 
 Probably best to pick the latest
@@ -25,9 +22,9 @@ this repo if you want to pull the latest source to hack on libcryptoauth.
 
 ## Dependencies
 
-- libgcrypt
-- libxml
-- check (for unit testing)
+- [yacl](https://github.com/cryptotronix/yacl/releases/download/v1.1.1/yacl-1.1.1.tar.gz)
+- libxml (optional)
+- libglib2 (optional)
 
 # Supported Device
 
@@ -44,6 +41,10 @@ This software is currently in ***BETA***. Expect numerous changes to the ABI.
 # Post install
 
 After installing, don't forget to run `ldconfig`.
+
+# EClet
+
+There are some breaking changes with EClet in this version still.
 
 
 ![LGPLv3](https://www.gnu.org/graphics/lgplv3-147x51.png)

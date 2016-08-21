@@ -2,6 +2,11 @@ libcryptoauth NEWS -- history of user-visible changes
 
 Copyright (C) 2014-2015 Cryptotronix, LLC.
 
+* libcryptoauth 1.0.0 rc1 - 20 august 2016
+
+- Major refactor removes CHECK and LIBGCRYPT dependices and switches
+  to LIBGLIB and YACL.
+
 * libcryptoauth 0.4.0 Beta release - June 2015
 
 ** Adds hkdf-256 function.
