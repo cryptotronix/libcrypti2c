@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with libcryptoauth.  If not, see <http://www.gnu.org/licenses/>.
 
-AC_INIT([cryptoauth], [0.7.0], [bugs@cryptotronix.com], [libcryptoauth],
+AC_INIT([cryptoauth], [1.0.0-rc1], [bugs@cryptotronix.com], [libcryptoauth],
         [https://www.github.com/cryptotronix/libcryptoauth])
 AC_PREREQ([2.59])
 AC_USE_SYSTEM_EXTENSIONS
@@ -75,7 +75,7 @@ AC_PROG_MKDIR_P
 # refer to the libtool manual, section "Updating library version information":
 # http://www.gnu.org/software/libtool/manual/html_node/Updating-version-info.html
 AC_SUBST([CRYPTOAUTH_SO_VERSION], [6:0:0])
-AC_SUBST([CRYPTOAUTH_API_VERSION], [0.7])
+AC_SUBST([CRYPTOAUTH_API_VERSION], [1.0])
 
 
 AC_CONFIG_FILES([Makefile test/Makefile lib/Makefile utils/Makefile
