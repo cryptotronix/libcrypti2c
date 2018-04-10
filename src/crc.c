@@ -25,6 +25,7 @@
 #include <stdlib.h>
 #include <assert.h>
 #include "../libcryptoauth.h"
+#include <arpa/inet.h>
 
 
 const uint16_t crc_tab_8005_normal[256] = {
@@ -114,7 +115,7 @@ lca_calculate_crc16(const uint8_t *p, unsigned int length)
   hibyte = lca_reverse_bits_in_byte(hibyte);
   lobyte = lca_reverse_bits_in_byte(lobyte);
 
-  return  lobyte << 8 | hibyte;
+  return  ntohs(hibyte << 8 | lobyte);
 }
 
 bool
